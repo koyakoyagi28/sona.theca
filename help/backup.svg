@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="バックアップ / 復元">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1720"/><stop offset="1" stop-color="#071018"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity=".25"/></filter>
+  </defs>
+  <rect width="1200" height="720" rx="24" fill="url(#bg)"/>
+  <rect x="34" y="28" width="1132" height="664" rx="18" fill="#111b24" stroke="#2b3a47"/>
+  <rect x="34" y="28" width="1132" height="72" rx="18" fill="#17232d"/>
+  <circle cx="72" cy="64" r="10" fill="#ef6b73"/><circle cx="104" cy="64" r="10" fill="#e5b85c"/><circle cx="136" cy="64" r="10" fill="#70c59b"/>
+  <text x="170" y="70" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">バックアップ / 復元</text>
+  <text x="170" y="94" font-family="system-ui,sans-serif" font-size="13" fill="#8fa0ae">大切なデータを保存・復元</text>
+  <rect x="70" y="135" width="1060" height="500" rx="12" fill="#17232d" stroke="#30404e"/><text x="100" y="175" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#f8fafc">バックアップ / 復元</text><rect x="100" y="215" width="480" height="300" rx="12" fill="#141f28" stroke="#2d3c48"/><text x="130" y="260" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#f1f5f9">💾 バックアップ</text><text x="130" y="300" font-family="system-ui,sans-serif" font-size="14" font-weight="400" fill="#9aaab7">現在のデータを .uwp ファイル</text><text x="130" y="325" font-family="system-ui,sans-serif" font-size="14" font-weight="400" fill="#9aaab7">として保存します。</text><rect x="130" y="375" width="360" height="54" rx="10" fill="#315d86" stroke="#3f769f"/><text x="225" y="409" font-family="system-ui,sans-serif" font-size="15" font-weight="700" fill="#fff">バックアップを保存</text><rect x="620" y="215" width="480" height="300" rx="12" fill="#141f28" stroke="#2d3c48"/><text x="650" y="260" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#f1f5f9">♻️ 復元</text><text x="650" y="300" font-family="system-ui,sans-serif" font-size="14" font-weight="400" fill="#9aaab7">保存済みの .uwp ファイルを</text><text x="650" y="325" font-family="system-ui,sans-serif" font-size="14" font-weight="400" fill="#9aaab7">読み込んでデータを復元します。</text><rect x="650" y="375" width="360" height="54" rx="10" fill="#315d86" stroke="#3f769f"/><text x="750" y="409" font-family="system-ui,sans-serif" font-size="15" font-weight="700" fill="#fff">バックアップを読み込む</text><text x="100" y="565" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#e0b878">PC変更・ブラウザデータ削除などの前にバックアップしておくと安心です。</text>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="歌枠一覧">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1720"/><stop offset="1" stop-color="#071018"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity=".25"/></filter>
+  </defs>
+  <rect width="1200" height="720" rx="24" fill="url(#bg)"/>
+  <rect x="34" y="28" width="1132" height="664" rx="18" fill="#111b24" stroke="#2b3a47"/>
+  <rect x="34" y="28" width="1132" height="72" rx="18" fill="#17232d"/>
+  <circle cx="72" cy="64" r="10" fill="#ef6b73"/><circle cx="104" cy="64" r="10" fill="#e5b85c"/><circle cx="136" cy="64" r="10" fill="#70c59b"/>
+  <text x="170" y="70" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">歌枠一覧</text>
+  <text x="170" y="94" font-family="system-ui,sans-serif" font-size="13" fill="#8fa0ae">登録した歌枠を検索・再生</text>
+  <rect x="70" y="135" width="1060" height="500" rx="12" fill="#17232d" stroke="#30404e"/><text x="100" y="175" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#f8fafc">歌枠一覧</text><rect x="100" y="198" width="700" height="50" rx="8" fill="#0d151c" stroke="#344653"/><text x="120" y="230" font-family="system-ui,sans-serif" font-size="14" font-weight="400" fill="#7f919f">歌枠・楽曲名・原曲歌手・歌唱者を検索…</text><rect x="820" y="198" width="280" height="50" rx="8" fill="#0d151c" stroke="#344653"/><text x="840" y="230" font-family="system-ui,sans-serif" font-size="14" font-weight="400" fill="#dbe5ec">配信日（新しい順） ▾</text><rect x="100" y="275" width="1000" height="95" rx="10" fill="#141f28" stroke="#2d3c48"/><text x="125" y="310" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#f1f5f9">【歌枠】夜のまったり歌枠！</text><text x="125" y="338" font-family="system-ui,sans-serif" font-size="14" font-weight="400" fill="#8fa0ae">Sample Channel  ·  2026-09-25</text><rect x="900" y="296" width="170" height="48" rx="8" fill="#315d86" stroke="#3f769f"/><text x="944" y="327" font-family="system-ui,sans-serif" font-size="15" font-weight="700" fill="#fff">▶ 再生</text><rect x="100" y="385" width="1000" height="95" rx="10" fill="#141f28" stroke="#2d3c48"/><text x="125" y="420" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#f1f5f9">【歌枠】深夜の歌枠</text><text x="125" y="448" font-family="system-ui,sans-serif" font-size="14" font-weight="400" fill="#8fa0ae">Another Channel  ·  2026-09-24</text><rect x="900" y="401" width="170" height="48" rx="8" fill="#315d86" stroke="#3f769f"/><text x="944" y="432" font-family="system-ui,sans-serif" font-size="15" font-weight="700" fill="#fff">▶ 再生</text><text x="100" y="535" font-family="system-ui,sans-serif" font-size="14" font-weight="400" fill="#9aaab7">曲名・歌唱者・配信日などから目的の歌枠を探せます。</text>
+</svg>

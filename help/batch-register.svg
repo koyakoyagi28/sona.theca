@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="楽曲を一括登録">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1720"/><stop offset="1" stop-color="#071018"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity=".25"/></filter>
+  </defs>
+  <rect width="1200" height="720" rx="24" fill="url(#bg)"/>
+  <rect x="34" y="28" width="1132" height="664" rx="18" fill="#111b24" stroke="#2b3a47"/>
+  <rect x="34" y="28" width="1132" height="72" rx="18" fill="#17232d"/>
+  <circle cx="72" cy="64" r="10" fill="#ef6b73"/><circle cx="104" cy="64" r="10" fill="#e5b85c"/><circle cx="136" cy="64" r="10" fill="#70c59b"/>
+  <text x="170" y="70" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#f1f5f9">楽曲を一括登録</text>
+  <text x="170" y="94" font-family="system-ui,sans-serif" font-size="13" fill="#8fa0ae">複数の曲をまとめて登録</text>
+  <rect x="70" y="135" width="1060" height="500" rx="12" fill="#17232d" stroke="#30404e"/><text x="100" y="175" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#f8fafc">楽曲の一括登録</text><text x="100" y="220" font-family="system-ui,sans-serif" font-size="14" font-weight="400" fill="#9aaab7">複数の曲を入力してまとめて登録できます</text><rect x="100" y="250" width="1000" height="270" rx="10" fill="#0d151c" stroke="#344653"/><text x="125" y="285" font-family="system-ui,sans-serif" font-size="15" font-weight="400" fill="#dbe5ec">01:23:45  アイドル  /  YOASOBI</text><text x="125" y="330" font-family="system-ui,sans-serif" font-size="15" font-weight="400" fill="#dbe5ec">01:27:10  怪獣の花唄  /  Vaundy</text><text x="125" y="375" font-family="system-ui,sans-serif" font-size="15" font-weight="400" fill="#dbe5ec">01:32:08  残響散歌  /  Aimer</text><text x="125" y="420" font-family="system-ui,sans-serif" font-size="15" font-weight="400" fill="#dbe5ec">01:36:50  ドライフラワー  /  優里</text><text x="125" y="465" font-family="system-ui,sans-serif" font-size="15" font-weight="400" fill="#dbe5ec">01:41:12  夜に駆ける  /  YOASOBI</text><rect x="920" y="545" width="180" height="54" rx="10" fill="#315d86" stroke="#3f769f"/><text x="947" y="579" font-family="system-ui,sans-serif" font-size="16" font-weight="700" fill="#fff">まとめて登録</text>
+</svg>
