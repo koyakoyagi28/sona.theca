@@ -435,6 +435,492 @@
             margin: 0 !important;
 
         }
+
+        /* =========================
+           Interaction / accessibility polish
+        ========================= */
+        :focus-visible {
+            outline: 3px solid #cbd5e1;
+            outline-offset: 3px;
+        }
+
+        button,
+        a,
+        input,
+        select,
+        textarea {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button {
+            touch-action: manipulation;
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: .55;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: .01ms !important;
+                transition-duration: .01ms !important;
+            }
+        }
+
+        /* =========================
+           Mobile layout
+           Keep the desktop layout intact and make controls usable from 375px.
+        ========================= */
+        @media (max-width: 640px) {
+            html {
+                font-size: 15px;
+            }
+
+            /* Keep every primary destination visible instead of requiring
+               horizontal scrolling in the global navigation. */
+            header.h-16 {
+                height: auto;
+            }
+
+            header > div {
+                padding: .6rem .75rem !important;
+                gap: .5rem;
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+
+            header h1 {
+                max-width: none;
+                font-size: 1rem !important;
+            }
+
+            header h1 span {
+                display: inline;
+            }
+
+            header > div > .flex:first-child {
+                min-width: auto;
+                flex: none;
+                gap: .4rem;
+            }
+
+            header nav {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                width: 100%;
+                min-width: 0;
+                flex: none;
+                gap: .45rem;
+                overflow: visible;
+            }
+
+            header nav button {
+                width: 100%;
+                min-width: 0;
+                justify-content: center;
+                white-space: nowrap;
+                padding: .55rem .4rem;
+                font-size: .8rem;
+            }
+
+            /* The filter bars stay below the taller, two-row mobile header. */
+            #streamTab > .sticky,
+            #dataTab > .sticky {
+                top: 9.5rem;
+            }
+
+            /* Sub-tabs remain immediately selectable without horizontal scrolling. */
+            #dataTab > .sticky > div:first-child {
+                display: grid !important;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                overflow: visible;
+                gap: .4rem;
+            }
+
+            #dataTab > .sticky > div:first-child button {
+                min-width: 0;
+                justify-content: center;
+                padding: .55rem .25rem;
+                font-size: .72rem;
+                white-space: nowrap;
+            }
+
+            main {
+                padding-left: .75rem !important;
+                padding-right: .75rem !important;
+                gap: 1rem !important;
+            }
+
+            .tab-content {
+                gap: 1rem !important;
+                padding-top: .75rem !important;
+            }
+
+            #toast {
+                right: .75rem;
+                bottom: .75rem;
+                left: .75rem;
+                justify-content: center;
+            }
+
+            #playerSection > div:first-child {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: .75rem;
+            }
+
+            #playerSection > div:first-child > div:last-child {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            #theaterBtnText {
+                display: none;
+            }
+
+            #iframeWrapper {
+                min-height: 0 !important;
+            }
+
+            #playerSidebar {
+                max-height: 22rem !important;
+                padding: .75rem !important;
+            }
+
+            #playerSidebar h3 > span:last-child {
+                display: none;
+            }
+
+            #streamTab > .sticky > div {
+                padding: .75rem;
+                gap: .75rem;
+            }
+
+            #streamTab > .sticky > div > div,
+            #streamTab > .sticky > div > div:last-child {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            #streamTab > .sticky .relative,
+            #streamTab > .sticky select,
+            #streamTab > .sticky input,
+            #songFilterBar select,
+            #songFilterBar .relative,
+            #singerFilterBar select,
+            #singerFilterBar .relative {
+                width: 100%;
+                min-width: 0;
+            }
+
+            #songFilterBar,
+            #singerFilterBar {
+                align-items: stretch;
+                gap: .75rem;
+                padding: .75rem;
+            }
+
+            #songFilterBar > div,
+            #singerFilterBar > div {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            #streamerSubTab > div,
+            #backupTab > div {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            #streamerSubTab > div > div:first-child {
+                align-items: flex-start;
+            }
+
+            #streamerSubTab > div > div:first-child button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Replace the wide song table with labelled, scan-friendly cards. */
+            #songSubTab .overflow-x-auto {
+                overflow: visible;
+            }
+
+            #songSubTab table,
+            #songSubTab tbody,
+            #songSubTab tr,
+            #songSubTab td {
+                display: block;
+                width: 100%;
+                min-width: 0;
+            }
+
+            #songSubTab thead {
+                display: none;
+            }
+
+            #songSubTab tr {
+                padding: .65rem .75rem;
+                border-bottom: 1px solid #2a3a47;
+            }
+
+            #songSubTab tr:last-child {
+                border-bottom: 0;
+            }
+
+            #songSubTab td {
+                display: grid;
+                grid-template-columns: 5.5rem minmax(0, 1fr);
+                gap: .5rem;
+                padding: .45rem 0;
+                text-align: left;
+            }
+
+            #songSubTab td::before {
+                content: attr(data-label);
+                color: #94a3b8;
+                font-size: .7rem;
+                font-weight: 700;
+                padding-top: .2rem;
+            }
+
+            #songSubTab td[data-label=""] {
+                display: block;
+                text-align: center;
+            }
+
+            #songSubTab td[data-label=""]::before {
+                content: none;
+            }
+
+            #songSubTab td .mt-1 {
+                margin-top: 0;
+            }
+
+            #songSubTab td .self-start,
+            #songSubTab td .inline-flex {
+                justify-self: start;
+            }
+
+            #singerListContainer > div > div:first-child,
+            #streamerMasterList > div {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            #singerListContainer > div > div:first-child > div:last-child,
+            #streamerMasterList > div > div:last-child {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            #singerListContainer > div > div:first-child button,
+            #streamerMasterList > div > div:last-child > * {
+                flex: 1 1 auto;
+                justify-content: center;
+            }
+
+            input,
+            select,
+            textarea {
+                font-size: 16px !important;
+            }
+
+            /* Modal content remains reachable above the on-screen keyboard. */
+            [id$="Modal"] {
+                padding: .75rem !important;
+                align-items: flex-start !important;
+                overflow-y: auto;
+            }
+
+            [id$="Modal"] > div {
+                margin-top: .75rem;
+                margin-bottom: .75rem;
+                max-height: calc(100dvh - 1.5rem) !important;
+            }
+
+            #streamModal > div > div:nth-child(2),
+            #addSongsModal > div > div:nth-child(3),
+            #helpModalContent {
+                padding: 1rem;
+            }
+
+            #streamModal .p-4,
+            #addSongsModal .p-4 {
+                padding: .75rem;
+            }
+
+            #streamModal .flex.justify-between.items-center,
+            #addSongsModal .flex.justify-between.items-center {
+                align-items: flex-start;
+                gap: .75rem;
+            }
+
+            #streamModal .flex.justify-between.items-center > div:last-child,
+            #addSongsModal .flex.justify-between.items-center > div:last-child {
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
+
+            .help-hero {
+                padding: .85rem;
+            }
+        }
+
+        /* =========================
+           Visual hierarchy refresh
+        ========================= */
+        :root {
+            color-scheme: dark;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 82% -15%, rgba(71, 104, 126, .30), transparent 30rem),
+                radial-gradient(circle at 4% 18%, rgba(42, 58, 71, .32), transparent 25rem),
+                #0d1318;
+            line-height: 1.5;
+        }
+
+        header {
+            background: linear-gradient(105deg, #263b4a 0%, #384b5a 52%, #304451 100%) !important;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, .26) !important;
+        }
+
+        header h1 {
+            letter-spacing: .02em;
+        }
+
+        header nav button {
+            min-height: 2.5rem;
+            transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+        }
+
+        header nav button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(0, 0, 0, .18);
+        }
+
+        main {
+            padding-bottom: 2.5rem !important;
+        }
+
+        /* Keep filters legible over a scrolling list without making them feel boxed in. */
+        #streamTab > .sticky,
+        #dataTab > .sticky {
+            background: linear-gradient(to bottom, rgba(13, 19, 24, .98) 76%, rgba(13, 19, 24, 0));
+            backdrop-filter: blur(12px);
+        }
+
+        #streamTab > .sticky > div,
+        #dataTab > .sticky > div {
+            box-shadow: 0 12px 26px rgba(0, 0, 0, .16);
+        }
+
+        #streamTab > .sticky > div > div:first-child > button,
+        #streamerSubTab button,
+        #backupTab button {
+            min-height: 2.5rem;
+        }
+
+        input,
+        select,
+        textarea {
+            transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+        }
+
+        input:hover,
+        select:hover,
+        textarea:hover {
+            border-color: #526c7e !important;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #8fa9ba !important;
+            box-shadow: 0 0 0 3px rgba(143, 169, 186, .16);
+        }
+
+        #streamListContainer > div {
+            box-shadow: 0 10px 24px rgba(0, 0, 0, .16);
+            transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease !important;
+        }
+
+        #streamListContainer > div:hover {
+            border-color: #607d90 !important;
+            box-shadow: 0 16px 34px rgba(0, 0, 0, .25);
+            transform: translateY(-2px);
+        }
+
+        #streamListContainer > div > div:first-child {
+            background: linear-gradient(100deg, #151e25, #19242d) !important;
+        }
+
+        #streamListContainer [id^="acc-body-"] > div:last-child > div {
+            transition: transform .16s ease, border-color .16s ease, background-color .16s ease;
+        }
+
+        #streamListContainer [id^="acc-body-"] > div:last-child > div:hover {
+            transform: translateY(-1px);
+            border-color: #718b9b !important;
+        }
+
+        #songSubTab > div,
+        #singerListContainer > div,
+        #streamerSubTab > div,
+        #backupTab > div {
+            box-shadow: 0 10px 24px rgba(0, 0, 0, .14);
+        }
+
+        #songSubTab tbody tr:nth-child(even) {
+            background: rgba(21, 30, 37, .28);
+        }
+
+        #songSubTab tbody tr:hover {
+            box-shadow: inset 3px 0 0 #607d90;
+        }
+
+        #playerSection {
+            box-shadow: 0 18px 42px rgba(0, 0, 0, .32) !important;
+        }
+
+        #playerSidebar::-webkit-scrollbar,
+        #streamerMasterList::-webkit-scrollbar {
+            display: block;
+            width: 6px;
+        }
+
+        #playerSidebar::-webkit-scrollbar-thumb,
+        #streamerMasterList::-webkit-scrollbar-thumb {
+            background: #384b5a;
+            border-radius: 999px;
+        }
+
+        @media (min-width: 641px) {
+            #streamListContainer {
+                gap: 1.1rem !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            #streamListContainer > div:hover {
+                transform: none;
+            }
+
+            #streamTab > .sticky,
+            #dataTab > .sticky {
+                backdrop-filter: blur(8px);
+            }
+        }
     </style>
 </head>
 
@@ -476,6 +962,7 @@
 
         <!-- トースト通知 -->
         <div id="toast"
+            role="status" aria-live="polite"
             class="hidden fixed bottom-5 right-5 z-50 bg-base-bright text-white px-4 py-3 rounded-lg shadow-xl flex items-center gap-3 transition-opacity duration-300 border border-slate-300/30">
             <i id="toast-icon" class="fa-solid fa-check-circle"></i>
             <span id="toast-message">処理が完了しました</span>
@@ -552,7 +1039,7 @@
 
                     <div class="flex items-center gap-2 flex-wrap flex-1 justify-end">
                         <div class="relative min-w-[150px]">
-                            <select id="streamSortSelect" onchange="renderStreams()"
+                        <select id="streamSortSelect" onchange="renderStreams()" aria-label="歌枠の並び替え"
                                 class="w-full bg-base-dark border border-base rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
                                 <option value="streamDate_desc">配信日 (新しい順)</option>
                                 <option value="streamDate_asc">配信日 (古い順)</option>
@@ -560,13 +1047,13 @@
                             </select>
                         </div>
                         <div class="relative min-w-[160px]">
-                            <select id="streamFilterStreamer" onchange="renderStreams()"
+                        <select id="streamFilterStreamer" onchange="renderStreams()" aria-label="配信者で絞り込み"
                                 class="w-full bg-base-dark border border-base rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
                                 <option value="">すべての配信者 (全件)</option>
                             </select>
                         </div>
                         <div class="relative min-w-[200px]">
-                            <input type="text" id="streamSearchKeyword" onkeyup="renderStreams()"
+                            <input type="text" id="streamSearchKeyword" onkeyup="renderStreams()" aria-label="歌枠を検索"
                                 oninput="renderStreams()" placeholder="歌枠・楽曲名・原曲歌手・歌唱者を検索..."
                                 class="w-full bg-base-dark border border-base rounded-lg pl-9 pr-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-sm"></i>
@@ -606,7 +1093,7 @@
                     <div class="flex items-center gap-3 w-full md:w-auto">
                         <span class="text-sm text-gray-200 font-semibold whitespace-nowrap"><i
                                 class="fa-solid fa-sort"></i> 並び替え:</span>
-                        <select id="songSortSelect" onchange="renderSongTab()"
+                        <select id="songSortSelect" onchange="renderSongTab()" aria-label="楽曲の並び替え"
                             class="bg-base-dark border border-base rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
                             <option value="title_asc">楽曲名順 (五十音)</option>
                             <option value="count_desc">歌唱回数順 (多い順)</option>
@@ -616,13 +1103,13 @@
                     </div>
 
                     <div class="flex items-center gap-2 w-full md:w-auto justify-end flex-wrap">
-                        <select id="songFilterArtist" onchange="renderSongTab()"
+                        <select id="songFilterArtist" onchange="renderSongTab()" aria-label="アーティストで絞り込み"
                             class="bg-base-dark border border-base rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400 min-w-[150px]">
                             <option value="">すべてのアーティスト</option>
                         </select>
 
                         <div class="relative min-w-[220px]">
-                            <input type="text" id="songSearchKeyword" onkeyup="renderSongTab()"
+                            <input type="text" id="songSearchKeyword" onkeyup="renderSongTab()" aria-label="楽曲を検索"
                                 oninput="renderSongTab()" placeholder="楽曲名・アーティスト名・歌唱者を検索..."
                                 class="w-full bg-base-dark border border-base rounded-lg pl-9 pr-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-sm"></i>
@@ -636,7 +1123,7 @@
                     <div class="flex items-center gap-3 w-full md:w-auto">
                         <span class="text-sm text-gray-200 font-semibold whitespace-nowrap"><i
                                 class="fa-solid fa-sort"></i> 並び替え:</span>
-                        <select id="singerSortSelect" onchange="renderSingerTab()"
+                        <select id="singerSortSelect" onchange="renderSingerTab()" aria-label="アーティストの並び替え"
                             class="bg-base-dark border border-base rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
                             <option value="artist_asc">アーティスト名順 (五十音)</option>
                             <option value="song_count_desc">レパートリー楽曲数順 (多い順)</option>
@@ -645,7 +1132,7 @@
                     </div>
 
                     <div class="relative min-w-[220px] w-full md:w-auto">
-                        <input type="text" id="singerSearchKeyword" onkeyup="renderSingerTab()"
+                        <input type="text" id="singerSearchKeyword" onkeyup="renderSingerTab()" aria-label="アーティストを検索"
                             oninput="renderSingerTab()" placeholder="原曲歌手名・持ち歌を検索..."
                             class="w-full bg-base-dark border border-base rounded-lg pl-9 pr-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-sm"></i>
@@ -1316,6 +1803,7 @@
         let currentTheaterMode = false;
         let currentPlayingStreamId = null;
         let currentPlayingSongId = null;
+        let toastTimeout = null;
 
         let ytPlayer = null;
         let ytPlayerReady = false;
@@ -1692,9 +2180,13 @@
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
+            if (toastTimeout) clearTimeout(toastTimeout);
             document.getElementById('toast-message').innerText = msg;
             toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 3000);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+                toastTimeout = null;
+            }, 3000);
         }
 
         function renderAvatarHtml(name, iconUrl, sizeClass = "w-8 h-8") {
@@ -2268,7 +2760,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-300">該当する楽曲が見つかりませんでした。</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" data-label="" class="px-4 py-8 text-center text-gray-300">該当する楽曲が見つかりませんでした。</td></tr>`;
                 return;
             }
 
@@ -2301,20 +2793,20 @@
                 `).join('');
 
                 tr.innerHTML = `
-                    <td class="px-4 py-3 font-bold text-white align-top break-words">
+                    <td data-label="楽曲名" class="px-4 py-3 font-bold text-white align-top break-words">
                         <div class="flex items-center gap-2 mt-1">
                             <i class="fa-solid fa-music text-slate-300 text-xs shrink-0"></i> <span>${item.title}</span>
                         </div>
                     </td>
-                    <td class="px-4 py-3 text-gray-200 align-top break-words">
+                    <td data-label="アーティスト" class="px-4 py-3 text-gray-200 align-top break-words">
                         <div class="mt-1">${item.singerName}</div>
                     </td>
-                    <td class="px-4 py-3 text-center align-top">
+                    <td data-label="歌唱回数" class="px-4 py-3 text-center align-top">
                         <span class="inline-block bg-base-dark border border-base text-slate-200 text-xs font-bold px-2.5 py-1 rounded-full mt-1">
                             ${count} 回
                         </span>
                     </td>
-                    <td class="px-4 py-3 align-top">
+                    <td data-label="歌唱履歴" class="px-4 py-3 align-top">
                         <div class="flex flex-col">
                             <button onclick="toggleSongHistory('${toggleId}', ${count})" class="self-start text-xs bg-base-dark hover:bg-base-mid text-slate-300 border border-base/70 px-3 py-1 rounded-lg transition flex items-center gap-1">
                                 <i id="icon-${toggleId}" class="fa-solid fa-chevron-right text-[10px]"></i>
@@ -2325,7 +2817,7 @@
                             </div>
                         </div>
                     </td>
-                    <td class="px-4 py-3 text-center align-top">
+                    <td data-label="操作" class="px-4 py-3 text-center align-top">
                         <button onclick="openMasterSongEditModal('${item.masterSongId}')" class="mt-1 bg-base-bright hover:bg-base-sub text-white text-xs font-bold px-2.5 py-1.5 rounded-lg transition shadow border border-slate-400/30 inline-flex items-center gap-1">
                             <i class="fa-solid fa-pen-to-square"></i> 編集
                         </button>
@@ -3772,6 +4264,21 @@
                 history.replaceState(null, '', window.location.pathname);
             }
         }
+
+        // Escape closes the currently visible dialog, matching common desktop and mobile conventions.
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape') return;
+
+            const openModals = [...document.querySelectorAll('[id$="Modal"]')]
+                .filter(modal => modal.id !== 'customModal' && !modal.classList.contains('hidden'));
+            const topModal = openModals.at(-1);
+            if (!topModal) return;
+
+            topModal.classList.add('hidden');
+            if (document.querySelectorAll('[id$="Modal"]:not(.hidden)').length === 0) {
+                toggleBodyScroll(false);
+            }
+        });
     </script>
 </body>
 
