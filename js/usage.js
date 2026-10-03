@@ -6,7 +6,7 @@ const config = `
 <div class="help-hero">
     <div class="help-hero-icon"><i class="fa-solid fa-book-open text-white"></i></div>
     <div>
-        <div class="help-hero-title">歌枠データベース v1.0.0 完全取扱説明書</div>
+        <div class="help-hero-title">歌枠データベース v1.0.1 マニュアル</div>
         <div class="help-hero-text">歌枠アーカイブの保存、タイムスタンプ連動再生、楽曲・アーティストの一括管理、バックアップやクラウド共有を行うための総合ガイドです。</div>
     </div>
 </div>
@@ -306,6 +306,10 @@ GitHubアカウントの個人アクセストークン (PAT) を利用して、P
 
 歌枠データベースのリリースおよびアップデート履歴です。
 
+### v1.0.1 (2026-10-03)
+- **改良**: セキュリティ面の向上。
+- **修正**: アプリない文章の一部修正・変更。
+
 ### v1.0.0 (2026-09-28)
 - **初期リリース**: 歌枠データベース v1.0 を公開。
 - **コア機能**: YouTube動画URLからのタイトル自動取得、およびタイムスタンプに合わせた動画プレイヤーの自動ジャンプ・追従再生機能を実装。
@@ -316,6 +320,6 @@ GitHubアカウントの個人アクセストークン (PAT) を利用して、P
 ---
 
 <div class="text-center text-xs text-gray-400 my-4">
-    歌枠データベース v1.0 — Designed for VTuber & Singing Stream Fans
+    歌枠データベース v1.0.1 — Designed for VTuber & Singing Stream Fans
 </div>
 `;

@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 外部リンクを開いたページから元ページを操作されないようにする -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMzODRCNUEiLz48cGF0aCBkPSJNMjYgNDRWMjJjMC0yIDEuNS0zIDMtM2gxMmMxLjUgMCAzIDEgMyAzdjE0IiBmaWxsPSJub25lIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iMjIiIGN5PSI0NCIgcj0iNyIgZmlsbD0iI0ZGRkZGRiIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iMzciIHI9IjciIGZpbGw9IiNGRkZGRkYiLz48cGF0aCBkPSJNNDYgMTZsMS41IDQuNWg0LjVsLTMuNSAyLjUgMS41IDQuNS00LTMtNCAzIDEuNS00LjUtMy41LTIuNWg0LjV6IiBmaWxsPSIjRkZCN0IyIi8+PC9zdmc+">
 
@@ -932,14 +934,14 @@
             <div class="flex items-center gap-3">
                 <i class="fa-solid fa-music text-2xl text-slate-200"></i>
                 <h1 class="text-xl font-bold tracking-wide">歌枠データベース <span
-                        class="text-xs font-normal text-slate-200 bg-base-deep/80 border border-base px-2 py-0.5 rounded">v1.0.0</span>
+                        class="text-xs font-normal text-slate-200 bg-base-deep/80 border border-base px-2 py-0.5 rounded">v1.0.1</span>
                 </h1>
             </div>
 
             <nav class="flex items-center gap-2 text-sm flex-wrap">
                 <button onclick="switchTab('streamTab')" id="nav-streamTab"
                     class="px-3.5 py-2 rounded-lg bg-base-sub text-white font-medium transition hover:bg-base-bright flex items-center gap-2 shadow border border-base">
-                    <i class="fa-solid fa-video"></i> 歌枠一覧
+                    <i class="fa-solid fa-video"></i> 動画一覧
                 </button>
                 <button onclick="switchTab('dataTab')" id="nav-dataTab"
                     class="px-3.5 py-2 rounded-lg bg-base-mid hover:bg-base-dark text-gray-200 font-medium transition flex items-center gap-2 border border-transparent">
@@ -986,14 +988,14 @@
                                 <span id="playerStreamDate"
                                     class="text-[11px] text-gray-300 font-mono">2026/09/20</span>
                             </div>
-                            <h2 id="playerTitle" class="font-bold text-sm text-white truncate">歌枠タイトル</h2>
+                            <h2 id="playerTitle" class="font-bold text-sm text-white truncate">動画タイトル</h2>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <button onclick="toggleTheaterMode()" id="theaterBtn"
                             class="px-3 py-1.5 bg-base-bright hover:bg-base-sub text-xs rounded font-medium transition flex items-center gap-1 text-white shadow border border-base">
                             <i id="theaterIcon" class="fa-solid fa-expand"></i> <span
-                                id="theaterBtnText">シアターモード(拡大)</span>
+                                id="theaterBtnText">シアターモード</span>
                         </button>
                         <button onclick="closePlayer()"
                             class="px-2.5 py-1.5 bg-red-800/80 hover:bg-red-700 text-xs rounded text-white transition shadow border border-red-600/30">
@@ -1012,8 +1014,8 @@
                         class="p-4 bg-base-mid flex flex-col gap-3 max-h-[500px] overflow-y-auto no-scrollbar border-t lg:border-t-0 lg:border-l border-base lg:col-span-1">
                         <h3
                             class="font-bold text-sm text-slate-200 flex items-center justify-between pb-2 border-b border-base">
-                            <span class="flex items-center gap-2"><i class="fa-solid fa-music"></i> 歌唱タイムスタンプ一覧</span>
-                            <span class="text-[11px] text-gray-400 font-normal">※再生に合わせて自動移動</span>
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-music"></i> タイムスタンプ</span>
+                            <!-- <span class="text-[11px] text-gray-400 font-normal">※再生に合わせて自動移動</span> -->
                         </h3>
                         <div id="playerSongList" class="flex flex-col gap-2 py-1"></div>
                     </div>
@@ -1032,8 +1034,8 @@
                         <div
                             class="bg-base-dark border border-base px-3 py-2 rounded-lg text-xs text-gray-300 font-medium flex items-center gap-2">
                             <i class="fa-solid fa-list-check text-slate-400"></i>
-                            <span>表示: <b id="streamDisplayCount" class="text-white">0</b> 件 （全 <b id="songDisplayCount"
-                                    class="text-white">0</b> 曲）</span>
+                            <span>動画： <b id="streamDisplayCount" class="text-white">0</b> 件　/　楽曲： <b id="songDisplayCount"
+                                    class="text-white">0</b> 曲</span>
                         </div>
                     </div>
 
@@ -1041,20 +1043,20 @@
                         <div class="relative min-w-[150px]">
                         <select id="streamSortSelect" onchange="renderStreams()" aria-label="歌枠の並び替え"
                                 class="w-full bg-base-dark border border-base rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
-                                <option value="streamDate_desc">配信日 (新しい順)</option>
-                                <option value="streamDate_asc">配信日 (古い順)</option>
-                                <option value="createdAt_desc">登録日 (新しい順)</option>
+                                <option value="streamDate_desc">配信日： 新しい順</option>
+                                <option value="streamDate_asc">配信日： 古い順</option>
+                                <option value="createdAt_desc">登録日： 新しい順</option>
                             </select>
                         </div>
                         <div class="relative min-w-[160px]">
                         <select id="streamFilterStreamer" onchange="renderStreams()" aria-label="配信者で絞り込み"
                                 class="w-full bg-base-dark border border-base rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
-                                <option value="">すべての配信者 (全件)</option>
+                                <option value="">すべての配信者</option>
                             </select>
                         </div>
                         <div class="relative min-w-[200px]">
                             <input type="text" id="streamSearchKeyword" onkeyup="renderStreams()" aria-label="歌枠を検索"
-                                oninput="renderStreams()" placeholder="歌枠・楽曲名・原曲歌手・歌唱者を検索..."
+                                oninput="renderStreams()" placeholder="動画・楽曲名・アーティスト名・配信者を検索..."
                                 class="w-full bg-base-dark border border-base rounded-lg pl-9 pr-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-sm"></i>
                         </div>
@@ -1092,13 +1094,13 @@
                     class="subdata-filter bg-base-mid p-3.5 rounded-xl border border-base shadow flex flex-col md:flex-row gap-4 items-center justify-between">
                     <div class="flex items-center gap-3 w-full md:w-auto">
                         <span class="text-sm text-gray-200 font-semibold whitespace-nowrap"><i
-                                class="fa-solid fa-sort"></i> 並び替え:</span>
+                                class="fa-solid fa-sort"></i>並び替え：</span>
                         <select id="songSortSelect" onchange="renderSongTab()" aria-label="楽曲の並び替え"
                             class="bg-base-dark border border-base rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
-                            <option value="title_asc">楽曲名順 (五十音)</option>
-                            <option value="count_desc">歌唱回数順 (多い順)</option>
-                            <option value="artist_asc">アーティスト名順 (五十音)</option>
-                            <option value="recent_desc">最新歌唱日 (新しい順)</option>
+                            <option value="title_asc">楽曲名： 五十音順</option>
+                            <option value="count_desc">歌唱回数： 多い順</option>
+                            <option value="artist_asc">アーティスト名： 五十音順</option>
+                            <option value="recent_desc">歌唱日： 新しい順</option>
                         </select>
                     </div>
 
@@ -1110,7 +1112,7 @@
 
                         <div class="relative min-w-[220px]">
                             <input type="text" id="songSearchKeyword" onkeyup="renderSongTab()" aria-label="楽曲を検索"
-                                oninput="renderSongTab()" placeholder="楽曲名・アーティスト名・歌唱者を検索..."
+                                oninput="renderSongTab()" placeholder="楽曲名・アーティスト名・配信者を検索..."
                                 class="w-full bg-base-dark border border-base rounded-lg pl-9 pr-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-sm"></i>
                         </div>
@@ -1122,18 +1124,18 @@
                     class="subdata-filter hidden bg-base-mid p-3.5 rounded-xl border border-base shadow flex flex-col md:flex-row gap-4 items-center justify-between">
                     <div class="flex items-center gap-3 w-full md:w-auto">
                         <span class="text-sm text-gray-200 font-semibold whitespace-nowrap"><i
-                                class="fa-solid fa-sort"></i> 並び替え:</span>
+                                class="fa-solid fa-sort"></i>並び替え:</span>
                         <select id="singerSortSelect" onchange="renderSingerTab()" aria-label="アーティストの並び替え"
                             class="bg-base-dark border border-base rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
-                            <option value="artist_asc">アーティスト名順 (五十音)</option>
-                            <option value="song_count_desc">レパートリー楽曲数順 (多い順)</option>
-                            <option value="sing_count_desc">総歌唱回数順 (多い順)</option>
+                            <option value="artist_asc">アーティスト名： 五十音順</option>
+                            <option value="song_count_desc">レパートリー楽曲数： 多い順</option>
+                            <option value="sing_count_desc">総歌唱回数： 多い順</option>
                         </select>
                     </div>
 
                     <div class="relative min-w-[220px] w-full md:w-auto">
                         <input type="text" id="singerSearchKeyword" onkeyup="renderSingerTab()" aria-label="アーティストを検索"
-                            oninput="renderSingerTab()" placeholder="原曲歌手名・持ち歌を検索..."
+                            oninput="renderSingerTab()" placeholder="アーティスト名・楽曲名を検索..."
                             class="w-full bg-base-dark border border-base rounded-lg pl-9 pr-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-slate-400">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-sm"></i>
                     </div>
@@ -1150,7 +1152,7 @@
                                     <th class="px-4 py-3 w-1/4">楽曲名</th>
                                     <th class="px-4 py-3 w-1/5">アーティスト名</th>
                                     <th class="px-4 py-3 text-center w-20">歌唱回数</th>
-                                    <th class="px-4 py-3 w-[40%]">歌唱された歌枠・タイムスタンプ (全履歴)</th>
+                                    <th class="px-4 py-3 w-[40%]">歌唱された動画・タイムスタンプ (全履歴)</th>
                                     <th class="px-4 py-3 text-center w-24">操作</th>
                                 </tr>
                             </thead>
@@ -1171,9 +1173,9 @@
                     <div class="flex flex-wrap items-center justify-between gap-4 border-b border-base pb-4">
                         <div>
                             <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                                <i class="fa-solid fa-users text-slate-300"></i> チャンネル登録 & 管理
+                                <i class="fa-solid fa-users text-slate-300"></i> チャンネル登録・管理
                             </h2>
-                            <p class="text-xs text-gray-300 mt-1">配信者・歌唱者として紐付けるチャンネル情報を管理します。</p>
+                            <p class="text-xs text-gray-300 mt-1">配信者・歌唱者に紐付けるチャンネル情報を管理します</p>
                         </div>
                         <button onclick="openNewStreamerModal()"
                             class="bg-base-bright hover:bg-base-sub text-white text-xs font-bold px-4 py-2 rounded-lg transition flex items-center gap-2 shadow border border-slate-400/30">
@@ -1184,7 +1186,7 @@
                     <div class="bg-base-dark p-4 rounded-xl border border-base flex flex-col gap-4">
                         <h3
                             class="font-bold text-slate-200 text-sm border-b border-base pb-2 flex items-center justify-between">
-                            <span><i class="fa-solid fa-id-card"></i> 登録メンバー 一覧</span>
+                            <span><i class="fa-solid fa-id-card"></i> 登録メンバー一覧</span>
                             <span id="streamerCountBadge"
                                 class="text-xs bg-base-mid px-2 py-0.5 rounded text-gray-300 border border-base/40">0名</span>
                         </h3>
@@ -1200,29 +1202,29 @@
             <div class="bg-base-mid p-6 rounded-xl border border-base shadow flex flex-col gap-6">
                 <div>
                     <h2 class="text-lg font-bold text-white mb-1"><i class="fa-solid fa-file-zipper text-slate-200"></i>
-                        データバックアップ / 復元 (.uwp 形式)</h2>
-                    <p class="text-xs text-gray-300">旧バージョンのバックアップデータ (.uwp) もそのまま読み込み・自動互換変換が可能です。</p>
+                        データバックアップ・復元 (.uwp 形式)</h2>
+                    <p class="text-xs text-gray-300">旧バージョンのバックアップデータ (.uwp) も読み込み・変換できます</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-base-dark p-4 rounded-xl border border-base flex flex-col items-start gap-3">
-                        <h3 class="font-bold text-sm text-slate-200">バックアップのエクスポート (.uwp)</h3>
+                        <h3 class="font-bold text-sm text-slate-200">バックアップを保存（.uwpファイル）</h3>
                         <p class="text-xs text-gray-300">現在の全データを「<span
-                                class="font-mono text-slate-300">YYYYMMDD_HHMMSS_utawakudb.uwp</span>」形式で保存します。</p>
+                                class="font-mono text-slate-300">YYYYMMDD_HHMMSS_utawakudb.uwp</span>」形式で保存します</p>
                         <button onclick="exportBackupZip()"
                             class="bg-base-bright hover:bg-base-sub text-white font-bold px-4 py-2 rounded text-sm transition flex items-center gap-2 shadow border border-slate-400/30">
-                            <i class="fa-solid fa-download"></i> バックアップ (.uwp) をダウンロード
+                            <i class="fa-solid fa-download"></i> バックアップを保存（.uwpファイル）
                         </button>
                     </div>
 
                     <div class="bg-base-dark p-4 rounded-xl border border-base flex flex-col items-start gap-3">
-                        <h3 class="font-bold text-sm text-slate-200">バックアップのインポート (復元)</h3>
-                        <p class="text-xs text-gray-300">旧バージョンを含む .uwp ファイルを指定して復元します。</p>
+                        <h3 class="font-bold text-sm text-slate-200">バックアップから復元（.uwpファイル）</h3>
+                        <p class="text-xs text-gray-300">.uwpファイルを選択してデータを復元します。</p>
                         <input type="file" id="importFileInput" accept=".uwp" class="hidden"
                             onchange="importBackupFile(event)">
                         <button onclick="document.getElementById('importFileInput').click()"
                             class="bg-base-mid hover:bg-base-bright text-white font-bold px-4 py-2 rounded text-sm transition flex items-center gap-2 border border-base">
-                            <i class="fa-solid fa-upload"></i> .uwp ファイルを指定して復元
+                            <i class="fa-solid fa-upload"></i>.uwpファイルからデータを復元
                         </button>
                     </div>
                 </div>
@@ -1231,11 +1233,11 @@
 
                 <!-- === ここから追加: URL共有 === -->
                 <div class="border-base">
-                    <h2 class="text-lg font-bold text-white mb-1"><i class="fa-solid fa-share-nodes text-slate-200"></i> 他人へデータ共有 (Gist)</h2>
-                    <p class="text-xs text-gray-300 mb-3">現在のデータを短縮URL化して共有します。受け取る側はGitHubアカウント不要でURLを開くだけで読み込めます。</p>
+                    <h2 class="text-lg font-bold text-white mb-1"><i class="fa-solid fa-share-nodes text-slate-200"></i>データ共有</h2>
+                    <p class="text-xs text-gray-300 mb-3">現在のデータを共有URLに変換します。受け取る側はGitHubアカウントなしでURLを開くだけで読み込めます。</p>
                     
                     <button onclick="generateGistShareUrl()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-lg text-sm transition flex items-center gap-2 shadow border border-indigo-400/30">
-                        <i class="fa-solid fa-link"></i> 共有URLを発行してコピー
+                        <i class="fa-solid fa-link"></i> 共有URLを発行・コピー
                     </button>
                 </div>
 
@@ -1243,13 +1245,13 @@
 
                 <!-- === GitHub 連携 === -->
                 <div class="mt-2">
-                    <h2 class="text-lg font-bold text-white mb-1"><i class="fa-brands fa-github text-slate-200"></i> GitHub 連携 (.uwp のクラウド保存 / 読込)</h2>
-                    <p class="text-xs text-gray-300 mb-4">GitHubのPublic/Privateリポジトリにバックアップデータを直接保存・読み込みします。</p>
+                    <h2 class="text-lg font-bold text-white mb-1"><i class="fa-brands fa-github text-slate-200"></i> GitHub連携</h2>
+                    <p class="text-xs text-gray-300 mb-4">GitHubのPublic/Privateリポジトリにバックアップデータ（.uwpファイル）を保存・読み込みできます。</p>
                     
                     <div class="grid grid-cols-1 gap-4 bg-base-dark p-5 rounded-xl border border-base mb-4 shadow-inner">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block font-semibold mb-1 text-gray-200 text-xs">オーナー名 (ユーザー名)</label>
+                                <label class="block font-semibold mb-1 text-gray-200 text-xs">GitHubユーザー名</label>
                                 <input type="text" id="githubOwner" placeholder="例: octocat" class="w-full bg-base-mid border border-base rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-slate-400">
                             </div>
                             <div>
@@ -1258,7 +1260,7 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1 text-gray-200 text-xs">保存ファイルパス (リポジトリ内のパス)</label>
+                            <label class="block font-semibold mb-1 text-gray-200 text-xs">保存ファイル名</label>
                             <input type="text" id="githubPath" placeholder="例: data/utawakudb.uwp" value="utawakudb.uwp" class="w-full bg-base-mid border border-base rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-slate-400">
                         </div>
                         <div>
@@ -1266,8 +1268,8 @@
                                 <span>Personal Access Token (PAT) <span class="text-red-400">*</span></span>
                                 <a href="https://github.com/settings/tokens?type=beta" target="_blank" class="text-blue-400 hover:underline text-[10px]">トークンの発行はこちら <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                             </label>
-                            <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx..." class="w-full bg-base-mid border border-base rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-slate-400">
-                            <p class="text-[10px] text-gray-400 mt-1.5">※トークンはブラウザ内にのみ保存されます。発行時は「Contents Read/Write (または repo)」の権限のみ付与してください。</p>
+                            <input type="password" id="githubToken" autocomplete="off" placeholder="ghp_xxxxxxxxxxxx..." class="w-full bg-base-mid border border-base rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-slate-400">
+                            <p class="text-[10px] text-gray-400 mt-1.5">※トークンはブラウザにのみ保存されます。発行時は「Contents Read/Write (または repo)」の権限のみ付与してください。</p>
                         </div>
                     </div>
                     
@@ -1276,7 +1278,7 @@
                             <i class="fa-solid fa-cloud-arrow-up"></i> GitHubへ保存
                         </button>
                         <button onclick="loadFromGitHub()" class="bg-base-mid hover:bg-base-bright text-white font-bold px-5 py-2.5 rounded-lg text-sm transition flex items-center gap-2 border border-base shadow">
-                            <i class="fa-solid fa-cloud-arrow-down"></i> GitHubから読込
+                            <i class="fa-solid fa-cloud-arrow-down"></i> GitHubから読み込み
                         </button>
                     </div>
                 </div>
@@ -1285,10 +1287,10 @@
 
                 <div>
                     <h2 class="text-lg font-bold text-red-400 mb-1"><i class="fa-solid fa-trash-can"></i> データの初期化</h2>
-                    <p class="text-xs text-gray-300 mb-4">全データを初期化します。</p>
+                    <p class="text-xs text-gray-300 mb-4">すべてのデータを削除します。</p>
                     <button onclick="openConfirmResetModal()"
                         class="bg-red-900/80 hover:bg-red-800 text-white font-bold px-4 py-2 rounded-sm transition flex items-center gap-2 border border-red-700/50">
-                        <i class="fa-solid fa-trash"></i> データを完全に初期化する
+                        <i class="fa-solid fa-trash"></i>すべてのデータを削除
                     </button>
                 </div>
             </div>
@@ -1345,7 +1347,7 @@
             <div class="p-4 flex flex-col gap-3">
                 <div class="relative">
                     <input type="text" id="singerModalSearch" oninput="renderSingerModalList()"
-                        placeholder="メンバー名で絞り込み..."
+                        placeholder="歌唱者名で絞り込み..."
                         class="w-full bg-base-dark border border-base rounded-lg pl-8 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-slate-400">
                     <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-gray-400 text-xs"></i>
                 </div>
@@ -1353,7 +1355,7 @@
                 </div>
             </div>
             <div class="p-3 bg-base-dark border-t border-base flex justify-between items-center text-xs">
-                <span id="singerModalSelectedCount" class="text-gray-300 font-medium">選択中: 0名</span>
+                <span id="singerModalSelectedCount" class="text-gray-300 font-medium">選択中： 0名</span>
                 <button onclick="applySingerSelection()"
                     class="bg-base-bright hover:bg-base-sub text-white px-4 py-1.5 rounded-lg font-bold transition border border-slate-400/30">
                     決定
@@ -1417,22 +1419,22 @@
                     <div id="modalStreamerAvatarPreview" class="shrink-0"></div>
                     <div>
                         <div class="text-xs text-slate-300 font-semibold">プレビュー</div>
-                        <div id="modalStreamerCurrentLabel" class="text-sm font-bold text-white">配信者名</div>
+                        <div id="modalStreamerCurrentLabel" class="text-sm font-bold text-white">アカウント表示名</div>
                     </div>
                 </div>
                 <div>
-                    <label class="block font-semibold mb-1 text-gray-200 text-xs">アカウント表示名 <span
+                    <label class="block font-semibold mb-1 text-gray-200 text-xs">アカウント表示名<span
                             class="text-red-400">*</span></label>
                     <input type="text" id="modalInputStreamerDisplayName" oninput="updateModalAvatarPreview()"
                         class="w-full bg-base-dark border border-base rounded-lg p-2.5 text-white focus:outline-none focus:border-slate-400">
                 </div>
                 <div>
-                    <label class="block font-semibold mb-1 text-gray-200 text-xs">アカウント名 (ID / @ハンドル名)</label>
+                    <label class="block font-semibold mb-1 text-gray-200 text-xs">アカウント名（ID / @ハンドル名）</label>
                     <input type="text" id="modalInputStreamerAccount"
                         class="w-full bg-base-dark border border-base rounded-lg p-2.5 text-white focus:outline-none focus:border-slate-400">
                 </div>
                 <div>
-                    <label class="block font-semibold mb-1 text-gray-200 text-xs">アイコン画像 URL</label>
+                    <label class="block font-semibold mb-1 text-gray-200 text-xs">アイコン画像URL</label>
                     <input type="url" id="modalInputStreamerIcon" oninput="updateModalAvatarPreview()"
                         class="w-full bg-base-dark border border-base rounded-lg p-2.5 text-white focus:outline-none focus:border-slate-400">
                 </div>
@@ -1453,7 +1455,7 @@
             class="bg-base-mid border border-base rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             <div class="p-4 bg-base-dark border-b border-base flex justify-between items-center">
                 <h3 id="streamModalTitle" class="text-lg font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-slate-200"></i> 歌枠の登録
+                    <i class="fa-solid fa-pen-to-square text-slate-200"></i>動画の登録
                 </h3>
                 <button onclick="closeStreamModal()" class="text-gray-300 hover:text-white text-xl">
                     <i class="fa-solid fa-xmark"></i>
@@ -1464,7 +1466,7 @@
                 <input type="hidden" id="editStreamId">
 
                 <div>
-                    <label class="block font-semibold mb-1 text-gray-200">YouTube動画URL または 動画ID <span
+                    <label class="block font-semibold mb-1 text-gray-200">YouTube動画URLまたは動画ID <span
                             class="text-red-400">*</span></label>
                     <div class="flex gap-2">
                         <input type="text" id="inputYoutubeUrl" oninput="previewYoutubeThumbnail()"
@@ -1473,13 +1475,13 @@
                             placeholder="https://www.youtube.com/watch?v=XXXXXX">
                         <button type="button" onclick="autoFetchYoutubeTitle()" id="btnFetchTitle"
                             class="bg-base-dark hover:bg-base-bright text-slate-200 border border-base text-xs font-semibold px-3 py-2 rounded-lg transition shrink-0 flex items-center gap-1">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="btnFetchTitleText">タイトル自動取得</span>
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="btnFetchTitleText">動画タイトルを取得</span>
                         </button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block font-semibold mb-1 text-gray-200">歌枠タイトル <span
+                    <label class="block font-semibold mb-1 text-gray-200">動画タイトル<span
                             class="text-red-400">*</span></label>
                     <input type="text" id="inputStreamTitle" placeholder="例: 【歌枠】夜のまったり雑談歌枠！【VTuber】"
                         class="w-full bg-base-dark border border-base rounded-lg p-2.5 text-white focus:outline-none focus:border-slate-400">
@@ -1507,7 +1509,7 @@
                                 class="w-full bg-base-dark border border-base rounded-lg p-2 text-xs text-white focus:outline-none focus:border-slate-400">
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1 text-gray-200 text-xs">アカウント名 (ID / @ハンドル名)</label>
+                            <label class="block font-semibold mb-1 text-gray-200 text-xs">アカウント名（ID / @ハンドル名）</label>
                             <input type="text" id="inputStreamerAccount" oninput="onStreamerInputsChanged()"
                                 placeholder="例: @sakura_kano"
                                 class="w-full bg-base-dark border border-base rounded-lg p-2 text-xs text-white focus:outline-none focus:border-slate-400">
@@ -1534,10 +1536,10 @@
                         <img id="streamThumbPreview" class="w-full h-full object-cover hidden" src=""
                             alt="Thumbnail Preview">
                         <span id="streamThumbPlaceholder" class="text-xs text-gray-400"><i
-                                class="fa-regular fa-image"></i> サムネイル</span>
+                                class="fa-regular fa-image"></i>サムネイル</span>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-semibold mb-1 text-gray-200">カスタムサムネイル画像URL (任意)</label>
+                        <label class="block text-xs font-semibold mb-1 text-gray-200">カスタムサムネイル画像URL（任意）</label>
                         <input type="url" id="inputCustomThumbnail" oninput="previewYoutubeThumbnail()"
                             placeholder="自動取得以外の画像を使う場合は入力"
                             class="w-full bg-base-dark border border-base rounded-lg p-2 text-xs text-white focus:outline-none focus:border-slate-400">
@@ -1548,12 +1550,12 @@
                 <div class="border-t border-base pt-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="font-bold text-slate-200 flex items-center gap-1">
-                            <i class="fa-solid fa-list-music"></i> 登録楽曲・タイムスタンプ一覧 (<span
-                                id="songCountInModal">0</span>曲)
+                            <i class="fa-solid fa-list-music"></i>楽曲・タイムスタンプ一覧（<span
+                                id="songCountInModal">0</span>曲）
                         </label>
                         <button type="button" onclick="openAddSongsModal()"
                             class="text-xs bg-base-bright hover:bg-base-sub text-white px-3.5 py-1.5 rounded-lg transition flex items-center gap-1 shadow border border-slate-400/30 font-bold">
-                            <i class="fa-solid fa-plus"></i> 曲・タイムスタンプを追加
+                            <i class="fa-solid fa-plus"></i>楽曲・タイムスタンプを追加
                         </button>
                     </div>
 
@@ -1566,7 +1568,7 @@
             <div class="p-4 bg-base-dark border-t border-base flex justify-between items-center">
                 <button type="button" id="btnDeleteStream" onclick="openConfirmDeleteModal()"
                     class="hidden bg-red-900/80 hover:bg-red-800 text-white font-medium px-4 py-2 rounded-lg text-sm transition flex items-center gap-1 border border-red-700/50">
-                    <i class="fa-solid fa-trash"></i> この歌枠を削除
+                    <i class="fa-solid fa-trash"></i>削除
                 </button>
                 <div class="flex items-center gap-2 ml-auto">
                     <button type="button" onclick="closeStreamModal()"
@@ -1585,7 +1587,7 @@
             class="bg-base-mid border border-base rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
             <div class="p-4 bg-base-dark border-b border-base flex justify-between items-center">
                 <h3 id="addSongsModalTitle" class="text-md font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-layer-group text-slate-200"></i> タイムスタンプ（曲）追加
+                    <i class="fa-solid fa-layer-group text-slate-200"></i>楽曲・タイムスタンプを追加
                 </h3>
                 <button onclick="closeAddSongsModal()" class="text-gray-300 hover:text-white text-xl">
                     <i class="fa-solid fa-xmark"></i>
@@ -1610,23 +1612,23 @@
                 <div id="addSingleArea" class="flex flex-col gap-3 bg-base-dark p-4 rounded-xl border border-base">
                     <!-- 既登録曲からの選択プルダウン -->
                     <div>
-                        <label class="block font-semibold mb-1 text-gray-300">登録済みの曲から選ぶ (任意)</label>
+                        <label class="block font-semibold mb-1 text-gray-300">登録済みの楽曲から選ぶ（任意）</label>
                         <select id="modalSelectExistingSong" onchange="onExistingSongSelected()"
                             class="w-full bg-base-mid border border-base rounded-lg p-2 text-white focus:outline-none focus:border-slate-400">
-                            <option value="">-- 登録済みの曲から自動入力 --</option>
+                            <option value="">-- 登録済みの楽曲から自動入力 --</option>
                         </select>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                         <div>
                             <label class="block font-semibold mb-1 text-gray-300">
-                                タイムスタンプ <span class="text-red-400">*</span>
+                                タイムスタンプ<span class="text-red-400">*</span>
                             </label>
                             <input type="text" id="modalInputTs" placeholder="例: 01:23 / 01:23:45"
                                 class="w-full bg-base-mid border border-base rounded-lg p-2 text-white focus:outline-none focus:border-slate-400">
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1 text-gray-300">楽曲名 <span
+                            <label class="block font-semibold mb-1 text-gray-300">楽曲名<span
                                     class="text-red-400">*</span></label>
                             <input type="text" id="modalInputTitle" placeholder="例: ドライフラワー"
                                 class="w-full bg-base-mid border border-base rounded-lg p-2 text-white focus:outline-none focus:border-slate-400">
@@ -1639,16 +1641,16 @@
                     </div>
                     <div class="flex items-center justify-between pt-2">
                         <div class="flex items-center gap-2">
-                            <span class="text-gray-400">歌唱者:</span>
+                            <span class="text-gray-400">歌唱者： </span>
                             <div id="modalSingerAvatarsPreview" class="flex items-center gap-1"></div>
                             <button type="button" onclick="openSingerSelectModalForAddModal()"
                                 class="bg-base-mid hover:bg-base-bright text-white px-2 py-1 rounded border border-base transition text-[11px]">
-                                <i class="fa-solid fa-user-plus"></i> 指定
+                                <i class="fa-solid fa-user-plus"></i>選択
                             </button>
                         </div>
                         <button type="button" id="btnAddSingleSongBtn" onclick="addSingleSongToTempList()"
                             class="bg-base-bright hover:bg-base-sub text-white px-4 py-2 rounded-lg font-bold transition border border-slate-400/30">
-                            <i class="fa-solid fa-plus"></i> リストに追加
+                            <i class="fa-solid fa-plus"></i>リストに追加
                         </button>
                     </div>
                 </div>
@@ -1656,7 +1658,7 @@
                 <!-- テキスト一括追加エリア -->
                 <div id="addBatchArea" class="hidden flex-col gap-2 bg-base-dark p-4 rounded-xl border border-base">
                     <label class="font-semibold text-slate-200">タイムスタンプ一括解析テキスト</label>
-                    <p class="text-[11px] text-gray-400">YouTubeの概要欄やコメント欄からタイムスタンプ付きの歌唱リストを貼り付けてください。<br>形式例:
+                    <p class="text-[11px] text-gray-400">YouTubeの概要欄やコメント欄からタイムスタンプ付きの歌唱リストを貼り付けてください。<br>例： 
                         <code>01:23 ドライフラワー / 優里</code> または <code>01:23:45 ドライフラワー - 優里</code>
                     </p>
                     <textarea id="modalBatchText" rows="6" placeholder="01:23 ドライフラワー / 優里
@@ -1672,9 +1674,9 @@
                 <!-- 追加予定リスト領域 -->
                 <div id="tempSongListSection" class="flex flex-col gap-2 pt-2">
                     <div class="flex items-center justify-between font-bold text-slate-200 text-xs">
-                        <span>追加予定の楽曲リスト (<span id="tempSongCount">0</span>曲)</span>
+                        <span>追加予定の楽曲リスト（<span id="tempSongCount">0</span>曲）</span>
                         <button type="button" onclick="clearTempSongsList()"
-                            class="text-red-400 hover:text-red-300 text-[11px] font-normal">全消去</button>
+                            class="text-red-400 hover:text-red-300 text-[11px] font-normal">すべて削除</button>
                     </div>
                     <div id="tempSongListContainer"
                         class="flex flex-col gap-2 max-h-[220px] overflow-y-auto no-scrollbar pr-1 bg-base-dark/30 p-2 rounded-xl border border-base/50">
@@ -1699,13 +1701,13 @@
         class="hidden fixed inset-0 z-[80] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-base-mid border border-base rounded-2xl w-full max-w-md p-6 shadow-2xl flex flex-col gap-4">
             <h3 class="text-lg font-bold text-white flex items-center gap-2"><i
-                    class="fa-solid fa-triangle-exclamation text-red-400"></i> 曲の削除確認</h3>
-            <p class="text-sm text-gray-200">この曲を歌枠の登録リストから削除してもよろしいですか？</p>
+                    class="fa-solid fa-triangle-exclamation text-red-400"></i> 楽曲の削除確認</h3>
+            <p class="text-sm text-gray-200">この楽曲を動画の登録リストから削除してもよろしいですか？</p>
             <div class="flex justify-end gap-2 mt-2">
                 <button onclick="closeConfirmDeleteSongModal()"
                     class="bg-base-dark text-white px-4 py-2 rounded-lg text-xs border border-base">キャンセル</button>
                 <button onclick="executeDeleteSongFromModal()"
-                    class="bg-red-800 text-white px-4 py-2 rounded-lg text-xs font-bold border border-red-600/30">削除実行</button>
+                    class="bg-red-800 text-white px-4 py-2 rounded-lg text-xs font-bold border border-red-600/30">削除</button>
             </div>
         </div>
     </div>
@@ -1715,13 +1717,13 @@
         class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-base-mid border border-base rounded-2xl w-full max-w-md p-6 shadow-2xl flex flex-col gap-4">
             <h3 class="text-lg font-bold text-white flex items-center gap-2"><i
-                    class="fa-solid fa-triangle-exclamation text-red-400"></i> 削除の確認</h3>
-            <p class="text-sm text-gray-200">本当にこの歌枠を削除しますか？</p>
+                    class="fa-solid fa-triangle-exclamation text-red-400"></i>動画削除の確認</h3>
+            <p class="text-sm text-gray-200">本当にこの動画を削除しますか？</p>
             <div class="flex justify-end gap-2 mt-2">
                 <button onclick="closeConfirmDeleteModal()"
                     class="bg-base-dark text-white px-4 py-2 rounded-lg text-xs border border-base">キャンセル</button>
                 <button onclick="executeDeleteStream()"
-                    class="bg-red-800 text-white px-4 py-2 rounded-lg text-xs font-bold border border-red-600/30">削除実行</button>
+                    class="bg-red-800 text-white px-4 py-2 rounded-lg text-xs font-bold border border-red-600/30">削除</button>
             </div>
         </div>
     </div>
@@ -1731,13 +1733,13 @@
         class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-base-mid border border-base rounded-2xl w-full max-w-md p-6 shadow-2xl flex flex-col gap-4">
             <h3 class="text-lg font-bold text-red-400 flex items-center gap-2"><i
-                    class="fa-solid fa-triangle-exclamation"></i> データ初期化の確認</h3>
-            <p class="text-sm text-gray-200">すべてのデータを初期化します。よろしいですか？</p>
+                    class="fa-solid fa-triangle-exclamation"></i> データ削除の確認</h3>
+            <p class="text-sm text-gray-200">すべてのデータを削除します。よろしいですか？</p>
             <div class="flex justify-end gap-2 mt-2">
                 <button onclick="closeConfirmResetModal()"
                     class="bg-base-dark text-white px-4 py-2 rounded-lg text-xs border border-base">キャンセル</button>
                 <button onclick="executeResetAllData()"
-                    class="bg-red-800 text-white px-4 py-2 rounded-lg text-xs font-bold border border-red-600/30">全初期化</button>
+                    class="bg-red-800 text-white px-4 py-2 rounded-lg text-xs font-bold border border-red-600/30">すべて削除</button>
             </div>
         </div>
     </div>
@@ -1749,7 +1751,7 @@
             class="bg-base-mid border border-base rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
             <div class="p-4 bg-base-dark border-b border-base flex justify-between items-center">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-circle-question text-slate-200"></i> 機能ガイド & 取扱説明書
+                    <i class="fa-solid fa-circle-question text-slate-200"></i> 機能ガイド・使い方
                 </h3>
                 <button onclick="closeHelpModal()" class="text-gray-300 hover:text-white text-xl"><i
                         class="fa-solid fa-xmark"></i></button>
@@ -1816,6 +1818,63 @@
         let songIndexToDelete = null; // 削除対象のインデックス
         let modalAddTempSingerIds = []; // タイムスタンプ追加モーダル用の歌唱者ID
         let activeSingerSelectCallback = null; // 歌唱者選択完了時のコールバック
+
+        // インポート・共有データは信頼できない入力として扱う。巨大なアーカイブや
+        // URL ハッシュによるメモリ消費を避けるため、扱う JSON は 5 MiB までに制限する。
+        const MAX_BACKUP_BYTES = 5 * 1024 * 1024;
+        const MAX_SHARE_HASH_LENGTH = 2 * 1024 * 1024;
+
+        function isSafeExternalUrl(value) {
+            if (typeof value !== 'string' || !value.trim()) return false;
+            try {
+                const url = new URL(value, window.location.href);
+                return url.protocol === 'https:' || url.protocol === 'http:';
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // 動的に組み立てる HTML にはデータベース／バックアップ由来の文字列が含まれる。
+        // 挿入前に危険な要素・イベント属性・URL を除去する。既存の動的ボタンだけは
+        // 厳密に検証した onclick 形式を許可し、任意の JavaScript は実行させない。
+        const nativeInnerHtmlDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+
+        // function sanitizeDynamicHtml(html) {
+            // const template = document.createElement('template');
+            // nativeInnerHtmlDescriptor.set.call(template, String(html));
+            // const blockedTags = new Set(['BASE', 'EMBED', 'FORM', 'FRAME', 'IFRAME', 'LINK', 'MATH', 'META', 'OBJECT', 'SCRIPT', 'STYLE', 'SVG']);
+            // const allowedClick = /^(?:(?:switchTab|playStream|openStreamModal|toggleSongListAccordion|playStreamSong|toggleSongHistory|openMasterSongEditModal|toggleSingerSongs|openSingerNameEditModal|openStreamerEditModal|openAddSongsModalForEdit|confirmDeleteSongFromStreamModal|removeTempSong)\((?:'[-\w]+'|null|true|\d+)(?:\s*,\s*(?:'[-\w]+'|null|true|\d+))*\);?\s*)+$/;
+            // template.content.querySelectorAll('*').forEach(element => {
+                // if (blockedTags.has(element.tagName)) {
+                    // element.remove();
+                    // return;
+                // }
+                // [...element.attributes].forEach(attribute => {
+                    // const name = attribute.name.toLowerCase();
+                    // if (name.startsWith('on')) {
+                        // if (name !== 'onclick' || !allowedClick.test(attribute.value)) element.removeAttribute(attribute.name);
+                    // }
+                    // if ((name === 'href' || name === 'src') && !isSafeExternalUrl(attribute.value)) {
+                        // element.removeAttribute(attribute.name);
+                    // }
+                    // if (name === 'style' || name === 'srcset' || name === 'formaction') element.removeAttribute(attribute.name);
+                // });
+                // if (element.tagName === 'A' && element.target === '_blank') {
+                    // element.rel = 'noopener noreferrer';
+                // }
+            // });
+            // return template.innerHTML;
+        // }
+// 
+        // 以降の動的 innerHTML を一律で検査する。静的な初期マークアップには影響しない。
+        // Object.defineProperty(Element.prototype, 'innerHTML', {
+            // configurable: true,
+            // enumerable: nativeInnerHtmlDescriptor.enumerable,
+            // get: nativeInnerHtmlDescriptor.get,
+            // set(value) {
+                // nativeInnerHtmlDescriptor.set.call(this, sanitizeDynamicHtml(value));
+            // }
+        // });
 
         /* 初期サンプルデータ */
         const initialSampleData = {
@@ -1938,7 +1997,7 @@
             }
 
             function getOrCreateSinger(artistName) {
-                const cleanArtist = artistName ? artistName.trim() : '未設定 / その他';
+                const cleanArtist = artistName ? artistName.trim() : '未設定・その他';
                 for (let [id, s] of singersMap.entries()) {
                     if (normalizeStr(s.name) === normalizeStr(cleanArtist)) return id;
                 }
@@ -1949,7 +2008,7 @@
             }
 
             function getOrCreateMasterSong(title, artistName) {
-                const cleanTitle = title ? title.trim() : '無題曲';
+                const cleanTitle = title ? title.trim() : '無題の楽曲';
                 const singerId = getOrCreateSinger(artistName);
 
                 for (let [id, m] of masterSongsMap.entries()) {
@@ -1984,7 +2043,7 @@
 
                 return {
                     id: s.id || ('stream-' + Date.now() + '-' + idx),
-                    title: s.title || '無題の歌枠',
+                    title: s.title || '無題の動画',
                     streamerId: streamerId,
                     streamDate: s.streamDate || (s.createdAt ? s.createdAt.slice(0, 10) : new Date().toISOString().slice(0, 10)),
                     youtubeUrl: s.youtubeUrl || '',
@@ -2005,6 +2064,20 @@
 
         function saveData() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+        }
+
+        async function parseBackupArchive(input) {
+            if (input instanceof File && input.size > MAX_BACKUP_BYTES) {
+                throw new Error('バックアップファイルが大きすぎます');
+            }
+            const zip = new JSZip();
+            const unzipped = await zip.loadAsync(input);
+            // 任意のアーカイブ内ファイルは採用しない。ZIP bomb 対策として展開後サイズも確認する。
+            const jsonFile = unzipped.file('utawakudb_data.json');
+            if (!jsonFile || jsonFile.dir) throw new Error('無効な.uwpファイルです');
+            const bytes = await jsonFile.async('uint8array');
+            if (bytes.byteLength > MAX_BACKUP_BYTES) throw new Error('バックアップ内のデータが大きすぎます');
+            return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
         }
 
         /* ② .uwp ファイルのエクスポート・インポート復元 */
@@ -2030,7 +2103,7 @@
                 link.click();
                 URL.revokeObjectURL(link.href);
 
-                showToast("バックアップ (.uwp) をダウンロードしました");
+                showToast("バックアップ（.uwp）を保存しました");
             } catch (err) {
                 console.error("Export failed:", err);
                 showToast("バックアップの作成に失敗しました");
@@ -2042,17 +2115,7 @@
             if (!file) return;
 
             try {
-                const zip = new JSZip();
-                const unzipped = await zip.loadAsync(file);
-                // JSONファイルを探す（単一ファイルの場合も対応）
-                const jsonFile = unzipped.file("utawakudb_data.json") || Object.values(unzipped.files).find(f => !f.dir);
-
-                if (!jsonFile) {
-                    throw new Error("Invalid .uwp archive");
-                }
-
-                const jsonText = await jsonFile.async("string");
-                const parsed = JSON.parse(jsonText);
+                const parsed = await parseBackupArchive(file);
 
                 appData = migrateToV3(parsed);
                 saveData();
@@ -2061,10 +2124,10 @@
                 renderSingerTab();
                 renderStreamerMasterList();
 
-                showToast("バックアップ (.uwp) からデータを復元しました");
+                showToast("バックアップ（.uwp）からデータを復元しました");
             } catch (err) {
                 console.error("Import failed:", err);
-                showToast("ファイルの復元に失敗しました。.uwp 形式をご確認ください。");
+                showToast("ファイルの復元に失敗しました。.uwp形式を確認してください。");
             } finally {
                 event.target.value = '';
             }
@@ -2112,10 +2175,10 @@
             return appData.streamers.find(s => s.id === id) || {id, name: '不明な配信者', account: '', icon: ''};
         }
         function getMasterSongById(id) {
-            return appData.masterSongs.find(m => m.id === id) || {id, title: '不明な曲', singerId: ''};
+            return appData.masterSongs.find(m => m.id === id) || {id, title: '不明な楽曲', singerId: ''};
         }
         function getSingerById(id) {
-            return appData.singers.find(s => s.id === id) || {id, name: '未設定 / その他'};
+            return appData.singers.find(s => s.id === id) || {id, name: '未設定・その他'};
         }
 
         /* ユーティリティ */
@@ -2244,7 +2307,7 @@
             if (!videoId) return;
 
             const btnText = document.getElementById('btnFetchTitleText');
-            btnText.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 取得中...`;
+            btnText.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>取得中…`;
 
             try {
                 const response = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`);
@@ -2254,12 +2317,12 @@
                     if (data.author_name && !document.getElementById('inputStreamerName').value) {
                         document.getElementById('inputStreamerName').value = data.author_name;
                     }
-                    showToast('YouTubeの動画情報を自動取得しました');
+                    showToast('YouTubeの動画情報を取得しました');
                 }
             } catch (err) {
                 console.warn('Failed to auto-fetch video title:', err);
             } finally {
-                btnText.innerText = 'タイトル自動取得';
+                btnText.innerText = '動画タイトル取得';
             }
         }
 
@@ -2321,7 +2384,7 @@
             const streamerSelect = document.getElementById('streamFilterStreamer');
             const currentStreamerVal = streamerSelect.value;
 
-            streamerSelect.innerHTML = '<option value="">すべての配信者 (全件)</option>';
+            streamerSelect.innerHTML = '<option value="">すべての配信者</option>';
             appData.streamers.forEach(st => {
                 const opt = document.createElement('option');
                 opt.value = st.id;
@@ -2390,7 +2453,7 @@
                 container.innerHTML = `
                     <div class="p-8 text-center bg-base-mid rounded-xl border border-base text-gray-300">
                         <i class="fa-solid fa-folder-open text-3xl mb-2 text-gray-400"></i>
-                        <p>条件に一致する歌枠は見つかりませんでした。</p>
+                        <p>条件に一致する動画は見つかりませんでした。</p>
                     </div>
                 `;
                 return;
@@ -2431,10 +2494,10 @@
                                 <i class="fa-solid fa-music text-[10px] text-slate-400 mr-1"></i>${sortedSongs.length} 曲
                             </div>
                             <button onclick="playStream('${stream.id}', null, true)" class="bg-base-bright hover:bg-base-sub text-white text-xs font-bold px-3 py-2 rounded-lg transition flex items-center gap-1.5 shadow border border-slate-400/30">
-                                <i class="fa-solid fa-play"></i> 再生
+                                <i class="fa-solid fa-play"></i>再生
                             </button>
                             <button onclick="openStreamModal('${stream.id}')" class="bg-base-mid hover:bg-base-bright text-gray-200 border border-base text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center gap-1">
-                                <i class="fa-solid fa-pen"></i> 編集
+                                <i class="fa-solid fa-pen"></i>編集
                             </button>
                             <button onclick="toggleSongListAccordion('${stream.id}')" title="曲リストを開閉" class="bg-base-mid hover:bg-base-bright text-gray-200 text-xs px-3 py-2 rounded-lg transition border border-base flex items-center justify-center">
                                 <i id="acc-icon-${stream.id}" class="fa-solid fa-chevron-right text-xs"></i>
@@ -2456,7 +2519,7 @@
                                             <div class="text-xs font-bold text-white group-hover:text-slate-200 truncate">${masterSong.title}</div>
                                             <div class="text-[11px] text-gray-400 truncate">${singer.name}</div>
                                             <div class="mt-1 flex items-center gap-1.5">
-                                                <span class="text-[10px] text-gray-400">歌唱者:</span>
+                                                <span class="text-[10px] text-gray-400">歌唱者： </span>
                                                 ${renderOverlappedAvatars(song.singerIds, "w-5 h-5", stream.streamerId)}
                                             </div>
                                         </div>
@@ -2893,7 +2956,7 @@
             closeMasterSongEditModal();
             renderSongTab();
             renderSingerTab();
-            showToast('楽曲情報を更新しました');
+            showToast('楽曲情報を保存しました');
         }
 
         /* データ管理：アーティスト（原曲歌手） */
@@ -3035,7 +3098,7 @@
                 closeSingerNameEditModal();
                 renderSongTab();
                 renderSingerTab();
-                showToast('アーティスト名を修正しました');
+                showToast('アーティスト名を保存しました');
             }
         }
 
@@ -3047,7 +3110,7 @@
             document.getElementById('streamerCountBadge').innerText = `${appData.streamers.length}名`;
 
             if (appData.streamers.length === 0) {
-                container.innerHTML = `<div class="p-4 text-center text-xs text-gray-400">登録メンバーはいません</div>`;
+                container.innerHTML = `<div class="p-4 text-center text-xs text-gray-400">登録したチャンネルはありません</div>`;
                 return;
             }
 
@@ -3073,8 +3136,8 @@
                                 ${st.account ? `<span class="text-xs text-gray-400 font-mono truncate">${st.account}</span>` : ''}
                             </div>
                             <div class="text-[11px] text-gray-300 flex items-center gap-3 mt-0.5">
-                                <span>歌枠数: <b class="text-white">${streamCount}</b> 枠</span>
-                                <span>歌唱曲数: <b class="text-white">${singCount}</b> 曲</span>
+                                <span>歌枠数： <b class="text-white">${streamCount}</b> 枠</span>
+                                <span>歌唱曲数： <b class="text-white">${singCount}</b> 曲</span>
                             </div>
                         </div>
                     </div>
@@ -3156,7 +3219,7 @@
             closeStreamerEditModal();
             renderStreamerMasterList();
             renderStreams();
-            showToast('チャンネル情報を更新しました');
+            showToast('チャンネル情報を保存しました');
         }
 
         /* 歌枠追加・編集モーダル */
@@ -3847,7 +3910,10 @@
             document.getElementById('githubOwner').value = localStorage.getItem('gh_owner') || '';
             document.getElementById('githubRepo').value = localStorage.getItem('gh_repo') || '';
             document.getElementById('githubPath').value = localStorage.getItem('gh_path') || 'utawakudb.uwp';
-            document.getElementById('githubToken').value = localStorage.getItem('gh_token') || '';
+            document.getElementById('githubToken').value = localStorage.getItem('gh_token') || ''; 
+            // 旧版が保存した秘密情報を、この版の利用開始時に削除する。
+            // localStorage.removeItem('gh_token');
+            // document.getElementById('githubToken').value = '';
         }
 
         function saveGitHubSettings(owner, repo, path, token) {
@@ -3855,6 +3921,17 @@
             localStorage.setItem('gh_repo', repo);
             localStorage.setItem('gh_path', path);
             localStorage.setItem('gh_token', token);
+        }
+
+        function githubContentsUrl(owner, repo, path) {
+            if (!/^[A-Za-z0-9_.-]+$/.test(owner) || !/^[A-Za-z0-9_.-]+$/.test(repo)) {
+                throw new Error('GitHub の所有者またはリポジトリ名が不正です');
+            }
+            const parts = path.split('/');
+            if (!parts.length || parts.some(part => !part || part === '.' || part === '..')) {
+                throw new Error('保存先パスが不正です');
+            }
+            return `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${parts.map(encodeURIComponent).join('/')}`;
         }
 
         // BlobをBase64に変換するユーティリティ (GitHub APIはBase64で通信するため)
@@ -3869,6 +3946,9 @@
 
         // Base64をUint8Array(バイナリ)に変換するユーティリティ
         function base64ToUint8Array(base64) {
+            if (typeof base64 !== 'string' || base64.length > MAX_SHARE_HASH_LENGTH) {
+                throw new Error('共有データが大きすぎるか不正です');
+            }
             const binaryString = window.atob(base64);
             const len = binaryString.length;
             const bytes = new Uint8Array(len);
@@ -3895,7 +3975,8 @@
             try {
                 // 1. ファイルの存在確認 (更新時は現在のshaハッシュが必要)
                 let sha = null;
-                const getRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                const contentsUrl = githubContentsUrl(owner, repo, path);
+                const getRes = await fetch(contentsUrl, {
                     headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' }
                 });
                 if (getRes.ok) {
@@ -3919,7 +4000,7 @@
                 };
                 if (sha) putBody.sha = sha;
 
-                const putRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                const putRes = await fetch(contentsUrl, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -3957,7 +4038,7 @@
 
             try {
                 // 1. GitHub APIからファイルを取得
-                const getRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                const getRes = await fetch(githubContentsUrl(owner, repo, path), {
                     headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' }
                 });
 
@@ -3974,16 +4055,7 @@
                 const uint8Array = base64ToUint8Array(base64Str);
 
                 // 3. ZIPを解凍してJSONをパース
-                const zip = new JSZip();
-                const unzipped = await zip.loadAsync(uint8Array);
-                const jsonFile = unzipped.file("utawakudb_data.json") || Object.values(unzipped.files).find(f => !f.dir);
-
-                if (!jsonFile) {
-                    throw new Error("無効な .uwp ファイルです");
-                }
-
-                const jsonText = await jsonFile.async("string");
-                const parsed = JSON.parse(jsonText);
+                const parsed = await parseBackupArchive(uint8Array);
 
                 // 4. アプリケーションに反映
                 appData = migrateToV3(parsed);
@@ -4022,6 +4094,9 @@
 
         // Base64URL -> Uint8Array
         function base64UrlToUint8Array(base64url) {
+            if (typeof base64url !== 'string' || base64url.length > MAX_SHARE_HASH_LENGTH) {
+                throw new Error('共有データが大きすぎるか不正です');
+            }
             let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
             while (base64.length % 4) {
                 base64 += '=';
@@ -4074,15 +4149,8 @@
 
                     // 1. Base64URLからバイナリ(ZIP)へ復元
                     const uint8Array = base64UrlToUint8Array(b64url);
-                    const zip = new JSZip();
-                    const unzipped = await zip.loadAsync(uint8Array);
-                    const jsonFile = unzipped.file("utawakudb_data.json") || Object.values(unzipped.files).find(f => !f.dir);
-
-                    if (!jsonFile) throw new Error("無効な共有データです");
-
                     // 2. JSONパースとアプリデータ更新
-                    const jsonText = await jsonFile.async("string");
-                    const parsed = JSON.parse(jsonText);
+                    const parsed = await parseBackupArchive(uint8Array);
 
                     appData = migrateToV3(parsed);
                     saveData();
@@ -4238,14 +4306,7 @@
                     const base64Str = fileObj.content.replace(/\n/g, '');
                     const uint8Array = base64ToUint8Array(base64Str);
 
-                    const zip = new JSZip();
-                    const unzipped = await zip.loadAsync(uint8Array);
-                    const jsonFile = unzipped.file("utawakudb_data.json") || Object.values(unzipped.files).find(f => !f.dir);
-
-                    if (!jsonFile) throw new Error("無効な .uwp データです");
-
-                    const jsonText = await jsonFile.async("string");
-                    const parsed = JSON.parse(jsonText);
+                    const parsed = await parseBackupArchive(uint8Array);
 
                     appData = migrateToV3(parsed);
                     saveData();
