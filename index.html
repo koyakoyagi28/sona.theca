@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- セキュリティ上、外部ページからの参照元情報を制限する。 -->
   <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>SonA'Theca</title>
+  <title>SonA'Theca</title>
 
-<link rel="icon" type="image/svg+xml" href="./assets/logo-mark.svg">
+  <link rel="icon" type="image/svg+xml" href="./assets/logo-mark.svg">
 
 
   <link rel="stylesheet" href="css/tailwind.min.css">
@@ -20,51 +20,51 @@
 
   <script src="js/packages/marked.umd.js"></script>
   <style id="app-styles">
-/* =========================================================
+    /* =========================================================
    Application design tokens
    色・半透明レイヤーはここで一元管理する。
    値は既存UIと同一のものを使用し、見た目は変更しない。
    ========================================================= */
-:root {
-  --color-page-bg: #0a0f14;
-  --color-deep-bg: #06090c;
-  --color-surface: #151e25;
-  --color-surface-mid: #1f2a34;
-  --color-surface-bright: #384B5A;
-  --color-border: #2a3a47;
-  --color-text: #e2e8f0;
-  --color-text-muted: #94a3b8;
-  --color-text-soft: #cbd5e1;
-  --color-text-bright: #f4f7fb;
-  --color-brand: #8b7cf6;
-  --color-brand-soft: #c4b5fd;
-  --color-accent-blue: #8eb0ff;
-  --color-accent-icon: #8aaeff;
-  --color-hover-line: #607d90;
-  --color-muted-dark: #596775;
-  --color-meta: #7f8d9a;
-  --color-meta-light: #aeb9c4;
-  --color-code-text: #e4eaf0;
-  --color-empty: #71808e;
-  --color-modal: #111a22;
-  --color-brand-surface: #1b1930;
-  --color-white: #fff;
+    :root {
+      --color-page-bg: #0a0f14;
+      --color-deep-bg: #06090c;
+      --color-surface: #151e25;
+      --color-surface-mid: #1f2a34;
+      --color-surface-bright: #384B5A;
+      --color-border: #2a3a47;
+      --color-text: #e2e8f0;
+      --color-text-muted: #94a3b8;
+      --color-text-soft: #cbd5e1;
+      --color-text-bright: #f4f7fb;
+      --color-brand: #8b7cf6;
+      --color-brand-soft: #c4b5fd;
+      --color-accent-blue: #8eb0ff;
+      --color-accent-icon: #8aaeff;
+      --color-hover-line: #607d90;
+      --color-muted-dark: #596775;
+      --color-meta: #7f8d9a;
+      --color-meta-light: #aeb9c4;
+      --color-code-text: #e4eaf0;
+      --color-empty: #71808e;
+      --color-modal: #111a22;
+      --color-brand-surface: #1b1930;
+      --color-white: #fff;
 
-  --color-glass-border: rgba(255,255,255,.035);
-  --color-glass-soft: rgba(255,255,255,.025);
-  --color-accent-blue-soft: rgba(91,140,255,.08);
-  --color-accent-blue-09: rgba(91,140,255,.09);
-  --color-accent-blue-16: rgba(91,140,255,.16);
-  --color-accent-blue-24: rgba(91,140,255,.24);
-  --color-accent-blue-28: rgba(91,140,255,.28);
-  --color-accent-blue-50: rgba(91,140,255,.5);
-  --color-brand-border: rgba(196, 181, 253, 0.12);
-  --color-brand-glow: rgba(139, 124, 246, 0.18);
-  --color-sidebar-bg: rgba(12, 18, 24, .96);
-  --color-panel-overlay: rgba(8,13,18,.28);
-}
+      --color-glass-border: rgba(255, 255, 255, .035);
+      --color-glass-soft: rgba(255, 255, 255, .025);
+      --color-accent-blue-soft: rgba(91, 140, 255, .08);
+      --color-accent-blue-09: rgba(91, 140, 255, .09);
+      --color-accent-blue-16: rgba(91, 140, 255, .16);
+      --color-accent-blue-24: rgba(91, 140, 255, .24);
+      --color-accent-blue-28: rgba(91, 140, 255, .28);
+      --color-accent-blue-50: rgba(91, 140, 255, .5);
+      --color-brand-border: rgba(196, 181, 253, 0.12);
+      --color-brand-glow: rgba(139, 124, 246, 0.18);
+      --color-sidebar-bg: rgba(12, 18, 24, .96);
+      --color-panel-overlay: rgba(8, 13, 18, .28);
+    }
 
-/* アプリ全体で使用する基本配色と背景を定義する。 */
+    /* アプリ全体で使用する基本配色と背景を定義する。 */
     html,
     body {
       background-color: #0d1318;
@@ -969,7 +969,8 @@
       --ui-radius: 16px;
     }
 
-    html, body {
+    html,
+    body {
       background: var(--ui-bg);
       color: var(--ui-text);
     }
@@ -1034,7 +1035,7 @@
       padding: 22px 14px 16px;
       background: var(--color-sidebar-bg);
       border-right: 1px solid var(--ui-line);
-      box-shadow: 18px 0 50px rgba(0,0,0,.18);
+      box-shadow: 18px 0 50px rgba(0, 0, 0, .18);
       backdrop-filter: blur(18px);
     }
 
@@ -1122,14 +1123,14 @@
     .sidebar-nav-item:hover,
     .sidebar-help:hover {
       color: #eef4fb;
-      background: rgba(255,255,255,.045);
+      background: rgba(255, 255, 255, .045);
       border-color: var(--ui-line);
     }
 
     .sidebar-nav-item.is-active {
       color: #fff;
-      background: linear-gradient(90deg, var(--color-accent-blue-16), rgba(124,111,242,.08));
-      border-color: rgba(91,140,255,.18);
+      background: linear-gradient(90deg, var(--color-accent-blue-16), rgba(124, 111, 242, .08));
+      border-color: rgba(91, 140, 255, .18);
       box-shadow: inset 3px 0 0 var(--ui-accent);
     }
 
@@ -1184,7 +1185,7 @@
       height: 6px;
       border-radius: 999px;
       background: #58c78b;
-      box-shadow: 0 0 0 3px rgba(88,199,139,.08);
+      box-shadow: 0 0 0 3px rgba(88, 199, 139, .08);
     }
 
     .app-main {
@@ -1224,7 +1225,7 @@
       background: #0a0f14;
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      border-bottom: 1px solid rgba(148,163,184,.06);
+      border-bottom: 1px solid rgba(148, 163, 184, .06);
     }
 
     .search-shell {
@@ -1238,11 +1239,11 @@
       padding: 0 50px 0 48px;
       border: 1px solid var(--ui-line);
       border-radius: 15px;
-      background: rgba(20,30,39,.82);
+      background: rgba(20, 30, 39, .82);
       color: #f5f7fb;
       font-size: 14px;
       outline: none;
-      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
     }
 
     .stream-search-input::placeholder {
@@ -1250,8 +1251,8 @@
     }
 
     .stream-search-input:focus {
-      border-color: rgba(91,140,255,.55) !important;
-      box-shadow: 0 0 0 4px var(--color-accent-blue-09), 0 10px 28px rgba(0,0,0,.14);
+      border-color: rgba(91, 140, 255, .55) !important;
+      box-shadow: 0 0 0 4px var(--color-accent-blue-09), 0 10px 28px rgba(0, 0, 0, .14);
     }
 
     .search-shell-icon {
@@ -1276,7 +1277,7 @@
       place-items: center;
       border: 0;
       border-radius: 9px;
-      background: rgba(255,255,255,.06);
+      background: rgba(255, 255, 255, .06);
       color: #8996a3;
       opacity: 1;
       visibility: visible;
@@ -1291,7 +1292,7 @@
     }
 
     .search-clear:hover {
-      background: rgba(255,255,255,.1);
+      background: rgba(255, 255, 255, .1);
       color: #cbd5df;
     }
 
@@ -1333,10 +1334,10 @@
       width: 204px;
       min-width: 204px;
       padding: 2px;
-      border: 1px solid rgba(148,163,184,.16);
+      border: 1px solid rgba(148, 163, 184, .16);
       border-radius: 14px;
       background: var(--color-glass-soft);
-      box-shadow: inset 0 1px 0 var(--color-glass-border), 0 5px 16px rgba(0,0,0,.12);
+      box-shadow: inset 0 1px 0 var(--color-glass-border), 0 5px 16px rgba(0, 0, 0, .12);
     }
 
     .app-select-wrap::before {
@@ -1388,16 +1389,16 @@
       width: 100%;
       height: 40px;
       padding: 0 34px 0 36px;
-      border: 1px solid rgba(148,163,184,.12);
+      border: 1px solid rgba(148, 163, 184, .12);
       border-radius: 11px;
-      background: linear-gradient(180deg, rgba(29,42,53,.98), rgba(20,30,39,.98));
+      background: linear-gradient(180deg, rgba(29, 42, 53, .98), rgba(20, 30, 39, .98));
       color: transparent;
       font-size: 12px;
       font-weight: 700;
       letter-spacing: .01em;
       cursor: pointer;
       outline: none;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
     }
 
     .app-select option {
@@ -1441,10 +1442,10 @@
       justify-content: center;
       gap: 7px;
       padding: 0 13px;
-      border: 1px solid rgba(148,163,184,.16);
+      border: 1px solid rgba(148, 163, 184, .16);
       border-radius: 14px;
       background: var(--color-glass-soft);
-      box-shadow: inset 0 1px 0 var(--color-glass-border), 0 5px 16px rgba(0,0,0,.12);
+      box-shadow: inset 0 1px 0 var(--color-glass-border), 0 5px 16px rgba(0, 0, 0, .12);
       color: #e5ebf2;
       font-size: 12px;
       font-weight: 700;
@@ -1455,7 +1456,7 @@
     }
 
     .filter-button:hover {
-      background: rgba(255,255,255,.055);
+      background: rgba(255, 255, 255, .055);
       border-color: var(--ui-line-strong);
     }
 
@@ -1484,14 +1485,14 @@
 
     .add-stream-button {
       padding: 0 14px;
-      border: 1px solid rgba(91,140,255,.26);
-      background: linear-gradient(135deg, var(--color-accent-blue-16), rgba(124,111,242,.14));
+      border: 1px solid rgba(91, 140, 255, .26);
+      background: linear-gradient(135deg, var(--color-accent-blue-16), rgba(124, 111, 242, .14));
       color: #dfe9ff;
     }
 
     .add-stream-button:hover {
       transform: translateY(-1px);
-      background: linear-gradient(135deg, rgba(91,140,255,.23), rgba(124,111,242,.20));
+      background: linear-gradient(135deg, rgba(91, 140, 255, .23), rgba(124, 111, 242, .20));
     }
 
     .stream-list-section {
@@ -1509,7 +1510,7 @@
       margin: 0 0 12px;
       padding: 10px 0 11px;
       background: #0a0f14;
-      border-bottom: 1px solid rgba(148,163,184,.08);
+      border-bottom: 1px solid rgba(148, 163, 184, .08);
       transform: translate3d(0, 0, 0);
       scroll-margin-top: 141px;
     }
@@ -1610,7 +1611,7 @@
       inset: 0;
       display: grid;
       place-items: center;
-      background: rgba(5,9,13,.36);
+      background: rgba(5, 9, 13, .36);
       opacity: 0;
       transition: opacity .16s ease;
     }
@@ -1627,9 +1628,9 @@
       place-items: center;
       padding-left: 2px;
       border-radius: 999px;
-      background: rgba(255,255,255,.92);
+      background: rgba(255, 255, 255, .92);
       color: #326fe9;
-      box-shadow: 0 7px 20px rgba(0,0,0,.25);
+      box-shadow: 0 7px 20px rgba(0, 0, 0, .25);
     }
 
     .stream-info {
@@ -1699,7 +1700,7 @@
       border: 1px solid var(--ui-line);
       border-radius: 9px;
       color: #aab7c4;
-      background: rgba(8,13,18,.46);
+      background: rgba(8, 13, 18, .46);
       font-size: 11px;
       font-weight: 700;
       white-space: nowrap;
@@ -1726,7 +1727,7 @@
 
     .stream-action-button.is-open {
       color: #8eb0ff;
-      background: rgba(91,140,255,.10);
+      background: rgba(91, 140, 255, .10);
       border-color: var(--color-accent-blue-28);
     }
 
@@ -1759,7 +1760,7 @@
       gap: 12px;
       min-height: 50px;
       padding: 7px 15px;
-      border-top: 1px solid rgba(148,163,184,.07);
+      border-top: 1px solid rgba(148, 163, 184, .07);
       color: #b5c0cb;
       font-size: 11px;
       text-align: right;
@@ -1816,7 +1817,8 @@
       align-items: center;
       align-self: center;
     }
-    .timestamp-singer .relative + .relative {
+
+    .timestamp-singer .relative+.relative {
       margin-left: -8px !important;
     }
 
@@ -1834,7 +1836,7 @@
       display: grid;
       place-items: center;
       margin-left: auto;
-      border: 1px solid rgba(91,140,255,.22);
+      border: 1px solid rgba(91, 140, 255, .22);
       border-radius: 8px;
       background: var(--color-accent-blue-soft);
       color: #8eb0ff;
@@ -1844,7 +1846,7 @@
       padding: 54px 24px;
       border: 1px dashed var(--ui-line-strong);
       border-radius: 14px;
-      background: rgba(16,24,32,.45);
+      background: rgba(16, 24, 32, .45);
       color: #71808e;
       text-align: center;
     }
@@ -1874,7 +1876,7 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-      background: rgba(3,7,11,.72);
+      background: rgba(3, 7, 11, .72);
       backdrop-filter: blur(10px);
     }
 
@@ -1887,7 +1889,7 @@
       border: 1px solid var(--ui-line-strong);
       border-radius: 18px;
       background: #111a22;
-      box-shadow: 0 28px 80px rgba(0,0,0,.45);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, .45);
     }
 
     .filter-modal-header {
@@ -1950,7 +1952,7 @@
 
     .filter-select-field:hover,
     .filter-select-field[aria-expanded="true"] {
-      border-color: rgba(91,140,255,.38);
+      border-color: rgba(91, 140, 255, .38);
       background: #101922;
     }
 
@@ -1976,14 +1978,14 @@
       white-space: nowrap;
     }
 
-    .filter-select-field > i {
+    .filter-select-field>i {
       flex: 0 0 auto;
       color: #718396;
       font-size: 10px;
       transition: transform .18s ease;
     }
 
-    .filter-select-field[aria-expanded="true"] > i {
+    .filter-select-field[aria-expanded="true"]>i {
       transform: rotate(180deg);
       color: #8eb0ff;
     }
@@ -2027,7 +2029,7 @@
     }
 
     .filter-modal-search input:focus {
-      border-color: rgba(91,140,255,.45) !important;
+      border-color: rgba(91, 140, 255, .45) !important;
       box-shadow: 0 0 0 3px var(--color-accent-blue-soft);
     }
 
@@ -2057,7 +2059,7 @@
     }
 
     .filter-option.is-selected {
-      border-color: rgba(91,140,255,.20);
+      border-color: rgba(91, 140, 255, .20);
       background: var(--color-accent-blue-soft);
       color: #edf3ff;
     }
@@ -2129,7 +2131,7 @@
       border: 1px solid var(--color-accent-blue-28);
       background: linear-gradient(135deg, #4e7ff0, #6f63d9);
       color: #fff;
-      box-shadow: 0 7px 18px rgba(71,102,214,.18);
+      box-shadow: 0 7px 18px rgba(71, 102, 214, .18);
     }
 
     @media (max-width: 900px) {
@@ -2169,7 +2171,7 @@
         width: min(286px, 84vw);
         transform: translateX(-102%);
         transition: transform .24s ease;
-        box-shadow: 20px 0 60px rgba(0,0,0,.35);
+        box-shadow: 20px 0 60px rgba(0, 0, 0, .35);
       }
 
       .app-sidebar.is-open {
@@ -2192,7 +2194,7 @@
         position: fixed;
         inset: 0;
         z-index: 55;
-        background: rgba(0,0,0,.55);
+        background: rgba(0, 0, 0, .55);
         backdrop-filter: blur(3px);
       }
 
@@ -2207,7 +2209,7 @@
         gap: 10px;
         padding: 0 13px;
         border-bottom: 1px solid var(--ui-line);
-        background: rgba(10,15,20,.92);
+        background: rgba(10, 15, 20, .92);
         backdrop-filter: blur(18px);
       }
 
@@ -2255,7 +2257,7 @@
         margin-top: -16px;
         padding-top: 16px;
         padding-bottom: 13px;
-        background: rgba(10,15,20,.985);
+        background: rgba(10, 15, 20, .985);
       }
 
       .stream-search-input {
@@ -2320,7 +2322,7 @@
         flex: 1 1 0;
       }
 
-      .filter-button > span:not(.filter-button-icon) {
+      .filter-button>span:not(.filter-button-icon) {
         display: none;
       }
 
@@ -2457,22 +2459,22 @@
 
 
     /* Secondary screens inherit the same surface language as the new top screen. */
-    #dataTab > .sticky,
-    #backupTab > .sticky {
+    #dataTab>.sticky,
+    #backupTab>.sticky {
       top: 0 !important;
-      background: linear-gradient(to bottom, rgba(10,15,20,.98) 72%, rgba(10,15,20,0));
+      background: linear-gradient(to bottom, rgba(10, 15, 20, .98) 72%, rgba(10, 15, 20, 0));
     }
 
     #dataTab .bg-base-mid,
     #backupTab .bg-base-mid {
-      background: rgba(16,24,32,.82) !important;
+      background: rgba(16, 24, 32, .82) !important;
       border-color: var(--ui-line) !important;
-      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
     }
 
     #dataTab .bg-base-dark,
     #backupTab .bg-base-dark {
-      background: rgba(8,13,18,.58) !important;
+      background: rgba(8, 13, 18, .58) !important;
       border-color: var(--ui-line) !important;
     }
 
@@ -2486,12 +2488,13 @@
     #backupTab input,
     #backupTab select {
       border-color: var(--ui-line) !important;
-      background: rgba(8,13,18,.58);
+      background: rgba(8, 13, 18, .58);
     }
 
     @media (max-width: 720px) {
-      #dataTab > .sticky,
-      #backupTab > .sticky {
+
+      #dataTab>.sticky,
+      #backupTab>.sticky {
         top: 58px !important;
       }
     }
@@ -2527,304 +2530,360 @@
 
     }
 
-.app-brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .app-brand-logo {
-    display: block;
-    width: 156px;
-    height: auto;
-    max-height: 42px;
-    object-fit: contain;
-  }
-  .app-brand-mark {
-    display: block;
-    width: 34px;
-    height: 34px;
-    object-fit: contain;
-    flex: 0 0 auto;
-  }
-  @media (max-width: 720px) {
+    .app-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .app-brand-logo {
-      width: 132px;
-      max-height: 36px;
+      display: block;
+      width: 156px;
+      height: auto;
+      max-height: 42px;
+      object-fit: contain;
     }
+
     .app-brand-mark {
-      width: 30px;
-      height: 30px;
-    }
-  }
-
-:root {
-    --brand-primary: #7c5cff;
-    --brand-primary-soft: #a78bfa;
-    --brand-accent: #22d3ee;
-    --brand-glow: rgba(124,92,255,.20);
-  }
-  .sidebar-brand { align-items:center; }
-  .sidebar-brand-visual { display:flex; align-items:center; gap:10px; min-width:0; flex:1; }
-  .sidebar-brand-mark-v6 { width:34px; height:34px; object-fit:contain; flex:0 0 34px; }
-  .sidebar-brand-logo { width:140px; max-width:calc(100% - 44px); height:auto; max-height:36px; object-fit:contain; }
-  .mobile-brand-mark-v6 { width:32px; height:32px; display:grid; place-items:center; }
-  .mobile-brand-mark-v6 img { width:32px; height:32px; object-fit:contain; display:block; }
-  .sidebar-nav-item.is-active .sidebar-nav-icon { color:var(--brand-primary-soft); background:var(--brand-glow); }
-  .sidebar-nav-item.is-active { color:#f5f3ff; }
-  @media (max-width:720px) {
-    .mobile-brand { display:flex; align-items:center; justify-content:center; min-width:40px; }
-    .app-brand-logo, .app-brand-mark, .brand-mark { display:none !important; }
-  }
-
-/* ブランドカラー */
-  :root {
-    --brand-primary: #8b7cf6;
-    --brand-primary-soft: #c4b5fd;
-    --brand-accent: #67e8f9;
-    --brand-surface: #1b1930;
-    --brand-surface-2: #24203d;
-    --brand-glow: var(--color-brand-glow);
-  }
-
-  /* サイドバー上部：マーク・ロゴを少し大きく、間隔を狭く */
-  .sidebar-brand {
-    background: #1b1930 !important;
-    border-bottom-color: var(--color-brand-border) !important;
-  }
-
-  .sidebar-brand-visual {
-    gap: 5px !important;
-    padding-left: 4px;
-  }
-
-  .sidebar-brand-mark-v6 {
-    width: 42px !important;
-    height: 42px !important;
-    flex-basis: 42px !important;
-  }
-
-  .sidebar-brand-logo {
-    width: 158px !important;
-    height: 44px;
-    max-width: calc(100% - 47px) !important;
-    max-height: 42px !important;
-  }
-
-  /* サイドバー上部〜ナビゲーションの黒を避け、ブランドと馴染ませる */
-  .app-sidebar {
-    background: #17152a !important;
-    color: #ded9f2 !important;
-    border-right-color: var(--color-brand-border) !important;
-  }
-
-  .app-sidebar .sidebar-section-label {
-    color: #9189b0 !important;
-  }
-
-  .app-sidebar .sidebar-nav-item {
-    color: #bcb5d4 !important;
-  }
-
-  .app-sidebar .sidebar-nav-item:hover {
-    color: #f0ecff !important;
-    background: rgba(139, 124, 246, 0.10) !important;
-  }
-
-  .app-sidebar .sidebar-nav-item.is-active {
-    color: #f1edff !important;
-    background: rgba(139, 124, 246, 0.15) !important;
-  }
-
-  .app-sidebar .sidebar-nav-item.is-active .sidebar-nav-icon {
-    color: #c4b5fd !important;
-    background: var(--color-brand-glow) !important;
-  }
-
-  /* スマホヘッダー：サイドバーと同系統の色に統一 */
-  @media (max-width: 720px) {
-    .mobile-topbar {
-      background: #1b1930 !important;
-      color: #eeeaff !important;
-      border-bottom-color: var(--color-brand-border) !important;
-      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08) !important;
+      display: block;
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      flex: 0 0 auto;
     }
 
-    .mobile-topbar .icon-button {
-      color: #d8d1ee !important;
+    @media (max-width: 720px) {
+      .app-brand-logo {
+        width: 132px;
+        max-height: 36px;
+      }
+
+      .app-brand-mark {
+        width: 30px;
+        height: 30px;
+      }
     }
 
-    .mobile-topbar .icon-button:hover,
-    .mobile-topbar .icon-button:active {
-      background: rgba(139, 124, 246, 0.12) !important;
-      color: #f3efff !important;
+    :root {
+      --brand-primary: #7c5cff;
+      --brand-primary-soft: #a78bfa;
+      --brand-accent: #22d3ee;
+      --brand-glow: rgba(124, 92, 255, .20);
     }
 
-    .mobile-brand {
-      color: #f3efff !important;
+    .sidebar-brand {
+      align-items: center;
+    }
+
+    .sidebar-brand-visual {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .sidebar-brand-mark-v6 {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      flex: 0 0 34px;
+    }
+
+    .sidebar-brand-logo {
+      width: 140px;
+      max-width: calc(100% - 44px);
+      height: auto;
+      max-height: 36px;
+      object-fit: contain;
     }
 
     .mobile-brand-mark-v6 {
-      width: 36px !important;
-      height: 36px !important;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
     }
 
     .mobile-brand-mark-v6 img {
-      width: 36px !important;
-      height: 36px !important;
-      filter: drop-shadow(0 3px 8px rgba(139, 124, 246, 0.16));
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      display: block;
     }
-  }
 
-/* マークはimgではなくインラインSVG。currentColorでブランド色を制御 */
-  .sidebar-brand-mark,
-  .app-brand-mark-v8,
-  .mobile-brand-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #a78bfa;
-    line-height: 0;
-    flex: 0 0 auto;
-  }
+    .sidebar-nav-item.is-active .sidebar-nav-icon {
+      color: var(--brand-primary-soft);
+      background: var(--brand-glow);
+    }
 
-  .sidebar-brand-mark {
-    width: 44px;
-    height: 44px;
-  }
+    .sidebar-nav-item.is-active {
+      color: #f5f3ff;
+    }
 
-  .sidebar-brand-mark svg {
-    width: 100%;
-    height: 100%;
-    fill: currentColor;
-    color: currentColor;
-  }
+    @media (max-width:720px) {
+      .mobile-brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
 
-  .app-brand-mark-v8,
-  .mobile-brand-mark {
-    width: 36px;
-    height: 36px;
-  }
+      .app-brand-logo,
+      .app-brand-mark,
+      .brand-mark {
+        display: none !important;
+      }
+    }
 
-  .app-brand-mark-v8 svg,
-  .mobile-brand-mark svg {
-    width: 100%;
-    height: 100%;
-    fill: currentColor;
-    color: currentColor;
-  }
+    /* ブランドカラー */
+    :root {
+      --brand-primary: #8b7cf6;
+      --brand-primary-soft: #c4b5fd;
+      --brand-accent: #67e8f9;
+      --brand-surface: #1b1930;
+      --brand-surface-2: #24203d;
+      --brand-glow: var(--color-brand-glow);
+    }
 
-  /* サイドバー上部はブランドカラーを少し明るい紫へ */
-  .sidebar-brand-visual {
-    gap: 4px !important;
-  }
+    /* サイドバー上部：マーク・ロゴを少し大きく、間隔を狭く */
+    .sidebar-brand {
+      background: #1b1930 !important;
+      border-bottom-color: var(--color-brand-border) !important;
+    }
 
-  .sidebar-brand-mark {
-    color: #a78bfa;
-    filter: drop-shadow(0 3px 8px rgba(167, 139, 250, 0.16));
-  }
+    .sidebar-brand-visual {
+      gap: 5px !important;
+      padding-left: 4px;
+    }
 
-  /* スマホヘッダーのマークは少し落ち着いた色で周囲に馴染ませる */
-  @media (max-width: 720px) {
+    .sidebar-brand-mark-v6 {
+      width: 42px !important;
+      height: 42px !important;
+      flex-basis: 42px !important;
+    }
+
+    .sidebar-brand-logo {
+      width: 158px !important;
+      height: 44px;
+      max-width: calc(100% - 47px) !important;
+      max-height: 42px !important;
+    }
+
+    /* サイドバー上部〜ナビゲーションの黒を避け、ブランドと馴染ませる */
+    .app-sidebar {
+      background: #17152a !important;
+      color: #ded9f2 !important;
+      border-right-color: var(--color-brand-border) !important;
+    }
+
+    .app-sidebar .sidebar-section-label {
+      color: #9189b0 !important;
+    }
+
+    .app-sidebar .sidebar-nav-item {
+      color: #bcb5d4 !important;
+    }
+
+    .app-sidebar .sidebar-nav-item:hover {
+      color: #f0ecff !important;
+      background: rgba(139, 124, 246, 0.10) !important;
+    }
+
+    .app-sidebar .sidebar-nav-item.is-active {
+      color: #f1edff !important;
+      background: rgba(139, 124, 246, 0.15) !important;
+    }
+
+    .app-sidebar .sidebar-nav-item.is-active .sidebar-nav-icon {
+      color: #c4b5fd !important;
+      background: var(--color-brand-glow) !important;
+    }
+
+    /* スマホヘッダー：サイドバーと同系統の色に統一 */
+    @media (max-width: 720px) {
+      .mobile-topbar {
+        background: #1b1930 !important;
+        color: #eeeaff !important;
+        border-bottom-color: var(--color-brand-border) !important;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08) !important;
+      }
+
+      .mobile-topbar .icon-button {
+        color: #d8d1ee !important;
+      }
+
+      .mobile-topbar .icon-button:hover,
+      .mobile-topbar .icon-button:active {
+        background: rgba(139, 124, 246, 0.12) !important;
+        color: #f3efff !important;
+      }
+
+      .mobile-brand {
+        color: #f3efff !important;
+      }
+
+      .mobile-brand-mark-v6 {
+        width: 36px !important;
+        height: 36px !important;
+      }
+
+      .mobile-brand-mark-v6 img {
+        width: 36px !important;
+        height: 36px !important;
+        filter: drop-shadow(0 3px 8px rgba(139, 124, 246, 0.16));
+      }
+    }
+
+    /* マークはimgではなくインラインSVG。currentColorでブランド色を制御 */
+    .sidebar-brand-mark,
+    .app-brand-mark-v8,
+    .mobile-brand-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #a78bfa;
+      line-height: 0;
+      flex: 0 0 auto;
+    }
+
+    .sidebar-brand-mark {
+      width: 44px;
+      height: 44px;
+    }
+
+    .sidebar-brand-mark svg {
+      width: 100%;
+      height: 100%;
+      fill: currentColor;
+      color: currentColor;
+    }
+
+    .app-brand-mark-v8,
     .mobile-brand-mark {
       width: 36px;
       height: 36px;
-      color: #c4b5fd;
     }
 
+    .app-brand-mark-v8 svg,
     .mobile-brand-mark svg {
-      filter: drop-shadow(0 2px 6px var(--color-brand-border));
+      width: 100%;
+      height: 100%;
+      fill: currentColor;
+      color: currentColor;
     }
-  }
 
-/* サイドバー本体は元の色へ戻す */
-  .app-sidebar {
-    background: var(--color-sidebar-bg) !important;
-  }
+    /* サイドバー上部はブランドカラーを少し明るい紫へ */
+    .sidebar-brand-visual {
+      gap: 4px !important;
+    }
 
-  /* サイドバー上部のブランディング領域自体にも色を付けない */
-  .sidebar-brand,
-  .sidebar-brand-visual {
-    background: transparent !important;
-    background-image: none !important;
-    box-shadow: none !important;
-  }
+    .sidebar-brand-mark {
+      color: #a78bfa;
+      filter: drop-shadow(0 3px 8px rgba(167, 139, 250, 0.16));
+    }
 
-  /* マークとロゴだけをブランドカラーへ */
-  .sidebar-brand-mark {
-    background-color: #8b7cf6 !important;
-    filter: none !important;
+    /* スマホヘッダーのマークは少し落ち着いた色で周囲に馴染ませる */
+    @media (max-width: 720px) {
+      .mobile-brand-mark {
+        width: 36px;
+        height: 36px;
+        color: #c4b5fd;
+      }
 
-    mask: url("./assets/mark.svg") center / contain no-repeat;
-    -webkit-mask: url("./assets/mark.svg") center / contain no-repeat;
-  }
+      .mobile-brand-mark svg {
+        filter: drop-shadow(0 2px 6px var(--color-brand-border));
+      }
+    }
 
-  .sidebar-brand-logo {
-    background-color: #8b7cf6 !important;
-    mask: url("./assets/logo.svg") center / contain no-repeat;
-    -webkit-mask: url("./assets/logo.svg") center / contain no-repeat;
-  }
+    /* サイドバー本体は元の色へ戻す */
+    .app-sidebar {
+      background: var(--color-sidebar-bg) !important;
+    }
 
-  /* ロゴ周辺の疑似要素による着色も無効化 */
-  .sidebar-brand::before,
-  .sidebar-brand::after,
-  .sidebar-brand-visual::before,
-  .sidebar-brand-visual::after {
-    background: transparent !important;
-    box-shadow: none !important;
-  }
+    /* サイドバー上部のブランディング領域自体にも色を付けない */
+    .sidebar-brand,
+    .sidebar-brand-visual {
+      background: transparent !important;
+      background-image: none !important;
+      box-shadow: none !important;
+    }
 
-  /* モバイル側のマーク色 */
-  .mobile-brand-mark {
-    color: #a78bfa !important;
-    filter: none !important;
-  }
+    /* マークとロゴだけをブランドカラーへ */
+    .sidebar-brand-mark {
+      background-color: #8b7cf6 !important;
+      filter: none !important;
 
-/* スマホヘッダーのロゴ：新しいSVGを大きめに表示 */
-  .mobile-brand-logo {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    flex: 0 0 44px;
-    line-height: 0;
-    background-color: #a78bfa;
+      mask: url("./assets/mark.svg") center / contain no-repeat;
+      -webkit-mask: url("./assets/mark.svg") center / contain no-repeat;
+    }
 
-    mask: url("./assets/mark.svg") center / contain no-repeat;
-    -webkit-mask: url("./assets/mark.svg") center / contain no-repeat;
-  }
+    .sidebar-brand-logo {
+      background-color: #8b7cf6 !important;
+      mask: url("./assets/logo.svg") center / contain no-repeat;
+      -webkit-mask: url("./assets/logo.svg") center / contain no-repeat;
+    }
 
-  .mobile-brand-logo svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
+    /* ロゴ周辺の疑似要素による着色も無効化 */
+    .sidebar-brand::before,
+    .sidebar-brand::after,
+    .sidebar-brand-visual::before,
+    .sidebar-brand-visual::after {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
 
-  /* 新SVGの色をヘッダーになじむブランドカラーへ */
-  .mobile-brand-logo svg [fill]:not([fill="none"]) {
-    fill: currentColor !important;
-  }
+    /* モバイル側のマーク色 */
+    .mobile-brand-mark {
+      color: #a78bfa !important;
+      filter: none !important;
+    }
 
-  .mobile-brand-logo svg [stroke]:not([stroke="none"]) {
-    stroke: currentColor !important;
-  }
-
-  @media (max-width: 720px) {
+    /* スマホヘッダーのロゴ：新しいSVGを大きめに表示 */
     .mobile-brand-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       width: 44px;
       height: 44px;
-      flex-basis: 44px;
-      color: #a78bfa;
+      flex: 0 0 44px;
+      line-height: 0;
+      background-color: #a78bfa;
+
+      mask: url("./assets/mark.svg") center / contain no-repeat;
+      -webkit-mask: url("./assets/mark.svg") center / contain no-repeat;
     }
-  }
 
-/* フィルタ候補が空の場合のコンパクト表示。inline style を置き換える。 */
-.empty-stream-state.is-compact {
-  padding: 28px 16px;
-  margin-top: 4px;
-}
+    .mobile-brand-logo svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
 
-</style>
+    /* 新SVGの色をヘッダーになじむブランドカラーへ */
+    .mobile-brand-logo svg [fill]:not([fill="none"]) {
+      fill: currentColor !important;
+    }
+
+    .mobile-brand-logo svg [stroke]:not([stroke="none"]) {
+      stroke: currentColor !important;
+    }
+
+    @media (max-width: 720px) {
+      .mobile-brand-logo {
+        width: 44px;
+        height: 44px;
+        flex-basis: 44px;
+        color: #a78bfa;
+      }
+    }
+
+    /* フィルタ候補が空の場合のコンパクト表示。inline style を置き換える。 */
+    .empty-stream-state.is-compact {
+      padding: 28px 16px;
+      margin-top: 4px;
+    }
+  </style>
 
 </head>
 
@@ -2832,8 +2891,7 @@
 
   <!-- デスクトップでは常設、スマホではドロワーとして表示するアプリナビゲーション。 -->
   <header id="mobileTopbar" class="mobile-topbar">
-    <button id="mobileMenuButton" class="icon-button" type="button" aria-label="メニューを開く"
-      onclick="toggleSidebar(true)">
+    <button id="mobileMenuButton" class="icon-button" type="button" aria-label="メニューを開く" onclick="toggleSidebar(true)">
       <i class="fa-solid fa-bars"></i>
     </button>
     <div class="mobile-brand">
@@ -2860,7 +2918,8 @@
 
     <nav class="sidebar-nav">
       <div class="sidebar-section-label">メニュー</div>
-      <button onclick="switchTab('streamTab')" id="nav-streamTab" class="sidebar-nav-item is-active" aria-current="page">
+      <button onclick="switchTab('streamTab')" id="nav-streamTab" class="sidebar-nav-item is-active"
+        aria-current="page">
         <span class="sidebar-nav-icon"><i class="fa-solid fa-video"></i></span>
         <span>動画一覧</span>
       </button>
@@ -2883,8 +2942,7 @@
         <i class="fa-solid fa-chevron-right sidebar-chevron"></i>
       </button>
     </div>
-    <button id="sidebarResizeHandle" class="sidebar-resize-handle"
-      type="button" aria-label="サイドメニューの幅を変更"
+    <button id="sidebarResizeHandle" class="sidebar-resize-handle" type="button" aria-label="サイドメニューの幅を変更"
       title="ドラッグしてサイドメニューの幅を変更"></button>
   </aside>
 
@@ -2948,13 +3006,10 @@
       <section class="stream-toolbar sticky top-0 z-30">
         <div class="search-shell">
           <i class="fa-solid fa-magnifying-glass search-shell-icon"></i>
-          <input type="text" id="streamSearchKeyword"
-            onkeyup="renderStreams()" oninput="renderStreams()"
-            aria-label="歌枠を検索"
-            placeholder="動画・楽曲名・アーティスト名・配信者を検索..."
-            class="stream-search-input">
-          <button type="button" class="search-clear hidden" id="streamSearchClear"
-            aria-label="検索をクリア" onclick="clearStreamSearch()">
+          <input type="text" id="streamSearchKeyword" onkeyup="renderStreams()" oninput="renderStreams()"
+            aria-label="歌枠を検索" placeholder="動画・楽曲名・アーティスト名・配信者を検索..." class="stream-search-input">
+          <button type="button" class="search-clear hidden" id="streamSearchClear" aria-label="検索をクリア"
+            onclick="clearStreamSearch()">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
@@ -3004,7 +3059,7 @@
           </div>
         </div>
 
-      <div id="streamListContainer" class="stream-list"></div>
+        <div id="streamListContainer" class="stream-list"></div>
     </div>
 
     <!-- 楽曲・アーティスト・チャンネルのマスターデータを管理する領域。 -->
@@ -3704,7 +3759,8 @@
   </div>
 
   <!-- 動画一覧の配信者フィルタを設定するモーダル。 -->
-  <div id="streamFilterModal" class="filter-modal hidden" role="dialog" aria-modal="true" aria-labelledby="streamFilterModalTitle">
+  <div id="streamFilterModal" class="filter-modal hidden" role="dialog" aria-modal="true"
+    aria-labelledby="streamFilterModalTitle">
     <div class="filter-modal-card">
       <div class="filter-modal-header">
         <div>
@@ -3717,8 +3773,8 @@
         </button>
       </div>
       <div class="filter-modal-body">
-        <button type="button" id="streamerFilterField" class="filter-select-field"
-          aria-expanded="false" onclick="toggleStreamerFilterOptions()">
+        <button type="button" id="streamerFilterField" class="filter-select-field" aria-expanded="false"
+          onclick="toggleStreamerFilterOptions()">
           <span class="filter-select-field-copy">
             <span class="filter-select-field-label">配信者</span>
             <span id="streamerFilterFieldValue" class="filter-select-field-value">すべての配信者</span>
@@ -3729,8 +3785,7 @@
         <div id="streamerFilterPanel" class="filter-select-panel hidden">
           <div class="filter-modal-search">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input id="streamerFilterSearch" type="text" placeholder="配信者を検索..."
-              oninput="renderStreamFilterOptions()">
+            <input id="streamerFilterSearch" type="text" placeholder="配信者を検索..." oninput="renderStreamFilterOptions()">
           </div>
           <div id="streamerFilterOptions" class="filter-options"></div>
         </div>
@@ -4769,9 +4824,9 @@
       if (!select || !wrap) return;
 
       const labels = {
-        streamDate_desc: { short: '配信日', full: '配信日：新しい順', direction: 'down' },
-        streamDate_asc: { short: '配信日', full: '配信日：古い順', direction: 'up' },
-        createdAt_desc: { short: '登録日', full: '登録日：新しい順', direction: 'down' }
+        streamDate_desc: {short: '配信日', full: '配信日：新しい順', direction: 'down'},
+        streamDate_asc: {short: '配信日', full: '配信日：古い順', direction: 'up'},
+        createdAt_desc: {short: '登録日', full: '登録日：新しい順', direction: 'down'}
       };
 
       const current = labels[select.value] || labels.streamDate_desc;
@@ -4898,14 +4953,14 @@
 
           <div id="acc-body-${stream.id}" class="timestamp-panel hidden">
             ${sortedSongs.length ? sortedSongs.map(song => {
-              const masterSong = getMasterSongById(song.masterSongId);
-              const singer = getSingerById(masterSong.singerId);
-              const singerNames = (song.singerIds || [])
-                .map(id => getStreamerById(id)?.name)
-                .filter(Boolean)
-                .join(' / ') || streamer.name;
+          const masterSong = getMasterSongById(song.masterSongId);
+          const singer = getSingerById(masterSong.singerId);
+          const singerNames = (song.singerIds || [])
+            .map(id => getStreamerById(id)?.name)
+            .filter(Boolean)
+            .join(' / ') || streamer.name;
 
-              return `
+          return `
                 <div class="timestamp-row" onclick="playStreamSong('${stream.id}', '${song.id}')">
                   <div class="timestamp-song" title="${masterSong.title} / ${singer.name}">
                     <span class="timestamp-song-title">${masterSong.title}</span>
@@ -4921,7 +4976,7 @@
                   </button>
                 </div>
               `;
-            }).join('') : `
+        }).join('') : `
               <div class="timestamp-row">
                 <div class="timestamp-song">登録されている楽曲はありません</div>
                 <div></div><div></div><div></div>
