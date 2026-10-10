@@ -6,7 +6,7 @@ const config = `
 <div class="help-hero">
     <div class="help-hero-icon"><i class="fa-solid fa-book-open text-white"></i></div>
     <div>
-        <div class="help-hero-title">歌枠データベース v1.0.1 マニュアル</div>
+        <div class="help-hero-title">歌枠データベース v2.0.0 マニュアル</div>
         <div class="help-hero-text">歌枠アーカイブの保存、タイムスタンプ連動再生、楽曲・アーティストの一括管理、バックアップやクラウド共有を行うための総合ガイドです。</div>
     </div>
 </div>
@@ -305,6 +305,10 @@ GitHubアカウントの個人アクセストークン (PAT) を利用して、P
 </h2>
 
 歌枠データベースのリリースおよびアップデート履歴です。
+
+### v2.0.0 (2026-10-10)
+- UIの大幅アップデート
+- **機能追加**: 一部フィルタ機能の追加
 
 ### v1.0.1 (2026-10-03)
 - **改良**: セキュリティ面の向上。
