@@ -1264,6 +1264,18 @@
       margin-left: -8px !important;
     }
 
+    .timestamp-song-memo {
+      display: block;
+      color: var(--text-muted);
+      font-size: 10px;
+      line-height: 1.35;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+    .timestamp-song-memo i { margin-right: 3px; }
+
     .timestamp-value {
       color: #AAB8D2;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -5317,6 +5329,16 @@ button.bg-blue-600, button.bg-indigo-600 {
 }
 </style>
 
+
+<style>
+.tag-picker { display:flex; flex-wrap:wrap; gap:6px; max-height:112px; overflow-y:auto; padding:2px 0; }
+.tag-picker:empty { display:none; }
+.tag-picker .tag-chip { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--border-color, #4f4f4f); border-radius:999px; padding:4px 9px; font-size:11px; line-height:1.35; color:var(--text-color, #fff); background:rgba(255,255,255,.045); cursor:pointer; transition:background .12s,border-color .12s; }
+.tag-picker .tag-chip:hover { background:rgba(255,255,255,.11); }
+.tag-picker .tag-chip.is-selected { background:rgba(125,160,210,.2); border-color:#7da0d2; color:#dceaff; }
+.tag-picker .tag-chip.is-selected::after { content:'✓'; font-size:10px; }
+.tag-picker .tag-picker-caption { width:100%; font-size:10px; color:var(--text-muted, #9c9c9c); padding:2px 0 0; }
+</style>
 </head>
 
 <body class="min-h-screen flex flex-col no-scrollbar">
@@ -5495,6 +5517,10 @@ button.bg-blue-600, button.bg-indigo-600 {
             aria-selected="false">
             <i class="fa-solid fa-users"></i><span>チャンネル一覧</span>
           </button>
+          <button onclick="switchSubDataTab('tagSubTab')" id="subnav-tagSubTab" class="data-subtab" role="tab"
+            aria-selected="false">
+            <i class="fa-solid fa-tags"></i><span>タグ管理</span>
+          </button>
         </nav>
 
         <div id="songFilterBar" class="data-search-toolbar is-active">
@@ -5591,6 +5617,29 @@ button.bg-blue-600, button.bg-indigo-600 {
             </div>
           </div>
         </div>
+
+        <div id="tagFilterBar" class="data-search-toolbar">
+          <div class="filter-toolbar" style="width:100%">
+            <div class="filter-toolbar-left">
+              <button type="button" onclick="createManagedTag()" class="add-stream-button" aria-label="タグを新規登録" title="タグを新規登録">
+                <i class="fa-solid fa-plus"></i><span>新しく登録</span>
+              </button>
+            </div>
+            <div class="filter-toolbar-right">
+              <div class="sort-control">
+                <div class="app-select-wrap" title="並び替え">
+                  <span class="app-select-current-label" aria-hidden="true">五十音順</span>
+                  <select id="tagSortSelect" onchange="renderTagManagement()" aria-label="タグの並び替え" class="app-select">
+                    <option value="kana_asc" selected>五十音順：昇順</option>
+                    <option value="kana_desc">五十音順：降順</option>
+                    <option value="created_asc">登録順：古い順</option>
+                    <option value="created_desc">登録順：新しい順</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div id="songSubTab" class="subdata-content flex flex-col gap-6">
@@ -5608,6 +5657,12 @@ button.bg-blue-600, button.bg-indigo-600 {
       <div id="streamerSubTab" class="subdata-content hidden flex flex-col gap-6">
         <div class="data-list-surface song-list-surface channel-list-surface">
           <div id="streamerMasterList" class="song-list-body channel-list-body"></div>
+        </div>
+      </div>
+
+      <div id="tagSubTab" class="subdata-content hidden flex flex-col gap-6">
+        <div class="data-list-surface song-list-surface">
+          <div id="tagManagementList" class="song-list-body"></div>
         </div>
       </div>
     </div>
@@ -5777,7 +5832,10 @@ button.bg-blue-600, button.bg-indigo-600 {
           <label class="block font-semibold mb-1 text-mono-muted text-xs">アーティスト名</label>
           <input
             class="w-full bg-base-dark border border-base rounded-lg p-2.5 text-white focus:outline-none focus:border-mono"
-            id="modalInputMasterSongArtist" type="text" />
+            id="modalInputMasterSongArtist" placeholder="複数人は | で区切る" type="text" />
+          <label class="block font-semibold mt-2 mb-1 text-mono-muted text-xs">アーティストの表示区切り</label>
+          <input class="w-full bg-base-dark border border-base rounded-lg p-2.5 text-white focus:outline-none focus:border-mono"
+            id="modalInputMasterSongArtistSeparator" placeholder="例:  feat.  /  ,  /  with " value=" feat. " type="text" />
         </div>
 
       </div>
@@ -5881,6 +5939,12 @@ button.bg-blue-600, button.bg-indigo-600 {
             </div>
           </div>
         </div>
+        <div class="bg-base-dark p-3 rounded-xl border border-base">
+          <label class="block text-xs font-semibold mb-1 text-mono-muted" for="inputStreamTags">動画タグ</label>
+          <input class="w-full bg-base-mid border border-base rounded-lg p-2 text-white focus:outline-none focus:border-mono" id="inputStreamTags" list="appTagSuggestions" placeholder="#雑談, #初見歓迎 など" autocomplete="off" onkeydown="handleTagInputKeydown(event, 'inputStreamTags')" oninput="renderTagPicker('inputStreamTags', 'inputStreamTagPicker')" />
+          <div id="inputStreamTagPicker" class="tag-picker mt-2"></div>
+          <p class="text-[10px] text-mono-muted mt-1">下の候補を押すと追加・解除できます。新しいタグは入力して Enter を押してください。</p>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-base-dark p-3 rounded-xl border border-base">
           <div
             class="aspect-video bg-base-deep rounded-lg overflow-hidden relative border border-base flex items-center justify-center">
@@ -5957,8 +6021,25 @@ button.bg-blue-600, button.bg-indigo-600 {
               <label class="block font-semibold mb-1 text-mono-muted">アーティスト名</label>
               <input
                 class="w-full bg-base-mid border border-base rounded-lg p-2 text-white focus:outline-none focus:border-mono"
-                id="modalInputArtist" placeholder="例: 優里" type="text" />
+                id="modalInputArtist" placeholder="例: A | B（複数人は | で区切る）" type="text" />
+              <label class="block font-semibold mt-2 mb-1 text-mono-muted">アーティストの表示区切り</label>
+              <input
+                class="w-full bg-base-mid border border-base rounded-lg p-2 text-white focus:outline-none focus:border-mono"
+                id="modalInputArtistSeparator" placeholder="例:  feat.  /  ,  /  with " value=" feat. " type="text" />
+              <p class="text-[10px] text-mono-muted mt-1">アーティスト名は「|」で区切ります。3人以上の場合、区切り文字も「|」で区切ると各間で個別に指定できます（例： feat. | with ）。</p>
             </div>
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-mono-muted" for="modalInputMemo">メモ（このタイムスタンプ専用）</label>
+            <textarea class="w-full bg-base-mid border border-base rounded-lg p-2 text-white focus:outline-none focus:border-mono resize-y"
+              id="modalInputMemo" rows="3" maxlength="5000" placeholder="この曲・タイムスタンプについてのメモ"></textarea>
+            <p class="text-[10px] text-mono-muted mt-1">同じ曲でもタイムスタンプごとに別のメモとして保存されます。</p>
+          </div>
+          <div>
+            <label class="block font-semibold mb-1 text-mono-muted" for="modalInputTags">タイムスタンプタグ</label>
+            <input class="w-full bg-base-mid border border-base rounded-lg p-2 text-white focus:outline-none focus:border-mono" id="modalInputTags" list="appTagSuggestions" placeholder="#お気に入り, #練習したい など" autocomplete="off" onkeydown="handleTagInputKeydown(event, 'modalInputTags')" oninput="renderTagPicker('modalInputTags', 'modalInputTagPicker')" />
+            <div id="modalInputTagPicker" class="tag-picker mt-2"></div>
+            <p class="text-[10px] text-mono-muted mt-1">下の候補を押すと追加・解除できます。動画タグとは別に設定されます。</p>
           </div>
           <div class="flex items-center justify-between pt-2">
             <div class="flex items-center gap-2">
@@ -6066,6 +6147,17 @@ button.bg-blue-600, button.bg-indigo-600 {
           </div>
           <div id="streamSongFilterOptions" class="filter-options"></div>
         </div>
+        <div class="mt-4">
+          <label class="block text-xs font-semibold mb-1 text-mono-muted" for="streamTagFilterInput">タグ検索</label>
+          <input type="text" id="streamTagFilterInput" list="appTagSuggestions" class="w-full bg-base-dark border border-base rounded-lg p-2 text-white focus:outline-none focus:border-mono" placeholder="#お気に入り, #練習 など" autocomplete="off" oninput="window.streamTagFilterDraftValue = this.value; renderTagPicker('streamTagFilterInput', 'streamTagFilterPicker')" />
+          <div id="streamTagFilterPicker" class="tag-picker mt-2"></div>
+          <p class="text-[10px] text-mono-muted mt-1">候補を押して検索タグを選択できます。動画タグ・タイムスタンプタグの両方を検索します。</p>
+          <div class="flex items-center gap-3 mt-2 text-xs text-mono-muted">
+            <span>条件</span>
+            <label class="inline-flex items-center gap-1"><input type="radio" name="streamTagMatchMode" value="or" checked onchange="window.streamTagFilterDraftMatchMode = this.value"> OR（いずれか）</label>
+            <label class="inline-flex items-center gap-1"><input type="radio" name="streamTagMatchMode" value="and" onchange="window.streamTagMatchMode = this.value; renderStreams()"> AND（すべて）</label>
+          </div>
+        </div>
       </div>
     </template>
 
@@ -6090,6 +6182,7 @@ button.bg-blue-600, button.bg-indigo-600 {
         </div>
       </div>
     </template>
+    <datalist id="appTagSuggestions"></datalist>
   </div>
 
   <script src="./js/usage.js"></script>
@@ -6160,10 +6253,11 @@ button.bg-blue-600, button.bg-indigo-600 {
     const OLD_STORAGE_KEY_V1 = 'utawaku_app_data_v1';
 
     let appData = {
-      schemaVersion: 3,
+      schemaVersion: 5,
       streamers: [],   // { id, name, account, icon }
       singers: [],     // { id, name }
-      masterSongs: [], // { id, title, singerId }
+      masterSongs: [], // { id, title, singerIds: [] }
+      tags: [], // 登録順を保持するタグ一覧
       streams: []      // { id, title, streamerId, streamDate, youtubeUrl, customThumbnail, createdAt, songs: [{ id, masterSongId, singerIds: [], timestamp }] }
     };
     let dataIndexes = null;
@@ -6203,7 +6297,22 @@ button.bg-blue-600, button.bg-indigo-600 {
 
         (stream.songs || []).forEach(song => {
           const masterSong = masterSongById.get(song.masterSongId);
-          const singer = masterSong ? singerById.get(masterSong.singerId) : null;
+          // インデックス構築中は getSingerById / getMasterSongArtistDisplay を呼ばない。
+          // それらは ensureDataIndexes() を経由するため、再構築が再帰してしまう。
+          const masterSongSingerIds = masterSong && Array.isArray(masterSong.singerIds)
+            ? masterSong.singerIds
+            : [];
+          const artistNames = masterSongSingerIds
+            .map(id => singerById.get(id)?.name)
+            .filter(Boolean);
+          const separators = masterSong
+            ? (Array.isArray(masterSong.artistSeparators)
+                ? masterSong.artistSeparators
+                : String(masterSong.artistSeparator ?? ' feat. ').split('|'))
+            : [];
+          const artistDisplay = artistNames.length
+            ? artistNames.map((name, i) => i ? `${separators[i - 1] ?? separators[separators.length - 1] ?? ' feat. '}${name}` : name).join('')
+            : '未設定・その他';
           const singerIds = Array.isArray(song.singerIds) ? song.singerIds : [];
 
           singerIds.forEach(id => {
@@ -6230,7 +6339,8 @@ button.bg-blue-600, button.bg-indigo-600 {
               streamerName,
               streamerAccount,
               masterSong?.title || '不明な楽曲',
-              singer?.name || '未設定・その他',
+              artistDisplay,
+              ...artistNames,
               ...singerIds.map(id => streamerById.get(id)?.name || '')
             ].join(' '))
           };
@@ -6243,10 +6353,17 @@ button.bg-blue-600, button.bg-indigo-600 {
 
       const masterSongSearchText = new Map();
       appData.masterSongs.forEach(song => {
-        const singer = singerById.get(song.singerId);
+        const ids = Array.isArray(song.singerIds) ? song.singerIds : [];
+        const names = ids.map(id => singerById.get(id)?.name).filter(Boolean);
+        const separators = Array.isArray(song.artistSeparators)
+          ? song.artistSeparators
+          : String(song.artistSeparator ?? ' feat. ').split('|');
+        const display = names.map((name, i) => i
+          ? `${separators[i - 1] ?? separators[separators.length - 1] ?? ' feat. '}${name}`
+          : name).join('');
         masterSongSearchText.set(
           song.id,
-          normalizeStr(`${song.title} ${singer?.name || '未設定・その他'}`)
+          normalizeStr(`${song.title || ''} ${display} ${names.join(' ')} ${names.length ? '' : '未設定・その他'}`)
         );
       });
 
@@ -6260,11 +6377,18 @@ button.bg-blue-600, button.bg-indigo-600 {
         const streamer = streamerById.get(stream.streamerId);
         const songText = (stream.songs || []).map(song => {
           const master = masterSongById.get(song.masterSongId);
-          const singer = master ? singerById.get(master.singerId) : null;
+          const ids = master && Array.isArray(master.singerIds) ? master.singerIds : [];
+          const names = ids.map(id => singerById.get(id)?.name).filter(Boolean);
+          const separators = master
+            ? (Array.isArray(master.artistSeparators) ? master.artistSeparators : String(master.artistSeparator ?? ' feat. ').split('|'))
+            : [];
+          const artistDisplay = names.map((name, i) => i
+            ? `${separators[i - 1] ?? separators[separators.length - 1] ?? ' feat. '}${name}`
+            : name).join('');
           const singerNames = (song.singerIds || [])
             .map(id => streamerById.get(id)?.name || '')
             .join(' ');
-          return `${master?.title || ''} ${singer?.name || ''} ${singerNames}`;
+          return `${master?.title || ''} ${artistDisplay} ${names.join(' ')} ${singerNames}`;
         }).join(' ');
         streamSearchText.set(
           stream.id,
@@ -6318,7 +6442,7 @@ button.bg-blue-600, button.bg-indigo-600 {
     const MAX_SHARE_HASH_LENGTH = 2 * 1024 * 1024;
 
     const initialSampleData = {
-      schemaVersion: 3,
+      schemaVersion: 5,
       streamers: [],
       singers: [],
       masterSongs: [],
@@ -6387,15 +6511,16 @@ button.bg-blue-600, button.bg-indigo-600 {
       const rawV3 = localStorage.getItem(STORAGE_KEY);
       if (rawV3) {
         try {
-          appData = migrateToV3(JSON.parse(rawV3));
+          appData = migrateToV4(JSON.parse(rawV3));
+          saveData();
         } catch (e) {
-          console.error("V3 parse failed", e);
+          console.error("data parse failed", e);
         }
       } else {
         const rawOld = localStorage.getItem(OLD_STORAGE_KEY_V2) || localStorage.getItem(OLD_STORAGE_KEY_V1);
         if (rawOld) {
           try {
-            appData = migrateToV3(JSON.parse(rawOld));
+            appData = migrateToV4(JSON.parse(rawOld));
             saveData();
           } catch (e) {
             appData = initialSampleData;
@@ -6413,7 +6538,7 @@ button.bg-blue-600, button.bg-indigo-600 {
  * @param {*} rawObj この処理に渡す値。
  * @returns {*} 処理結果。
  */
-    function migrateToV3(rawObj) {
+    function migrateToV4(rawObj) {
       if (!rawObj) return initialSampleData;
 
       let streamsList = [];
@@ -6442,7 +6567,14 @@ button.bg-blue-600, button.bg-indigo-600 {
 
       const masterSongsMap = new Map();
       masterSongsList.forEach(m => {
-        if (m && m.id) masterSongsMap.set(m.id, m);
+        if (!m || !m.id) return;
+        // v1-v3: singerId を v4 の singerIds 配列へ変換し、旧プロパティを除去する。
+        const ids = Array.isArray(m.singerIds) && m.singerIds.length
+          ? m.singerIds
+          : (m.singerId ? [m.singerId] : []);
+        m.singerIds = [...new Set(ids.filter(Boolean))];
+        delete m.singerId;
+        masterSongsMap.set(m.id, m);
       });
 
       /**
@@ -6490,10 +6622,11 @@ button.bg-blue-600, button.bg-indigo-600 {
         const singerId = getOrCreateSinger(artistName);
 
         for (let [id, m] of masterSongsMap.entries()) {
-          if (normalizeStr(m.title) === normalizeStr(cleanTitle) && m.singerId === singerId) return id;
+          const ids = Array.isArray(m.singerIds) ? m.singerIds : (m.singerId ? [m.singerId] : []);
+          if (normalizeStr(m.title) === normalizeStr(cleanTitle) && ids.length === 1 && ids[0] === singerId) return id;
         }
         const id = 'ms-' + Math.random().toString(36).substring(2, 9);
-        const newMS = {id, title: cleanTitle, singerId};
+        const newMS = {id, title: cleanTitle, singerIds: [singerId]};
         masterSongsMap.set(id, newMS);
         return id;
       }
@@ -6515,7 +6648,9 @@ button.bg-blue-600, button.bg-indigo-600 {
             id: sg.id || ('s-' + Date.now() + '-' + idx + '-' + songIdx),
             masterSongId: masterSongId,
             singerIds: songSingerIds,
-            timestamp: sg.timestamp || '00:00'
+            timestamp: sg.timestamp || '00:00',
+            memo: String(sg.memo || ''),
+            tags: Array.isArray(sg.tags) ? [...sg.tags] : (sg.tags || [])
           };
         });
 
@@ -6527,17 +6662,311 @@ button.bg-blue-600, button.bg-indigo-600 {
           youtubeUrl: s.youtubeUrl || '',
           customThumbnail: s.customThumbnail || '',
           createdAt: s.createdAt || new Date().toISOString(),
+          tags: Array.isArray(s.tags) ? [...s.tags] : (s.tags || []),
           songs: sortSongsByTimestamp(convertedSongs)
         };
       });
 
+      const migratedMasterSongs = Array.from(masterSongsMap.values()).map(song => {
+        const singerIds = Array.isArray(song.singerIds) && song.singerIds.length
+          ? song.singerIds
+          : (song.singerId ? [song.singerId] : []);
+        const normalized = {...song, singerIds: [...new Set(singerIds.filter(Boolean))]};
+        delete normalized.singerId;
+        return normalized;
+      });
+
+      // タグを独立したID付きマスターデータに移行。旧形式の文字列タグも読み替える。
+      const registeredTags = [];
+      const addRegisteredTag = rawTag => {
+        const sourceName = rawTag && typeof rawTag === 'object' ? (rawTag.name || rawTag.tag || '') : rawTag;
+        if (typeof sourceName === 'string' && registeredTags.some(item => item.id === sourceName)) return;
+        const normalized = normalizeTags([sourceName])[0];
+        if (!normalized || registeredTags.some(item => item.name.toLocaleLowerCase() === normalized.toLocaleLowerCase())) return;
+        registeredTags.push({
+          id: rawTag && typeof rawTag === 'object' && rawTag.id ? String(rawTag.id) : createTagId(),
+          name: normalized,
+          createdAt: rawTag && typeof rawTag === 'object' && rawTag.createdAt ? rawTag.createdAt : new Date().toISOString()
+        });
+      };
+      if (rawObj && !Array.isArray(rawObj) && Array.isArray(rawObj.tags)) rawObj.tags.forEach(addRegisteredTag);
+      convertedStreams.forEach(stream => {
+        (Array.isArray(stream.tags) ? stream.tags : [stream.tags]).filter(Boolean).forEach(addRegisteredTag);
+        (stream.songs || []).forEach(song => (Array.isArray(song.tags) ? song.tags : [song.tags]).filter(Boolean).forEach(addRegisteredTag));
+      });
+      const tagIdByName = new Map(registeredTags.map(tag => [tag.name.toLocaleLowerCase(), tag.id]));
+      const tagIds = value => {
+        const values = Array.isArray(value) ? value : String(value || '').split(/[，,\n\r;；]+/);
+        return [...new Set(values.map(raw => {
+          const rawText = String(raw || '').trim();
+          if (!rawText) return null;
+          const byId = registeredTags.find(tag => tag.id === rawText);
+          if (byId) return byId.id;
+          const name = normalizeTags([rawText])[0];
+          return name ? tagIdByName.get(name.toLocaleLowerCase()) : null;
+        }).filter(Boolean))];
+      };
+      convertedStreams.forEach(stream => {
+        stream.tags = tagIds(stream.tags);
+        (stream.songs || []).forEach(song => { song.tags = tagIds(song.tags); });
+      });
+
       return {
-        schemaVersion: 3,
+        schemaVersion: 5,
         streamers: Array.from(streamersMap.values()),
         singers: Array.from(singersMap.values()),
-        masterSongs: Array.from(masterSongsMap.values()),
+        masterSongs: migratedMasterSongs,
+        tags: registeredTags,
         streams: convertedStreams
       };
+    }
+
+    /** タグ文字列を # 付きの正規化済みタグ配列にする。 */
+    function normalizeTags(value) {
+      const values = Array.isArray(value) ? value : String(value || '').split(/[，,\n\r;；]+/);
+      const result = [];
+      values.forEach(raw => {
+        const rawText = String(raw || '').trim();
+        const registeredById = Array.isArray(appData?.tags) ? appData.tags.find(item => item && typeof item === 'object' && item.id === rawText) : null;
+        if (registeredById?.name) raw = registeredById.name;
+        let tag = String(raw || '').trim().replace(/^#+/, '').trim();
+        if (!tag) return;
+        tag = '#' + tag.replace(/\s+/g, '_');
+        if (!result.some(existing => existing.toLocaleLowerCase() === tag.toLocaleLowerCase())) result.push(tag);
+      });
+      return result;
+    }
+
+    /** タグ入力欄を正規化し、選択候補を更新する。 */
+    function handleTagInputKeydown(event, inputId) {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      input.value = normalizeTags(input.value).join(', ');
+      const pickerId = ({ inputStreamTags: 'inputStreamTagPicker', modalInputTags: 'modalInputTagPicker', streamTagFilterInput: 'streamTagFilterPicker' })[inputId];
+      if (pickerId) renderTagPicker(inputId, pickerId);
+      refreshTagSuggestions();
+      if (inputId === 'streamTagFilterInput') { window.streamTagFilterDraftValue = input.value; }
+    }
+
+    /** 選択済みタグと既存タグ候補をクリックで追加・解除できるように描画する。 */
+    function renderTagPicker(inputId, pickerId) {
+      const input = document.getElementById(inputId);
+      const picker = document.getElementById(pickerId);
+      if (!input || !picker) return;
+      const selected = normalizeTags(input.value);
+      const selectedKeys = new Set(selected.map(tag => tag.toLocaleLowerCase()));
+      const allTags = getAllTags();
+      const candidates = allTags.filter(tag => !selectedKeys.has(tag.toLocaleLowerCase()));
+      const chip = (tag, isSelected) => `<button type="button" class="tag-chip ${isSelected ? 'is-selected' : ''}" data-tag="${escapeHtml(tag)}" aria-pressed="${isSelected ? 'true' : 'false'}">${escapeHtml(tag)}</button>`;
+      picker.innerHTML = `${selected.length ? `<div class="tag-picker-caption">選択中（押すと解除）</div>${selected.map(tag => chip(tag, true)).join('')}` : ''}${candidates.length ? `<div class="tag-picker-caption">登録済みタグ（押すと追加）</div>${candidates.map(tag => chip(tag, false)).join('')}` : ''}${!selected.length && !candidates.length ? '<div class="tag-picker-caption">登録済みタグはありません。新しいタグを入力してください。</div>' : ''}`;
+      picker.querySelectorAll('button[data-tag]').forEach(button => {
+        button.addEventListener('click', () => {
+          const clickedTag = button.getAttribute('data-tag');
+          const current = normalizeTags(input.value);
+          const exists = current.some(tag => tag.toLocaleLowerCase() === clickedTag.toLocaleLowerCase());
+          input.value = (exists ? current.filter(tag => tag.toLocaleLowerCase() !== clickedTag.toLocaleLowerCase()) : [...current, clickedTag]).join(', ');
+          if (inputId === 'streamTagFilterInput') window.streamTagFilterDraftValue = input.value;
+          renderTagPicker(inputId, pickerId);
+          
+        });
+      });
+    }
+
+    /** タグごとの一意なIDを生成する。 */
+    let lastGeneratedTagIdTimestamp = 0;
+    function createTagId() {
+      // 動画IDの `stream-${Date.now()}` と同じ「接頭辞＋タイムスタンプ」形式に統一。
+      // 同一ミリ秒に複数作成された場合も、単調増加させてIDの重複を防ぐ。
+      lastGeneratedTagIdTimestamp = Math.max(Date.now(), lastGeneratedTagIdTimestamp + 1);
+      return 'tag-' + lastGeneratedTagIdTimestamp;
+    }
+
+    /** タグ名またはタグIDを、保存用のタグID配列に変換する。 */
+    function tagIdsFrom(value) {
+      const values = Array.isArray(value) ? value : String(value || '').split(/[，,\n\r;；]+/);
+      const records = Array.isArray(appData?.tags) ? appData.tags : [];
+      const ids = [];
+      values.forEach(raw => {
+        const text = String(raw || '').trim();
+        if (!text) return;
+        const byId = records.find(item => item && typeof item === 'object' && item.id === text);
+        const name = byId?.name || normalizeTags([text])[0];
+        if (!name) return;
+        const record = records.find(item => item && typeof item === 'object' && String(item.name || '').toLocaleLowerCase() === name.toLocaleLowerCase());
+        if (record?.id && !ids.includes(record.id)) ids.push(record.id);
+      });
+      return ids;
+    }
+
+    /** 動画とタイムスタンプに登録されたタグを候補一覧にまとめる。 */
+    function getAllTags() {
+      const tags = [];
+      const add = value => normalizeTags(value).forEach(tag => {
+        if (!tags.some(existing => existing.toLocaleLowerCase() === tag.toLocaleLowerCase())) tags.push(tag);
+      });
+      add((appData.tags || []).map(tag => typeof tag === 'string' ? tag : tag?.name));
+      (appData.streams || []).forEach(stream => {
+        add(stream.tags);
+        (stream.songs || []).forEach(song => add(song.tags));
+      });
+      return tags;
+    }
+
+    /** タグの登録数を、動画タグとタイムスタンプタグの割り当て件数で集計する。 */
+    function getManagedTagCounts() {
+      const counts = new Map(getAllTags().map(tag => [tag.toLocaleLowerCase(), {tag, count: 0}]));
+      (appData.streams || []).forEach(stream => {
+        [...normalizeTags(stream.tags), ...(stream.songs || []).flatMap(song => normalizeTags(song.tags))].forEach(tag => {
+          const item = counts.get(tag.toLocaleLowerCase());
+          if (item) item.count++;
+        });
+      });
+      return counts;
+    }
+
+    /** タグ管理タブを、登録順または五十音順で描画する。 */
+    function renderTagManagement() {
+      updateDataSortControl('tagSortSelect', {
+        created_asc: {short: '登録順', direction: 'down'},
+        created_desc: {short: '登録順', direction: 'up'},
+        kana_asc: {short: '五十音順', direction: 'down'},
+        kana_desc: {short: '五十音順', direction: 'up'}
+      });
+      const container = document.getElementById('tagManagementList');
+      if (!container) return;
+      const sort = document.getElementById('tagSortSelect')?.value || 'kana_asc';
+      const registered = getAllTags();
+      const counts = getManagedTagCounts();
+      const registry = new Map((appData.tags || []).map((item, index) => {
+        const record = typeof item === 'string' ? {name: item, createdAt: new Date(index).toISOString(), id: ''} : item;
+        return [String(record.name || '').toLocaleLowerCase(), record];
+      }));
+      const indexed = registered.map((tag, index) => {
+        const record = registry.get(tag.toLocaleLowerCase()) || {createdAt: new Date(index).toISOString()};
+        return {tag, index, createdAt: record.createdAt || '', count: counts.get(tag.toLocaleLowerCase())?.count || 0};
+      });
+      indexed.sort((a, b) => {
+        if (sort === 'created_desc') return String(b.createdAt).localeCompare(String(a.createdAt)) || b.index - a.index;
+        if (sort === 'kana_asc') return a.tag.localeCompare(b.tag, 'ja');
+        if (sort === 'kana_desc') return b.tag.localeCompare(a.tag, 'ja');
+        return String(a.createdAt).localeCompare(String(b.createdAt)) || a.index - b.index;
+      });
+      container.innerHTML = '';
+      if (!indexed.length) {
+        container.innerHTML = '<div class="data-unified-empty">タグはまだ登録されていません。「新しく登録」から追加できます。</div>';
+        return;
+      }
+      indexed.forEach(({tag, count}) => {
+        const row = document.createElement('div');
+        row.className = 'song-list-row tag-management-row';
+        const record = (appData.tags || []).find(item => item && typeof item === 'object' && String(item.name || '').toLocaleLowerCase() === tag.toLocaleLowerCase());
+        row.innerHTML = `<div class="song-list-main"><span class="song-list-title-text">${escapeHtml(tag)}</span></div><div class="tag-management-actions"><div class="song-list-count">登録数：<strong>${count}</strong>件</div><button type="button" class="tag-management-action" onclick="editManagedTag('${escapeHtml(record?.id || '')}')" aria-label="${escapeHtml(tag)}を編集"><i class="fa-solid fa-pen"></i><span>編集</span></button><button type="button" class="tag-management-action" onclick="showStreamsWithTag('${escapeHtml(record?.id || '')}')" aria-label="${escapeHtml(tag)}で絞り込んだ動画一覧を表示"><i class="fa-solid fa-filter"></i><span>動画一覧</span></button></div>`;
+        container.appendChild(row);
+      });
+    }
+
+    /** タグ名編集モーダルを開く。 */
+    function editManagedTag(tagId) {
+      const record = (appData.tags || []).find(item => item && typeof item === 'object' && item.id === tagId);
+      if (!record) { showToast('編集するタグが見つかりません。'); return; }
+      openAppModal('tagEditModal', {
+        title: 'タグの編集', icon: 'fa-pen', width: 'sm', height: 'sm',
+        content: `<div class="flex flex-col gap-3"><label for="managedTagEditName" class="text-sm font-medium">タグ名</label><input id="managedTagEditName" type="text" class="w-full bg-base-mid border border-base rounded-lg p-3 text-white focus:outline-none focus:border-mono" value="${escapeHtml(record.name || '')}" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();saveManagedTagEdit('${escapeHtml(tagId)}');}"><p class="text-xs text-mono-muted">タグ名を変更すると、動画・タイムスタンプの紐づけにも反映されます。</p></div>`,
+        actions: [
+          {label: 'キャンセル', variant: 'secondary', onClick: () => closeAppModal('tagEditModal')},
+          {label: '保存', variant: 'primary', onClick: () => saveManagedTagEdit(tagId)}
+        ]
+      });
+      requestAnimationFrame(() => { const input = document.getElementById('managedTagEditName'); input?.focus({preventScroll: true}); input?.select(); });
+    }
+
+    /** タグ名を保存する。紐づけはタグIDのため、名前の変更だけで反映される。 */
+    function saveManagedTagEdit(tagId) {
+      const record = (appData.tags || []).find(item => item && typeof item === 'object' && item.id === tagId);
+      const input = document.getElementById('managedTagEditName');
+      if (!record || !input) return;
+      const tag = normalizeTags([input.value])[0];
+      if (!tag) { showToast('タグ名を入力してください。'); input.focus(); return; }
+      if ((appData.tags || []).some(item => item && item.id !== tagId && String(item.name || '').toLocaleLowerCase() === tag.toLocaleLowerCase())) {
+        showToast(`${tag} はすでに登録されています。`); input.focus(); return;
+      }
+      record.name = tag;
+      saveData();
+      refreshTagSuggestions();
+      renderTagManagement();
+      closeAppModal('tagEditModal');
+      showToast('タグ名を更新しました。');
+    }
+
+    /** 指定タグをフィルタに設定して動画一覧へ移動する。 */
+    function showStreamsWithTag(tagId) {
+      const record = (appData.tags || []).find(item => item && typeof item === 'object' && item.id === tagId);
+      if (!record) { showToast('表示するタグが見つかりません。'); return; }
+      // タグ管理から遷移した場合も、フィルタ欄で表示される # 付きタグ名として保存する。
+      window.streamTagFilterValue = normalizeTags([record.name]).join(', ');
+      switchTab('streamTab');
+      const input = document.getElementById('streamTagFilterInput');
+      if (input) input.value = window.streamTagFilterValue;
+      renderTagPicker('streamTagFilterInput', 'streamTagFilterPicker');
+      renderStreams();
+      showToast(`${record.name} で動画を絞り込みました。`);
+    }
+
+    /** タグ新規登録モーダルを開く。 */
+    function createManagedTag() {
+      openAppModal('tagCreateModal', {
+        title: 'タグの新規登録',
+        icon: 'fa-tags',
+        width: 'sm',
+        height: 'sm',
+        content: `
+          <div class="flex flex-col gap-3">
+            <label for="managedTagName" class="text-sm font-medium">タグ名</label>
+            <input id="managedTagName" type="text" class="w-full bg-base-mid border border-base rounded-lg p-3 text-white focus:outline-none focus:border-mono" placeholder="#お気に入り" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();saveManagedTagFromModal();}">
+            <p class="text-xs text-mono-muted">「#」は省略できます。</p>
+          </div>`,
+        actions: [
+          {label: 'キャンセル', variant: 'secondary', onClick: () => closeAppModal('tagCreateModal')},
+          {label: '登録', variant: 'primary', onClick: saveManagedTagFromModal}
+        ]
+      });
+      requestAnimationFrame(() => document.getElementById('managedTagName')?.focus({preventScroll: true}));
+    }
+
+    /** モーダルの入力内容を検証してタグを登録する。 */
+    function saveManagedTagFromModal() {
+      const input = document.getElementById('managedTagName');
+      if (!input) return;
+      const normalized = normalizeTags([input.value]);
+      const tag = normalized[0];
+      if (!tag) {
+        showToast('タグ名を入力してください。');
+        input.focus();
+        return;
+      }
+      if (getAllTags().some(existing => existing.toLocaleLowerCase() === tag.toLocaleLowerCase())) {
+        showToast(`${tag} はすでに登録されています。`);
+        input.focus();
+        return;
+      }
+      if (!Array.isArray(appData.tags)) appData.tags = [];
+      appData.tags.push({id: createTagId(), name: tag, createdAt: new Date().toISOString()});
+      saveData();
+      refreshTagSuggestions();
+      renderTagManagement();
+      closeAppModal('tagCreateModal');
+      showToast(`${tag} を登録しました。`);
+    }
+
+    function refreshTagSuggestions() {
+      const list = document.getElementById('appTagSuggestions');
+      if (!list) return;
+      list.innerHTML = getAllTags().map(tag => `<option value="${escapeHtml(tag)}"></option>`).join('');
+      renderTagPicker('inputStreamTags', 'inputStreamTagPicker');
+      renderTagPicker('modalInputTags', 'modalInputTagPicker');
+      renderTagPicker('streamTagFilterInput', 'streamTagFilterPicker');
     }
 
     /**
@@ -6545,6 +6974,35 @@ button.bg-blue-600, button.bg-indigo-600 {
  * @returns {*} 処理結果。
  */
     function saveData() {
+      appData.schemaVersion = 5;
+      (appData.masterSongs || []).forEach(song => {
+        if (!Array.isArray(song.singerIds)) song.singerIds = [];
+        delete song.singerId;
+      });
+      if (!Array.isArray(appData.tags)) appData.tags = [];
+      // 旧形式の文字列タグも {id, name, createdAt} に統一する。
+      appData.tags = appData.tags.map((item, index) => {
+        const name = normalizeTags([typeof item === 'string' ? item : item?.name])[0];
+        if (!name) return null;
+        return {id: item && typeof item === 'object' && item.id ? String(item.id) : createTagId(), name,
+          createdAt: item && typeof item === 'object' && item.createdAt ? item.createdAt : new Date(Date.now() + index).toISOString()};
+      }).filter(Boolean);
+      const knownTags = new Set(appData.tags.map(tag => tag.name.toLocaleLowerCase()));
+      const ensureTag = tag => {
+        if (knownTags.has(tag.toLocaleLowerCase())) return;
+        knownTags.add(tag.toLocaleLowerCase());
+        appData.tags.push({id: createTagId(), name: tag, createdAt: new Date().toISOString()});
+      };
+      (appData.streams || []).forEach(stream => {
+        const streamTagNames = normalizeTags(stream.tags);
+        const songTagNames = (stream.songs || []).flatMap(song => normalizeTags(song.tags));
+        [...streamTagNames, ...songTagNames].forEach(ensureTag);
+        stream.tags = tagIdsFrom(streamTagNames);
+        (stream.songs || []).forEach(song => {
+          if (typeof song.memo !== 'string') song.memo = '';
+          song.tags = tagIdsFrom(song.tags);
+        });
+      });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
       dataIndexesDirty = true;
     }
@@ -6612,7 +7070,7 @@ button.bg-blue-600, button.bg-indigo-600 {
       try {
         const parsed = await parseBackupArchive(file);
 
-        appData = migrateToV3(parsed);
+        appData = migrateToV4(parsed);
         saveData();
         renderStreams();
         renderSongTab();
@@ -6675,9 +7133,76 @@ button.bg-blue-600, button.bg-indigo-600 {
  * @param {*} id この処理に渡す値。
  * @returns {*} 処理結果。
  */
+    /**
+     * マスター楽曲に紐づく複数アーティスト名を取得する（旧形式にも対応）。
+     * @param {object} song マスター楽曲データ。
+     * @returns {string[]} アーティスト名の配列。
+     */
+    function getMasterSongArtistNames(song) {
+      if (Array.isArray(song?.singerIds) && song.singerIds.length) {
+        return song.singerIds.map(id => getSingerById(id)?.name).filter(Boolean);
+      }
+      return [];
+    }
+
+    /** 各アーティスト間の表示区切りを取得する。 */
+    function getMasterSongArtistSeparators(song) {
+      const count = Math.max(0, getMasterSongArtistNames(song).length - 1);
+      if (!count) return [];
+      let separators = Array.isArray(song?.artistSeparators) ? song.artistSeparators : null;
+      if (!separators) separators = String(song?.artistSeparator ?? ' feat. ').split('|');
+      if (!separators.length) separators = [' feat. '];
+      return Array.from({length: count}, (_, i) => separators[i] ?? separators[separators.length - 1] ?? ' feat. ');
+    }
+
+    /** マスター楽曲の連名アーティストを指定区切りで表示する。 */
+    function getMasterSongArtistDisplay(song) {
+      const names = getMasterSongArtistNames(song);
+      const separators = getMasterSongArtistSeparators(song);
+      return names.map((name, i) => i ? `${separators[i - 1]}${name}` : name).join('');
+    }
+
+    /** 区切り文字入力を各アーティスト間の区切り配列に変換する。 */
+    function parseArtistSeparators(value, artistCount) {
+      const count = Math.max(0, artistCount - 1);
+      if (!count) return [];
+      const input = String(value ?? ' feat. ').split('|');
+      return Array.from({length: count}, (_, i) => input[i] ?? input[input.length - 1] ?? ' feat. ');
+    }
+
+    /**
+     * アーティスト入力文字列を分割し、マスターアーティストIDを用意する。
+     * 「|」を入力上の区切りとして使い、表示区切りは別途保持する。
+     * @param {string} value アーティスト名入力。
+     * @returns {string[]} アーティストID配列。
+     */
+    /**
+     * 「|」区切りのアーティスト入力を指定された文字列で表示する。
+     * @param {string} value 入力されたアーティスト名。
+     * @param {string} separator 表示区切り文字。
+     * @returns {string} 表示用アーティスト名。
+     */
+    function formatArtistInput(value, separator = ' feat. ') {
+      const names = String(value || '').split('|').map(name => name.trim()).filter(Boolean);
+      const separators = String(separator ?? ' feat. ').split('|');
+      return names.map((name, i) => i ? `${separators[i - 1] ?? separators[separators.length - 1] ?? ' feat. '}${name}` : name).join('');
+    }
+
+    function resolveArtistIds(value) {
+      const names = [...new Set(String(value || '').split('|').map(name => name.trim()).filter(Boolean))];
+      return names.map(name => {
+        let artist = appData.singers.find(item => normalizeStr(item.name) === normalizeStr(name));
+        if (!artist) {
+          artist = {id: 'sing-' + Math.random().toString(36).substring(2, 9), name};
+          appData.singers.push(artist);
+        }
+        return artist.id;
+      });
+    }
+
     function getMasterSongById(id) {
       const indexes = ensureDataIndexes();
-      return indexes.masterSongById.get(id) || {id, title: '不明な楽曲', singerId: ''};
+      return indexes.masterSongById.get(id) || {id, title: '不明な楽曲', singerIds: []};
     }
 
     /**
@@ -6939,6 +7464,7 @@ button.bg-blue-600, button.bg-indigo-600 {
         if (activeSubTab === 'songSubTab') renderSongTab();
         else if (activeSubTab === 'singerSubTab') renderSingerTab();
         else if (activeSubTab === 'streamerSubTab') renderStreamerMasterList();
+        else if (activeSubTab === 'tagSubTab') renderTagManagement();
       }
 
       if (tabId === 'streamTab') renderStreams();
@@ -6959,7 +7485,7 @@ button.bg-blue-600, button.bg-indigo-600 {
       document.querySelectorAll('.subdata-content').forEach(el => el.classList.add('hidden'));
       document.getElementById(subTabId).classList.remove('hidden');
 
-      const subnavs = ['songSubTab', 'singerSubTab', 'streamerSubTab'];
+      const subnavs = ['songSubTab', 'singerSubTab', 'streamerSubTab', 'tagSubTab'];
       subnavs.forEach(id => {
         const btn = document.getElementById(`subnav-${id}`);
         if (!btn) return;
@@ -6971,9 +7497,10 @@ button.bg-blue-600, button.bg-indigo-600 {
       const filterMap = {
         songSubTab: 'songFilterBar',
         singerSubTab: 'singerFilterBar',
-        streamerSubTab: 'streamerFilterBar'
+        streamerSubTab: 'streamerFilterBar',
+        tagSubTab: 'tagFilterBar'
       };
-      ['songFilterBar', 'singerFilterBar', 'streamerFilterBar'].forEach(id => {
+      ['songFilterBar', 'singerFilterBar', 'streamerFilterBar', 'tagFilterBar'].forEach(id => {
         document.getElementById(id)?.classList.toggle('is-active', id === filterMap[subTabId]);
       });
 
@@ -6982,7 +7509,8 @@ button.bg-blue-600, button.bg-indigo-600 {
         singerSubTab: 'singerSearchKeyword',
         streamerSubTab: 'streamerSearchKeyword'
       };
-      requestAnimationFrame(() => document.getElementById(searchMap[subTabId])?.focus());
+      if (subTabId === 'tagSubTab') renderTagManagement();
+      if (searchMap[subTabId]) requestAnimationFrame(() => document.getElementById(searchMap[subTabId])?.focus());
     }
 
     // ===== 検索・フィルター =====
@@ -7022,10 +7550,10 @@ button.bg-blue-600, button.bg-indigo-600 {
       if (songSelect) {
         songSelect.innerHTML = '<option value="">すべての楽曲</option>';
         (appData.masterSongs || []).slice().sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ja')).forEach(song => {
-          const singer = appData.singers.find(item => item.id === song.singerId);
+          const artistDisplay = getMasterSongArtistDisplay(song);
           const option = document.createElement('option');
           option.value = song.id;
-          option.textContent = singer?.name ? `${song.title} — ${singer.name}` : song.title;
+          option.textContent = artistDisplay ? `${song.title} — ${artistDisplay}` : song.title;
           songSelect.appendChild(option);
         });
         songSelect.value = currentSongVal;
@@ -7194,7 +7722,19 @@ button.bg-blue-600, button.bg-indigo-600 {
  * @returns {*} 処理結果。
  */
     function openStreamFilterModal() {
+      // フィルタ状態を正規化して保持し、モーダルを開くたびに検索中タグを入力欄・選択済みチップへ反映する。
+      const activeTagValue = window.streamTagFilterValue || '';
+      window.streamTagFilterValue = normalizeTags(activeTagValue).join(', ');
+      window.streamTagFilterDraftValue = window.streamTagFilterValue;
+      window.streamTagFilterDraftMatchMode = window.streamTagMatchMode || 'or';
       openAppModal('streamFilterModal');
+      refreshTagSuggestions();
+      const tagInput = document.getElementById('streamTagFilterInput');
+      if (tagInput) {
+        tagInput.value = window.streamTagFilterDraftValue;
+        renderTagPicker('streamTagFilterInput', 'streamTagFilterPicker');
+      }
+      document.querySelectorAll('input[name="streamTagMatchMode"]').forEach(input => { input.checked = input.value === (window.streamTagFilterDraftMatchMode || 'or'); });
 
       const search = document.getElementById('streamerFilterSearch');
       if (search) search.value = '';
@@ -7258,8 +7798,7 @@ button.bg-blue-600, button.bg-indigo-600 {
         return;
       }
       const selected = (appData.masterSongs || []).find(song => song.id === selectedId);
-      const singer = selected ? appData.singers.find(item => item.id === selected.singerId) : null;
-      valueEl.textContent = selected ? (singer?.name ? `${selected.title} — ${singer.name}` : selected.title) : 'すべての楽曲';
+      valueEl.textContent = selected ? `${selected.title}${getMasterSongArtistDisplay(selected) ? ` — ${getMasterSongArtistDisplay(selected)}` : ''}` : 'すべての楽曲';
     }
 
     /**
@@ -7272,9 +7811,8 @@ button.bg-blue-600, button.bg-indigo-600 {
       const search = normalizeStr(document.getElementById('streamSongFilterSearch')?.value || '');
       const selected = document.getElementById('streamFilterSong')?.value || '';
       const songs = (appData.masterSongs || []).map(song => {
-        const singer = appData.singers.find(item => item.id === song.singerId);
-        return {...song, singerName: singer?.name || ''};
-      }).filter(song => !search || normalizeStr(`${song.title || ''} ${song.singerName}`).includes(search))
+        return {...song, singerName: getMasterSongArtistDisplay(song), artistSearchNames: getMasterSongArtistNames(song).join(' ')};
+      }).filter(song => !search || normalizeStr(`${song.title || ''} ${song.singerName} ${song.artistSearchNames || ''}`).includes(search))
         .sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ja'));
 
       container.innerHTML = '';
@@ -7445,6 +7983,9 @@ button.bg-blue-600, button.bg-indigo-600 {
  * @returns {*} 処理結果。
  */
     function applyStreamFilter() {
+      const tagInput = document.getElementById('streamTagFilterInput');
+      window.streamTagFilterValue = normalizeTags(tagInput ? tagInput.value : (window.streamTagFilterDraftValue || '')).join(', ');
+      window.streamTagMatchMode = window.streamTagFilterDraftMatchMode || 'or';
       closeStreamFilterModal();
       renderStreams();
     }
@@ -7457,10 +7998,17 @@ button.bg-blue-600, button.bg-indigo-600 {
       document.getElementById('streamFilterStreamer').value = '';
       const songFilter = document.getElementById('streamFilterSong');
       if (songFilter) songFilter.value = '';
+      window.streamTagFilterDraftValue = '';
+      window.streamTagFilterDraftMatchMode = 'or';
+      const tagInput = document.getElementById('streamTagFilterInput');
+      if (tagInput) tagInput.value = '';
+      document.querySelectorAll('input[name="streamTagMatchMode"]').forEach(input => { input.checked = input.value === 'or'; });
+      renderTagPicker('streamTagFilterInput', 'streamTagFilterPicker');
       updateStreamerFilterField();
       updateStreamSongFilterField();
       renderStreamFilterOptions();
       renderStreamSongFilterOptions();
+      renderStreams();
     }
 
     /**
@@ -7535,6 +8083,9 @@ button.bg-blue-600, button.bg-indigo-600 {
       const sortVal = document.getElementById('streamSortSelect').value;
       const selectedStreamerId = document.getElementById('streamFilterStreamer').value;
       const selectedSongId = document.getElementById('streamFilterSong')?.value || '';
+      // タグ入力欄はモーダル内にあり、閉じるとDOMから消えるため、保存した状態を優先して参照する。
+      const selectedTags = normalizeTags(window.streamTagFilterValue || '');
+      const tagMatchMode = window.streamTagMatchMode || 'or';
       const keyword = normalizeStr(document.getElementById('streamSearchKeyword').value);
 
       const clearButton = document.getElementById('streamSearchClear');
@@ -7542,11 +8093,11 @@ button.bg-blue-600, button.bg-indigo-600 {
 
       const streamFilterButton = document.getElementById('streamFilterButton');
       if (streamFilterButton) {
-        streamFilterButton.classList.toggle('has-active-filters', Boolean(selectedStreamerId || selectedSongId));
+        streamFilterButton.classList.toggle('has-active-filters', Boolean(selectedStreamerId || selectedSongId || selectedTags.length));
       }
       const filterBadge = document.getElementById('streamFilterBadge');
       if (filterBadge) {
-        const activeFilters = Number(Boolean(selectedStreamerId)) + Number(Boolean(selectedSongId));
+        const activeFilters = Number(Boolean(selectedStreamerId)) + Number(Boolean(selectedSongId)) + Number(selectedTags.length > 0);
         filterBadge.textContent = activeFilters ? String(activeFilters) : '';
         filterBadge.classList.toggle('hidden', !activeFilters);
       }
@@ -7555,6 +8106,12 @@ button.bg-blue-600, button.bg-indigo-600 {
       let filtered = appData.streams.filter(stream => {
         if (selectedStreamerId && stream.streamerId !== selectedStreamerId) return false;
         if (selectedSongId && !(stream.songs || []).some(song => song.masterSongId === selectedSongId)) return false;
+        if (selectedTags.length) {
+          const streamTags = [...normalizeTags(stream.tags), ...(stream.songs || []).flatMap(song => normalizeTags(song.tags))];
+          const tagSet = new Set(streamTags.map(tag => tag.toLocaleLowerCase()));
+          const matched = selectedTags.map(tag => tag.toLocaleLowerCase()).map(tag => tagSet.has(tag));
+          if (tagMatchMode === 'and' ? !matched.every(Boolean) : !matched.some(Boolean)) return false;
+        }
         if (!keyword) return true;
 
         return (indexes.streamSearchText.get(stream.id) || '').includes(keyword);
@@ -7611,6 +8168,7 @@ button.bg-blue-600, button.bg-indigo-600 {
                 ${streamer.account ? `<span class="stream-meta-separator"></span><span class="streamer-name streamer-account">${streamer.account}</span>` : ''}
                 <span class="stream-meta-separator"></span>
                 <span class="stream-date"><i class="fa-regular fa-calendar mr-1"></i>${formattedDate || '未設定'}</span>
+                ${normalizeTags(stream.tags).length ? `<span class="text-[10px] text-mono-muted">${normalizeTags(stream.tags).map(tag => escapeHtml(tag)).join(' ')}</span>` : ''}
               </div>
             </div>
 
@@ -7632,7 +8190,7 @@ button.bg-blue-600, button.bg-indigo-600 {
           <div id="acc-body-${stream.id}" class="timestamp-panel hidden">
             ${sortedSongs.length ? sortedSongs.map(song => {
           const masterSong = getMasterSongById(song.masterSongId);
-          const singer = getSingerById(masterSong.singerId);
+          const artistDisplay = getMasterSongArtistDisplay(masterSong) || '未設定・その他';
           const singerNames = (song.singerIds || [])
             .map(id => getStreamerById(id)?.name)
             .filter(Boolean)
@@ -7640,9 +8198,11 @@ button.bg-blue-600, button.bg-indigo-600 {
 
           return `
                 <div class="timestamp-row" onclick="playStreamSong('${stream.id}', '${song.id}')">
-                  <div class="timestamp-song" title="${masterSong.title} / ${singer.name}">
-                    <span class="timestamp-song-title">${masterSong.title}</span>
-                    <span class="timestamp-song-artist">/ ${singer.name}</span>
+                  <div class="timestamp-song" title="${masterSong.title} / ${artistDisplay}">
+                    <span class="timestamp-song-title">${escapeHtml(masterSong.title)}</span>
+                    <span class="timestamp-song-artist">/ ${escapeHtml(artistDisplay)}</span>
+                    ${song.memo ? `<span class="timestamp-song-memo" title="${escapeHtml(song.memo)}"><i class="fa-regular fa-note-sticky"></i> ${escapeHtml(song.memo).replace(/\n/g, ' ')}</span>` : ''}
+                    ${normalizeTags(song.tags).length ? `<span class="text-[10px] text-mono-muted">${normalizeTags(song.tags).map(tag => escapeHtml(tag)).join(' ')}</span>` : ''}
                   </div>
                   <div class="timestamp-singer" title="${singerNames}">
                     ${renderOverlappedAvatars(song.singerIds, "w-6 h-6", stream.streamerId)}
@@ -7831,7 +8391,7 @@ button.bg-blue-600, button.bg-indigo-600 {
 
       sortedSongs.forEach((song) => {
         const masterSong = getMasterSongById(song.masterSongId);
-        const singer = getSingerById(masterSong.singerId);
+        const artistDisplay = getMasterSongArtistDisplay(masterSong) || '未設定・その他';
         const isTarget = song.id === currentPlayingSongId;
         const item = document.createElement('div');
         item.id = `player-song-item-${song.id}`;
@@ -7851,7 +8411,7 @@ button.bg-blue-600, button.bg-indigo-600 {
             ${isTarget ? '<i class="fa-solid fa-volume-high text-mono-muted text-xs animate-pulse"></i>' : ''}
             <div class="flex flex-col truncate min-w-0">
               <div class="text-xs font-bold ${isTarget ? 'text-white' : 'text-mono-muted'} truncate">${masterSong.title}</div>
-              <div class="text-[10px] text-mono-muted truncate">${singer.name}</div>
+              <div class="text-[10px] text-mono-muted truncate">${artistDisplay}</div>
               <div class="mt-1 flex items-center gap-1">
                 ${renderOverlappedAvatars(song.singerIds, "w-4 h-4", stream.streamerId)}
               </div>
@@ -8063,18 +8623,18 @@ button.bg-blue-600, button.bg-indigo-600 {
 
       const indexes = ensureDataIndexes();
       let masterList = appData.masterSongs.map(mSong => {
-        const singer = indexes.singerById.get(mSong.singerId);
         return {
           masterSongId: mSong.id,
           title: mSong.title,
-          singerId: mSong.singerId,
-          singerName: singer?.name || '未設定・その他',
+          singerIds: Array.isArray(mSong.singerIds) ? mSong.singerIds : [],
+          singerName: getMasterSongArtistDisplay(mSong) || '未設定・その他',
+          artistNames: getMasterSongArtistNames(mSong),
           instances: indexes.songOccurrencesByMasterSongId.get(mSong.id) || []
         };
       });
 
       let filtered = masterList.filter(item => {
-        if (filterSingerId && item.singerId !== filterSingerId) return false;
+        if (filterSingerId && !item.singerIds.includes(filterSingerId)) return false;
         if (!keyword) return true;
 
         if ((indexes.masterSongSearchText.get(item.masterSongId) || '').includes(keyword)) return true;
@@ -8193,11 +8753,13 @@ button.bg-blue-600, button.bg-indigo-600 {
  */
     function openMasterSongEditModal(masterSongId) {
       const mSong = getMasterSongById(masterSongId);
-      const singer = getSingerById(mSong.singerId);
+      const singer = {name: getMasterSongArtistNames(mSong).join(mSong.artistSeparator ?? ' feat. ') || '未設定・その他'};
       openAppModal('masterSongEditModal');
       document.getElementById('editMasterSongId').value = masterSongId;
       document.getElementById('modalInputMasterSongTitle').value = mSong.title;
-      document.getElementById('modalInputMasterSongArtist').value = singer.name;
+      document.getElementById('modalInputMasterSongArtist').value = getMasterSongArtistNames(mSong).join(' | ');
+      const separatorInput = document.getElementById('modalInputMasterSongArtistSeparator');
+      if (separatorInput) separatorInput.value = (mSong.artistSeparators || String(mSong.artistSeparator ?? ' feat. ').split('|')).join(' | ');
     }
 
     /**
@@ -8225,19 +8787,16 @@ button.bg-blue-600, button.bg-indigo-600 {
       const mSong = appData.masterSongs.find(m => m.id === masterSongId);
       if (!mSong) return;
 
-      let singerId = '';
-      if (newArtist) {
-        let existingSinger = appData.singers.find(s => normalizeStr(s.name) === normalizeStr(newArtist));
-        if (existingSinger) {
-          singerId = existingSinger.id;
-        } else {
-          singerId = 'sing-' + Math.random().toString(36).substring(2, 9);
-          appData.singers.push({id: singerId, name: newArtist});
-        }
-      }
+      const artistIds = resolveArtistIds(newArtist);
+      const separatorInput = document.getElementById('modalInputMasterSongArtistSeparator')?.value ?? ' feat. ';
+      const separators = parseArtistSeparators(separatorInput, artistIds.length);
+      const separator = separators.join('|') || ' feat. ';
 
       mSong.title = newTitle;
-      mSong.singerId = singerId;
+      mSong.singerIds = artistIds;
+      delete mSong.singerId;
+      mSong.artistSeparator = separator;
+      mSong.artistSeparators = separators;
 
       saveData();
       closeMasterSongEditModal();
@@ -8299,7 +8858,7 @@ button.bg-blue-600, button.bg-indigo-600 {
       const indexes = ensureDataIndexes();
       const list = appData.singers.map(singer => {
         const songs = appData.masterSongs
-          .filter(song => song.singerId === singer.id)
+          .filter(song => Array.isArray(song.singerIds) && song.singerIds.includes(singer.id))
           .map(song => ({
             ...song,
             singCount: (indexes.songOccurrencesByMasterSongId.get(song.id) || []).length
@@ -8499,17 +9058,22 @@ button.bg-blue-600, button.bg-indigo-600 {
       const singer = appData.singers.find(item => item.id === singerId);
       if (!singer) return;
 
-      const linkedSongs = appData.masterSongs.filter(song => song.singerId === singerId).length;
+      const linkedSongs = appData.masterSongs.filter(song =>
+        Array.isArray(song.singerIds) && song.singerIds.includes(singerId)
+      ).length;
       const confirmed = await showModal({
         title: 'アーティストの削除',
-        message: `「${singer.name}」を削除しますか？${linkedSongs ? `\\n紐づく楽曲 ${linkedSongs} 曲は削除せず、アーティスト未設定になります。` : ''}この操作は取り消せません。`,
+        message: `「${singer.name}」を削除しますか？${linkedSongs ? `\n紐づく楽曲 ${linkedSongs} 曲は削除せず、このアーティストとの紐付けを解除します。` : ''}この操作は取り消せません。`,
         isConfirm: true
       });
       if (!confirmed) return;
 
       appData.singers = appData.singers.filter(item => item.id !== singerId);
       appData.masterSongs.forEach(song => {
-        if (song.singerId === singerId) song.singerId = '';
+        if (Array.isArray(song.singerIds)) {
+          song.singerIds = song.singerIds.filter(id => id !== singerId);
+        }
+        delete song.singerId;
       });
 
       saveData();
@@ -8784,6 +9348,7 @@ button.bg-blue-600, button.bg-indigo-600 {
         document.getElementById('inputStreamTitle').value = stream.title || '';
         document.getElementById('inputStreamDate').value = stream.streamDate || '';
         document.getElementById('inputCustomThumbnail').value = stream.customThumbnail || '';
+        document.getElementById('inputStreamTags').value = normalizeTags(stream.tags).join(', ');
         const streamer = getStreamerById(stream.streamerId);
         dropdown.value = streamer?.id || '';
         document.getElementById('inputStreamerName').value = streamer?.name || '';
@@ -8791,8 +9356,8 @@ button.bg-blue-600, button.bg-indigo-600 {
         document.getElementById('inputStreamerIcon').value = streamer?.icon || '';
         editingSongsList = (stream.songs || []).map(s => {
           const mSong = getMasterSongById(s.masterSongId);
-          const singer = getSingerById(mSong.singerId);
-          return {id: s.id, title: mSong.title, artist: singer.name, singerIds: [...(s.singerIds || [])], timestamp: s.timestamp};
+          const singer = {name: getMasterSongArtistNames(mSong).join(mSong.artistSeparator ?? ' feat. ') || '未設定・その他'};
+          return {id: s.id, title: mSong.title, artist: getMasterSongArtistNames(mSong).join(' | '), artistSeparator: (mSong.artistSeparators || String(mSong.artistSeparator ?? ' feat. ').split('|')).join(' | '), singerIds: [...(s.singerIds || [])], timestamp: s.timestamp, memo: s.memo || '', tags: normalizeTags(s.tags)};
         });
         document.getElementById('btnDeleteStream').classList.remove('hidden');
       } else {
@@ -8801,6 +9366,7 @@ button.bg-blue-600, button.bg-indigo-600 {
         document.getElementById('inputStreamTitle').value = '';
         document.getElementById('inputStreamDate').value = new Date().toISOString().slice(0, 10);
         document.getElementById('inputCustomThumbnail').value = '';
+        document.getElementById('inputStreamTags').value = '';
         dropdown.value = '';
         document.getElementById('inputStreamerName').value = '';
         document.getElementById('inputStreamerAccount').value = '';
@@ -8809,6 +9375,7 @@ button.bg-blue-600, button.bg-indigo-600 {
       }
 
       updateStreamerDropdownAvatar();
+      refreshTagSuggestions();
       previewYoutubeThumbnail();
       renderEditingSongsDisplay();
     }
@@ -8922,7 +9489,7 @@ button.bg-blue-600, button.bg-indigo-600 {
                                 <span>${song.title}</span>
                                 ${isDuplicate ? '<span class="text-[10px] bg-mono-surface text-mono-muted px-1.5 py-0.2 rounded font-semibold shrink-0 border border-mono/50"><i class="fa-solid fa-triangle-exclamation"></i> 重複</span>' : ''}
                             </div>
-                            <div class="text-[11px] text-mono-muted truncate">${song.artist || '原曲歌手未設定'}</div>
+                            <div class="text-[11px] text-mono-muted truncate">${formatArtistInput(song.artist, song.artistSeparator) || '原曲歌手未設定'}</div>
                         </div>
                     </div>
 
@@ -8955,6 +9522,7 @@ button.bg-blue-600, button.bg-indigo-600 {
       const streamerIcon = document.getElementById('inputStreamerIcon').value.trim();
       const streamDate = document.getElementById('inputStreamDate').value;
       const customThumbnail = document.getElementById('inputCustomThumbnail').value.trim();
+      const streamTags = normalizeTags(document.getElementById('inputStreamTags')?.value || '');
 
       if (!youtubeUrl) {alert('YouTube動画URLまたは動画IDを入力してください'); return;}
       if (!title) {alert('歌枠タイトルを入力してください'); return;}
@@ -8977,24 +9545,28 @@ button.bg-blue-600, button.bg-indigo-600 {
       }
 
       const processedSongs = editingSongsList.map(item => {
-        let singerId = '';
-        const cleanArtist = item.artist ? item.artist.trim() : '未設定 / その他';
-        let existingSinger = appData.singers.find(s => normalizeStr(s.name) === normalizeStr(cleanArtist));
-        if (existingSinger) {
-          singerId = existingSinger.id;
-        } else {
-          singerId = 'sing-' + Math.random().toString(36).substring(2, 9);
-          appData.singers.push({id: singerId, name: cleanArtist});
-        }
-
-        let masterSongId = '';
+        const artistIds = resolveArtistIds(item.artist);
+          let masterSongId = '';
         const cleanTitle = item.title ? item.title.trim() : '無題曲';
-        let existingMaster = appData.masterSongs.find(m => normalizeStr(m.title) === normalizeStr(cleanTitle) && m.singerId === singerId);
+        const artistKey = artistIds.join('|');
+        let existingMaster = appData.masterSongs.find(m =>
+          normalizeStr(m.title) === normalizeStr(cleanTitle) &&
+          (Array.isArray(m.singerIds) && m.singerIds.join('|') === artistKey)
+        );
         if (existingMaster) {
           masterSongId = existingMaster.id;
+          existingMaster.singerIds = artistIds;
+          delete existingMaster.singerId;
+          existingMaster.artistSeparator = item.artistSeparator ?? existingMaster.artistSeparator ?? ' feat. ';
+          existingMaster.artistSeparators = parseArtistSeparators(existingMaster.artistSeparator, artistIds.length);
         } else {
           masterSongId = 'ms-' + Math.random().toString(36).substring(2, 9);
-          appData.masterSongs.push({id: masterSongId, title: cleanTitle, singerId});
+          appData.masterSongs.push({
+            id: masterSongId, title: cleanTitle,
+            singerIds: artistIds,
+            artistSeparator: item.artistSeparator ?? ' feat. ',
+            artistSeparators: parseArtistSeparators(item.artistSeparator ?? ' feat. ', artistIds.length)
+          });
         }
 
         let songSingerIds = item.singerIds;
@@ -9006,7 +9578,9 @@ button.bg-blue-600, button.bg-indigo-600 {
           id: item.id || ('s-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7)),
           masterSongId,
           singerIds: songSingerIds,
-          timestamp: normalizeTimestamp(item.timestamp)
+          timestamp: normalizeTimestamp(item.timestamp),
+          memo: String(item.memo || ''),
+          tags: normalizeTags(item.tags)
         };
       });
 
@@ -9020,6 +9594,7 @@ button.bg-blue-600, button.bg-indigo-600 {
           st.streamerId = streamerId;
           st.streamDate = streamDate;
           st.customThumbnail = customThumbnail;
+          st.tags = streamTags;
           st.songs = sortedSongs;
         }
       } else {
@@ -9031,6 +9606,7 @@ button.bg-blue-600, button.bg-indigo-600 {
           youtubeUrl,
           customThumbnail,
           createdAt: new Date().toISOString(),
+          tags: streamTags,
           songs: sortedSongs
         };
         appData.streams.unshift(newStream);
@@ -9131,6 +9707,9 @@ button.bg-blue-600, button.bg-indigo-600 {
       document.getElementById('modalInputTs').value = '';
       document.getElementById('modalInputTitle').value = '';
       document.getElementById('modalInputArtist').value = '';
+      document.getElementById('modalInputMemo').value = '';
+      document.getElementById('modalInputTags').value = '';
+      refreshTagSuggestions();
       document.getElementById('modalBatchText').value = '';
 
       updateExistingSongDropdown();
@@ -9159,6 +9738,11 @@ button.bg-blue-600, button.bg-indigo-600 {
       document.getElementById('modalInputTs').value = song.timestamp;
       document.getElementById('modalInputTitle').value = song.title;
       document.getElementById('modalInputArtist').value = song.artist || '';
+      document.getElementById('modalInputMemo').value = song.memo || '';
+      document.getElementById('modalInputTags').value = normalizeTags(song.tags).join(', ');
+      refreshTagSuggestions();
+      const separatorInput = document.getElementById('modalInputArtistSeparator');
+      if (separatorInput) separatorInput.value = song.artistSeparator ?? ' feat. ';
       modalAddTempSingerIds = [...(song.singerIds || [])];
 
       updateExistingSongDropdown();
@@ -9208,18 +9792,18 @@ button.bg-blue-600, button.bg-indigo-600 {
 
       const sortedMasters = [...appData.masterSongs].sort((a, b) => a.title.localeCompare(b.title, 'ja'));
       sortedMasters.forEach(m => {
-        const singer = getSingerById(m.singerId);
+        const artistDisplay = getMasterSongArtistDisplay(m);
         const opt = document.createElement('option');
         opt.value = m.id;
-        opt.textContent = `${m.title} / ${singer?.name || 'アーティスト未設定'}`;
+        opt.textContent = `${m.title} / ${artistDisplay || 'アーティスト未設定'}`;
         select.appendChild(opt);
       });
       const label = document.getElementById('existingSongPickerLabel');
       if (label) {
         const selected = appData.masterSongs.find(m => m.id === select.value);
-        const singer = selected ? getSingerById(selected.singerId) : null;
+        const artistDisplay = selected ? getMasterSongArtistDisplay(selected) : '';
         label.textContent = selected
-          ? `${selected.title} / ${singer?.name || 'アーティスト未設定'}`
+          ? `${selected.title} / ${artistDisplay || 'アーティスト未設定'}`
           : '曲名・アーティスト名で検索して選択';
       }
     }
@@ -9253,10 +9837,11 @@ button.bg-blue-600, button.bg-indigo-600 {
       container.innerHTML = '';
       const key = normalizeStr(search.value);
       const filtered = [...appData.masterSongs]
-        .map(song => ({song, singer: getSingerById(song.singerId)}))
-        .filter(({song, singer}) => !key ||
+        .map(song => ({song, artistDisplay: getMasterSongArtistDisplay(song), artistNames: getMasterSongArtistNames(song)}))
+        .filter(({song, artistDisplay, artistNames}) => !key ||
           normalizeStr(song.title).includes(key) ||
-          normalizeStr(singer?.name || '').includes(key))
+          normalizeStr(artistDisplay).includes(key) ||
+          artistNames.some(name => normalizeStr(name).includes(key)))
         .sort((a, b) => a.song.title.localeCompare(b.song.title, 'ja'));
 
       if (!filtered.length) {
@@ -9267,7 +9852,7 @@ button.bg-blue-600, button.bg-indigo-600 {
         return;
       }
 
-      filtered.forEach(({song, singer}) => {
+      filtered.forEach(({song, artistDisplay}) => {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'w-full flex items-center justify-between gap-3 rounded-lg border border-transparent px-3 py-3 text-left hover:bg-base-mid hover:border-base transition';
@@ -9278,7 +9863,7 @@ button.bg-blue-600, button.bg-indigo-600 {
         title.textContent = song.title;
         const artist = document.createElement('span');
         artist.className = 'text-xs text-mono-muted truncate';
-        artist.textContent = singer?.name || 'アーティスト未設定';
+        artist.textContent = artistDisplay || 'アーティスト未設定';
         copy.append(title, artist);
         const icon = document.createElement('i');
         icon.className = 'fa-solid fa-chevron-right text-xs text-mono-muted shrink-0';
@@ -9303,10 +9888,12 @@ button.bg-blue-600, button.bg-indigo-600 {
       if (!masterId) return;
 
       const mSong = getMasterSongById(masterId);
-      const singer = getSingerById(mSong.singerId);
+      const singer = {name: getMasterSongArtistNames(mSong).join(mSong.artistSeparator ?? ' feat. ') || '未設定・その他'};
 
       document.getElementById('modalInputTitle').value = mSong.title;
-      document.getElementById('modalInputArtist').value = singer?.name || '';
+      document.getElementById('modalInputArtist').value = getMasterSongArtistNames(mSong).join(' | ');
+      const separatorInput = document.getElementById('modalInputArtistSeparator');
+      if (separatorInput) separatorInput.value = (mSong.artistSeparators || String(mSong.artistSeparator ?? ' feat. ').split('|')).join(' | ');
       const label = document.getElementById('existingSongPickerLabel');
       if (label) label.textContent = `${mSong.title} / ${singer?.name || 'アーティスト未設定'}`;
     }
@@ -9339,6 +9926,7 @@ button.bg-blue-600, button.bg-indigo-600 {
       const ts = document.getElementById('modalInputTs').value.trim();
       const title = document.getElementById('modalInputTitle').value.trim();
       const artist = document.getElementById('modalInputArtist').value.trim();
+      const artistSeparator = document.getElementById('modalInputArtistSeparator')?.value ?? ' feat. ';
 
       if (!ts) {alert('タイムスタンプを入力してください'); return;}
       if (!title) {alert('楽曲名を入力してください'); return;}
@@ -9347,12 +9935,16 @@ button.bg-blue-600, button.bg-indigo-600 {
         timestamp: normalizeTimestamp(ts),
         title,
         artist,
-        singerIds: [...modalAddTempSingerIds]
+        artistSeparator,
+        singerIds: [...modalAddTempSingerIds],
+        memo: document.getElementById('modalInputMemo').value.trim(),
+        tags: normalizeTags(document.getElementById('modalInputTags').value)
       });
 
       document.getElementById('modalInputTs').value = '';
       document.getElementById('modalInputTitle').value = '';
       document.getElementById('modalInputArtist').value = '';
+      document.getElementById('modalInputMemo').value = '';
       document.getElementById('modalSelectExistingSong').value = '';
       const existingSongLabel = document.getElementById('existingSongPickerLabel');
       if (existingSongLabel) existingSongLabel.textContent = '曲名・アーティスト名で検索して選択';
@@ -9405,6 +9997,7 @@ button.bg-blue-600, button.bg-indigo-600 {
             timestamp: normalizeTimestamp(rawTs),
             title: songTitle,
             artist: artistName,
+            artistSeparator: document.getElementById('modalInputArtistSeparator')?.value ?? ' feat. ',
             singerIds: [...defaultSingerIds]
           });
           count++;
@@ -9443,7 +10036,7 @@ button.bg-blue-600, button.bg-indigo-600 {
                         <span class="text-xs font-mono font-bold bg-base-mid text-mono-muted border border-base/50 px-2 py-0.5 rounded shrink-0">${song.timestamp}</span>
                         <div class="flex flex-col truncate min-w-0">
                             <span class="text-xs font-bold text-white truncate">${song.title}</span>
-                            <span class="text-[10px] text-mono-muted truncate">${song.artist || 'アーティスト名未設定'}</span>
+                            <span class="text-[10px] text-mono-muted truncate">${formatArtistInput(song.artist, song.artistSeparator) || 'アーティスト名未設定'}</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
@@ -9485,6 +10078,7 @@ button.bg-blue-600, button.bg-indigo-600 {
         const ts = document.getElementById('modalInputTs').value.trim();
         const title = document.getElementById('modalInputTitle').value.trim();
         const artist = document.getElementById('modalInputArtist').value.trim();
+      const artistSeparator = document.getElementById('modalInputArtistSeparator')?.value ?? ' feat. ';
 
         if (!ts || !title) {alert('タイムスタンプと楽曲名を入力してください'); return;}
 
@@ -9495,7 +10089,10 @@ button.bg-blue-600, button.bg-indigo-600 {
           target.timestamp = normalizeTimestamp(ts);
           target.title = title;
           target.artist = artist;
+          target.artistSeparator = artistSeparator;
           target.singerIds = [...modalAddTempSingerIds];
+          target.memo = document.getElementById('modalInputMemo').value.trim();
+          target.tags = normalizeTags(document.getElementById('modalInputTags').value);
         }
       } else {
         tempAddSongsList.forEach(item => {
@@ -9504,7 +10101,10 @@ button.bg-blue-600, button.bg-indigo-600 {
             timestamp: item.timestamp,
             title: item.title,
             artist: item.artist,
-            singerIds: item.singerIds
+            artistSeparator: item.artistSeparator ?? ' feat. ',
+            singerIds: item.singerIds,
+            memo: item.memo || '',
+            tags: normalizeTags(item.tags)
           });
         });
       }
@@ -9819,7 +10419,7 @@ button.bg-blue-600, button.bg-indigo-600 {
 
         const parsed = await parseBackupArchive(uint8Array);
 
-        appData = migrateToV3(parsed);
+        appData = migrateToV4(parsed);
         saveData();
         renderStreams();
         renderSongTab();
@@ -10215,7 +10815,7 @@ button.bg-blue-600, button.bg-indigo-600 {
 
           const parsed = await parseBackupArchive(uint8Array);
 
-          appData = migrateToV3(parsed);
+          appData = migrateToV4(parsed);
           saveData();
           renderStreams();
           renderSongTab();
@@ -10251,3 +10851,13 @@ button.bg-blue-600, button.bg-indigo-600 {
 </body>
 
 </html>
+<style>
+#dataTab .tag-management-row { min-height:54px; gap:16px; }
+#dataTab .tag-management-row .song-list-main { flex:1 1 auto; min-width:0; }
+#dataTab .tag-management-actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; flex:0 0 auto; }
+#dataTab .tag-management-row .song-list-count { flex:0 0 auto; white-space:nowrap; color:var(--text-muted, #9c9c9c); }
+#dataTab .tag-management-row .song-list-count strong { color:var(--text-color, #fff); font-weight:700; }
+#dataTab .tag-management-action { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:32px; padding:5px 9px; border:1px solid var(--border-color, #4f4f4f); border-radius:7px; color:var(--text-color, #fff); background:var(--surface-color, transparent); font-size:12px; white-space:nowrap; }
+#dataTab .tag-management-action:hover { border-color:var(--accent-color, #8b7cf6); }
+@media (max-width:720px) { #dataTab .tag-management-row { gap:8px; padding:10px; flex-wrap:wrap; } #dataTab .tag-management-row .song-list-main { flex-basis:100%; } #dataTab .tag-management-actions { width:100%; justify-content:flex-start; flex-wrap:wrap; } #dataTab .tag-management-row .song-list-count { margin-right:auto; font-size:11px; } #dataTab .tag-management-action { min-height:30px; padding:5px 8px; } }
+</style>

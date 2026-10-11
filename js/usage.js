@@ -1,310 +1,291 @@
 /**
- * 歌枠データベース v3.2 ヘルプ＆取扱説明書データ
- * marked.js 用 Markdown ソースコード（スムーズスクロール対応・インタラクティブUI目次版）
+ * SonA'Theca v2.1.0 ヘルプ＆取扱説明書データ
+ * marked.js で表示する Markdown / HTML ソース
  */
 const config = `
 <div class="help-hero">
-    <div class="help-hero-icon"><i class="fa-solid fa-book-open text-white"></i></div>
-    <div>
-        <div class="help-hero-title">歌枠データベース v2.0.0 マニュアル</div>
-        <div class="help-hero-text">歌枠アーカイブの保存、タイムスタンプ連動再生、楽曲・アーティストの一括管理、バックアップやクラウド共有を行うための総合ガイドです。</div>
-    </div>
+  <div class="help-hero-icon"><i class="fa-solid fa-book-open text-white"></i></div>
+  <div>
+    <div class="help-hero-title">SonA'Theca v2.1.0 マニュアル</div>
+    <div class="help-hero-text">歌唱動画・楽曲・アーティスト・チャンネルをまとめて管理し、タイムスタンプから動画を再生するためのガイドです。</div>
+  </div>
 </div>
 
 <div class="help-grid">
-    <div class="help-card">
-        <div class="help-card-icon"><i class="fa-solid fa-circle-play text-slate-300"></i></div>
-        <b>歌枠の試聴・自動追従再生</b>
-        <span>YouTube再生に合わせてタイムスタンプが自動ハイライト。シアターモードで拡大視聴も可能。</span>
-    </div>
-    <div class="help-card">
-        <div class="help-card-icon"><i class="fa-solid fa-wand-magic-sparkles text-slate-300"></i></div>
-        <b>タイムスタンプ一括解析</b>
-        <span>YouTubeの概要欄やコメントから「01:23 曲名 / 歌手名」を貼り付けるだけで自動抽出・一括登録。</span>
-    </div>
-    <div class="help-card">
-        <div class="help-card-icon"><i class="fa-solid fa-layer-group text-slate-300"></i></div>
-        <b>自動データベース構築</b>
-        <span>歌唱された楽曲や原曲アーティスト、配信者・歌唱者を独立したマスターデータとして自動集計。</span>
-    </div>
-    <div class="help-card">
-        <div class="help-card-icon"><i class="fa-solid fa-cloud-arrow-up text-slate-300"></i></div>
-        <b>クラウド連携 & 柔軟な共有</b>
-        <span>.uwpファイル保存、Gist短縮URL共有、GitHub連携機能により複数デバイスでのデータ同期に対応。</span>
-    </div>
+  <div class="help-card">
+    <div class="help-card-icon"><i class="fa-solid fa-circle-play text-slate-300"></i></div>
+    <b>動画の検索・再生</b>
+    <span>登録した動画を検索・絞り込み、曲ごとのタイムスタンプから該当箇所を再生できます。</span>
+  </div>
+  <div class="help-card">
+    <div class="help-card-icon"><i class="fa-solid fa-music text-slate-300"></i></div>
+    <b>楽曲と歌唱履歴の管理</b>
+    <span>楽曲ごとの歌唱回数や、歌われた動画・タイムスタンプをまとめて確認できます。</span>
+  </div>
+  <div class="help-card">
+    <div class="help-card-icon"><i class="fa-solid fa-tags text-slate-300"></i></div>
+    <b>タグによる分類</b>
+    <span>動画や楽曲にタグを付け、一覧のフィルターから目的のデータを探せます。</span>
+  </div>
+  <div class="help-card">
+    <div class="help-card-icon"><i class="fa-solid fa-box-archive text-slate-300"></i></div>
+    <b>バックアップ・共有</b>
+    <span>.uwp形式での保存・復元、共有URLの発行、GitHubリポジトリへの保存に対応しています。</span>
+  </div>
 </div>
 
-<!-- クイック目次ナビゲーションパネル -->
-<div class="my-6 p-4 md:p-5 bg-slate-800/80 border border-slate-700/80 rounded-2xl shadow-inner backdrop-blur-sm">
-    <div class="flex items-center gap-2 mb-4 pb-2 border-b border-slate-700/60 text-indigo-400 font-bold text-base">
-        <i class="fa-solid fa-list-ul"></i>
-        <span>目次ナビゲーション（クリックで対象セクションへ移動）</span>
+<div class="my-6 p-4 md:p-5 bg-slate-800/80 border border-slate-700/80 rounded-2xl">
+  <div class="flex items-center gap-2 mb-4 pb-2 border-b border-slate-700/60 text-indigo-400 font-bold text-base">
+    <i class="fa-solid fa-list-ul"></i><span>目次（クリックで移動）</span>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50">
+      <a href="javascript:void(0)" onclick="document.getElementById('sec-1')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400">1. SonA'Thecaについて</a>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50 hover:border-indigo-500/60 transition-all">
-            <a href="javascript:void(0)" onclick="document.getElementById('sec-1')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400 flex items-center gap-2">
-                <i class="fa-solid fa-compass text-indigo-400 text-xs"></i> 1. 概要と画面構成
-            </a>
-        </div>
-        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50 hover:border-indigo-500/60 transition-all">
-            <a href="javascript:void(0)" onclick="document.getElementById('sec-2')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400 flex items-center gap-2 mb-1.5">
-                <i class="fa-solid fa-circle-play text-indigo-400 text-xs"></i> 2. 歌枠一覧と動画再生
-            </a>
-            <div class="ml-5 flex flex-col gap-1 text-xs text-slate-400">
-                <a href="javascript:void(0)" onclick="document.getElementById('sec-2-1')?.scrollIntoView({behavior:'smooth'})" class="hover:text-indigo-300">└ 2.1 閲覧・検索・並び替え</a>
-                <a href="javascript:void(0)" onclick="document.getElementById('sec-2-2')?.scrollIntoView({behavior:'smooth'})" class="hover:text-indigo-300">└ 2.2 新しい歌枠の登録手順</a>
-                <a href="javascript:void(0)" onclick="document.getElementById('sec-2-3')?.scrollIntoView({behavior:'smooth'})" class="hover:text-indigo-300">└ 2.3 楽曲・タイムスタンプ追加</a>
-                <a href="javascript:void(0)" onclick="document.getElementById('sec-2-4')?.scrollIntoView({behavior:'smooth'})" class="hover:text-indigo-300">└ 2.4 動画再生・自動追従</a>
-            </div>
-        </div>
-        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50 hover:border-indigo-500/60 transition-all">
-            <a href="javascript:void(0)" onclick="document.getElementById('sec-3')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400 flex items-center gap-2 mb-1.5">
-                <i class="fa-solid fa-database text-indigo-400 text-xs"></i> 3. データ管理（マスター）
-            </a>
-            <div class="ml-5 flex flex-col gap-1 text-xs text-slate-400">
-                <a href="javascript:void(0)" onclick="document.getElementById('sec-3-1')?.scrollIntoView({behavior:'smooth'})" class="hover:text-indigo-300">└ 3.1 楽曲一覧</a>
-                <a href="javascript:void(0)" onclick="document.getElementById('sec-3-2')?.scrollIntoView({behavior:'smooth'})" class="hover:text-indigo-300">└ 3.2 アーティスト一覧</a>
-                <a href="javascript:void(0)" onclick="document.getElementById('sec-3-3')?.scrollIntoView({behavior:'smooth'})" class="hover:text-indigo-300">└ 3.3 チャンネル一覧</a>
-            </div>
-        </div>
-        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50 hover:border-indigo-500/60 transition-all">
-            <a href="javascript:void(0)" onclick="document.getElementById('sec-4')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400 flex items-center gap-2 mb-1.5">
-                <i class="fa-solid fa-cloud-arrow-up text-indigo-400 text-xs"></i> 4. バックアップ・復元・共有
-            </a>
-            <div class="ml-5 flex flex-col gap-1 text-xs text-slate-400">
-                <a href="javascript:void(0)" onclick="document.getElementById('sec-4-1')?.scrollIntoView({behavior:'smooth'})" class="hover:text-indigo-300">└ 4.1 .uwp バックアップ</a>
-                <a href="javascript:void(0)" onclick="document.getElementById('sec-4-2')?.scrollIntoView({behavior:'smooth'})" class="hover:text-indigo-300">└ 4.2 Gist 短縮URL共有</a>
-                <a href="javascript:void(0)" onclick="document.getElementById('sec-4-3')?.scrollIntoView({behavior:'smooth'})" class="hover:text-indigo-300">└ 4.3 GitHub クラウド同期</a>
-                <a href="javascript:void(0)" onclick="document.getElementById('sec-4-4')?.scrollIntoView({behavior:'smooth'})" class="hover:text-indigo-300">└ 4.4 データの初期化</a>
-            </div>
-        </div>
-        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50 hover:border-indigo-500/60 transition-all">
-            <a href="javascript:void(0)" onclick="document.getElementById('sec-5')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400 flex items-center gap-2">
-                <i class="fa-solid fa-circle-question text-indigo-400 text-xs"></i> 5. よくある質問 (FAQ)
-            </a>
-        </div>
-        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50 hover:border-indigo-500/60 transition-all">
-            <a href="javascript:void(0)" onclick="document.getElementById('sec-6')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400 flex items-center gap-2">
-                <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-xs"></i> 6. バージョン変更履歴
-            </a>
-        </div>
+    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50">
+      <a href="javascript:void(0)" onclick="document.getElementById('sec-2')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400">2. 動画一覧</a>
+      <div class="ml-4 mt-2 flex flex-col gap-1 text-xs text-slate-400">
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-2-1')?.scrollIntoView({behavior:'smooth'})">2.1 検索・並び替え・フィルター</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-2-2')?.scrollIntoView({behavior:'smooth'})">2.2 動画の登録・編集</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-2-3')?.scrollIntoView({behavior:'smooth'})">2.3 楽曲・タイムスタンプの登録</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-2-4')?.scrollIntoView({behavior:'smooth'})">2.4 動画の再生</a>
+      </div>
     </div>
+    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50">
+      <a href="javascript:void(0)" onclick="document.getElementById('sec-3')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400">3. データ管理</a>
+      <div class="ml-4 mt-2 flex flex-col gap-1 text-xs text-slate-400">
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-3-1')?.scrollIntoView({behavior:'smooth'})">3.1 楽曲一覧</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-3-2')?.scrollIntoView({behavior:'smooth'})">3.2 アーティスト一覧</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-3-3')?.scrollIntoView({behavior:'smooth'})">3.3 チャンネル一覧</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-3-4')?.scrollIntoView({behavior:'smooth'})">3.4 タグ管理</a>
+      </div>
+    </div>
+    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50">
+      <a href="javascript:void(0)" onclick="document.getElementById('sec-4')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400">4. バックアップ・復元・共有</a>
+      <div class="ml-4 mt-2 flex flex-col gap-1 text-xs text-slate-400">
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-4-1')?.scrollIntoView({behavior:'smooth'})">4.1 .uwpファイル</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-4-2')?.scrollIntoView({behavior:'smooth'})">4.2 共有URL</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-4-3')?.scrollIntoView({behavior:'smooth'})">4.3 GitHub連携</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('sec-4-4')?.scrollIntoView({behavior:'smooth'})">4.4 データの初期化</a>
+      </div>
+    </div>
+    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50">
+      <a href="javascript:void(0)" onclick="document.getElementById('sec-5')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400">5. よくある質問</a>
+    </div>
+    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/50">
+      <a href="javascript:void(0)" onclick="document.getElementById('sec-6')?.scrollIntoView({behavior:'smooth'})" class="font-semibold text-slate-200 hover:text-indigo-400">6. バージョン変更履歴</a>
+    </div>
+  </div>
 </div>
 
----
+<h2 id="sec-1" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60">1. SonA'Thecaについて</h2>
 
-<h2 id="sec-1" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60 flex items-center gap-2 text-slate-100">
-    <i class="fa-solid fa-compass text-indigo-400"></i> 1. 概要と画面構成
-</h2>
+**SonA'Theca** は、歌ってみた動画や歌唱配信などの動画情報と、動画内で歌われた楽曲・タイムスタンプを整理して管理するためのWebアプリです。動画単位で情報を登録するだけでなく、楽曲や原曲アーティスト、チャンネルを一覧から横断的に確認できます。
 
-**歌枠データベース**は、VTuberや配信者の歌枠（歌唱配信）のアーカイブ、セットリスト、タイムスタンプを効率的に記録・管理・視聴するためのWebアプリケーションです。
+### 主なデータ
+- **動画**：タイトル、YouTube動画URL、配信日、チャンネル、サムネイル、タグ、楽曲・タイムスタンプなど。
+- **楽曲**：楽曲名と原曲アーティストの組み合わせ。動画内の歌唱履歴と関連付けられます。
+- **アーティスト**：楽曲に紐づく原曲アーティスト情報。
+- **チャンネル**：動画の配信元や、楽曲の歌唱者として指定するアカウント情報。
+- **タグ**：動画や楽曲を分類・検索するためのラベル。
 
-<img src="images/manual_overview.png" alt="歌枠データベースの画面構成" class="help-image">
+### 基本的な使い方
+1. 「動画一覧」で動画を登録します。
+2. 動画に楽曲とタイムスタンプを登録し、保存します。
+3. 動画一覧から検索・絞り込み、または「データ管理」で楽曲や歌唱履歴を探します。
+4. 定期的に「バックアップ / 復元」からデータを保存します。
 
-### データ構造の特徴
-本ツールでは入力された情報から以下のデータが相互にリンクして自動管理されます：
-- **歌枠 (Stream)**: 配信タイトル、配信日、YouTube URL、サムネイル、配信チャンネル情報
-- **楽曲マスター (Master Song)**: 楽曲名と原曲アーティスト情報の組み合わせ
-- **アーティスト (Singer)**: 原曲の歌手・コンポーザー情報
-- **チャンネル/配信者 (Streamer)**: 歌枠の配信元や、各楽曲の歌唱者（ボーカル）
+<div class="help-note"><b>大切な注意：</b> ブラウザ内に保存しているデータは、端末やブラウザの変更、サイトデータの削除などで利用できなくなる場合があります。大切なデータは定期的に .uwp ファイルへバックアップしてください。</div>
 
----
+<h2 id="sec-2" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60">2. 動画一覧</h2>
 
-<h2 id="sec-2" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60 flex items-center gap-2 text-slate-100">
-    <i class="fa-solid fa-circle-play text-indigo-400"></i> 2. 歌枠一覧と動画再生（メイン機能）
-</h2>
+「動画一覧」は、登録済み動画の閲覧・検索・再生と、新しい動画の登録を行うメイン画面です。
 
-ナビゲーションバーの **「歌枠一覧」** タブでは、登録済みの歌枠カードの閲覧、条件検索、動画再生、および新規歌枠の追加が行えます。
+<h3 id="sec-2-1" class="text-lg font-semibold mt-6 mb-3">2.1 検索・並び替え・フィルター</h3>
 
-<img src="images/manual_stream_tab.png" alt="歌枠一覧画面" class="help-image">
+- **キーワード検索**：動画タイトル、楽曲名、アーティスト名、チャンネル名などを入力して絞り込みます。入力内容を消すと検索を解除できます。
+- **並び替え**：配信日（新しい順／古い順）や登録日（新しい順）など、画面の並び替えメニューから表示順を切り替えます。
+- **フィルター**：「フィルタ」ボタンからチャンネル、楽曲、タグなどの条件を指定します。適用中の条件がある場合はボタン付近に件数が表示されます。
+- **タグ条件**：タグの一致方法を選べる場合は、いずれかのタグに一致する動画を探すか、指定したタグすべてを持つ動画を探すかを切り替えます。
+- **表示件数**：検索・フィルターに一致した動画や楽曲の件数が表示されます。
 
-<h3 id="sec-2-1" class="text-lg font-semibold mt-6 mb-3 text-slate-200">2.1 歌枠の閲覧・検索・並び替え</h3>
+検索とフィルターは組み合わせて利用できます。目的の動画が表示されない場合は、検索語を短くするか、適用中のフィルターを解除して確認してください。
 
-上部のコントロールバーを使用して、登録済みの歌枠を絞り込むことができます。
+<h3 id="sec-2-2" class="text-lg font-semibold mt-6 mb-3">2.2 動画の登録・編集</h3>
 
-- **表示件数の確認**: 現在の検索条件に一致する歌枠数および総歌唱曲数がリアルタイム表示されます。
-- **並び替え dropdown**:
-  - \`配信日 (新しい順)\`: 配信日時が新しい順に表示します。
-  - \`配信日 (古い順)\`: 配信日時が古い順に表示します。
-  - \`登録日 (新しい順)\`: データベースに登録した日時が新しい順に表示します。
-- **配信者フィルター**: 特定のチャンネル・配信者のみで絞り込みます。
-- **キーワード検索**: 歌枠タイトル、楽曲名、原曲アーティスト名、歌唱者名から部分一致で瞬時に検索します。
+1. 「新しい動画」をクリックします。
+2. YouTube動画のURLまたは動画IDを入力します。
+3. 「動画タイトルを取得」を使うと、取得可能な場合は動画タイトルなどが入力されます。取得できない場合は、タイトルを手動で入力してください。
+4. チャンネル、日付、必要に応じてサムネイルやタグなどの情報を設定します。
+5. 「楽曲・タイムスタンプを追加」から動画内の楽曲を登録します。
+6. 入力内容を確認し、モーダル内の保存操作で登録を完了します。
 
----
+登録済み動画は、動画一覧の編集操作から情報を修正できます。タイトルやURLなどを変更した場合は、保存後に一覧の表示内容を確認してください。
 
-<h3 id="sec-2-2" class="text-lg font-semibold mt-6 mb-3 text-slate-200">2.2 新しい歌枠の登録手順</h3>
+<h3 id="sec-2-3" class="text-lg font-semibold mt-6 mb-3">2.3 楽曲・タイムスタンプの登録</h3>
 
-1. コントロールバー左上の **「新しい動画を追加」** ボタンをクリックします。
-2. モーダルが開いたら、**YouTube動画URL**（または11桁の動画ID）を入力します。
+「楽曲・タイムスタンプを追加」をクリックすると、楽曲を登録する画面が開きます。1曲ずつ入力する方法と、テキストからまとめて追加する方法があります。
 
-<img src="images/manual_add_stream_modal.png" alt="歌枠登録モーダル" class="help-image">
+#### 1曲ずつ入力する
+1. 必要に応じて「曲名・アーティスト名で検索して選択」から既存の楽曲を検索して選びます。既存曲を選択すると、登録済みの楽曲情報を利用できます。
+2. **タイムスタンプ**を入力します。例：\`01:23\` または \`1:02:15\`。
+3. 楽曲名とアーティスト名を確認・入力します。
+4. 配信者以外が歌唱している場合などは、「選択」から歌唱者を指定します。
+5. 「リストに追加」を押し、追加予定リストに入れます。
+6. 必要な曲を追加したら、追加予定リストの内容を確認し、動画の登録画面へ反映します。
+7. 最後に動画の保存操作を行い、変更を確定します。
 
-3. **タイトル自動取得**: URL入力後、右側の \`タイトル自動取得\` ボタンを押すと、YouTubeから動画タイトル（および配信者名）が自動入力されます。
-4. **配信元チャンネルの選択**:
-   - 既存の登録メンバーから配信者を選択するか、新規配信者名を入力します。
-   - アイコン画像URLやアカウントID（\`@handle\`）も設定可能です。
-5. **配信日の指定**: 配信が行われた日付を選択します。
-6. **カスタムサムネイル (任意)**: 自動取得される標準サムネイル以外の画像を使用したい場合に入力します。
+#### テキストから一括追加する
+YouTubeの概要欄やコメント欄にあるセットリストを貼り付け、タイムスタンプや楽曲情報をまとめて抽出できます。
 
----
+例：
+\`\`\`text
+01:23 ドライフラワー / 優里
+05:30 残響散歌 - Aimer
+1:02:15 アイドル / YOASOBI
+\`\`\`
 
-<h3 id="sec-2-3" class="text-lg font-semibold mt-6 mb-3 text-slate-200">2.3 楽曲・タイムスタンプの追加方法</h3>
+1. 「テキストから一括追加」タブを開きます。
+2. セットリストのテキストを入力欄に貼り付けます。
+3. 「テキストを解析して追加」を押します。
+4. 解析結果を確認し、楽曲名・アーティスト名・タイムスタンプが正しく分かれているか確認します。
+5. 追加予定リストへ反映し、動画の登録画面に戻ります。
+6. 動画の保存操作を行って登録を確定します。
 
-歌枠登録モーダルの「楽曲・タイムスタンプ一覧」セクションにある **「曲・タイムスタンプを追加」** ボタンを押すと、タイムスタンプ入力用のサブモーダルが開きます。
+区切り方が特殊なテキストは正しく解析されないことがあります。その場合は、時間・楽曲名・アーティスト名が分かる形に整えてから再度解析するか、1曲ずつ入力してください。
 
-#### 手動で1曲ずつ入力する
-「1曲ずつ入力」タブでは、個別に楽曲を登録できます。
+<h3 id="sec-2-4" class="text-lg font-semibold mt-6 mb-3">2.4 動画の再生</h3>
 
-<img src="images/manual_add_song_single.png" alt="1曲ずつ入力画面" class="help-image">
+1. 動画のサムネイルまたは再生操作をクリックします。
+2. 動画プレイヤーが表示されたら、タイムスタンプ一覧から聴きたい曲を選びます。
+3. 選んだ曲の開始位置へ動画が移動します。
+4. 再生中は、現在の再生位置に対応するタイムスタンプが自動的に強調表示されます。
+5. プレイヤーの「シアターモード」を使うと、動画を大きく表示できます。「閉じる」でプレイヤーを終了します。
 
-1. **登録済みの曲から選ぶ (任意)**: 過去に登録した楽曲マスターから選択すると、楽曲名とアーティスト名が自動補完されます。
-2. **タイムスタンプ**: \`01:23\`（分:秒）または \`01:23:45\`（時:分:秒）の形式で入力します。
-3. **楽曲名・アーティスト名**: それぞれ入力します。
-4. **歌唱者の指定**: コラボ配信などで配信者以外のメンバーが歌った場合、\`指定\` ボタンを押して歌唱メンバーを個別に設定できます。
-5. **「リストに追加」** を押すと、下の追加予定リストに入ります。
+タイムスタンプは動画内の開始位置を示します。登録した時刻が実際の歌唱開始と異なる場合は、動画情報を編集して修正してください。
 
-#### テキストから一括解析・一括登録する
-YouTubeの概要欄やコメント欄に記載されているセットリストテキストをコピペして、一括で解析・登録することができます。
+<h2 id="sec-3" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60">3. データ管理</h2>
 
-<img src="images/manual_add_song_batch.png" alt="テキスト一括解析画面" class="help-image">
+「データ管理」では、動画に登録された楽曲・アーティスト・チャンネルの情報を一覧で確認・編集できます。カテゴリを切り替えて、検索や並び替えを利用してください。
 
-1. 「テキストから一括追加」タブに切り替えます。
-2. テキストエリアにタイムスタンプ付きの歌唱リストを貼り付けます。
-   
-   **対応テキスト形式の例:**
-   \`\`\`text
-   01:23 ドライフラワー / 優里
-   05:30 残響散歌 - Aimer
-   1:02:15 アイドル / YOASOBI (歌: さくら歌乃)
-   \`\`\`
-3. **「テキストを解析して追加」** ボタンを押すと、正規表現エンジンが「タイムスタンプ」「楽曲名」「アーティスト名」を自動抽出してリストに変換します。
-4. 内容を確認し、**「歌枠登録リストに反映」** をクリックすると本登録されます。
+<h3 id="sec-3-1" class="text-lg font-semibold mt-6 mb-3">3.1 楽曲一覧</h3>
 
-<div class="help-note">
-    <i class="fa-solid fa-lightbulb text-amber-400 mr-1"></i> <b>ポイント:</b> タイムスタンプ入力後、歌枠モーダル下の「保存する」ボタンを押すことでデータベースに反映されます。
-</div>
+- **検索**：楽曲名、アーティスト名、関連するチャンネルなどから楽曲を探します。
+- **並び替え**：楽曲名、歌唱回数、アーティスト名、歌唱日などの順に切り替えられます。
+- **歌唱回数**：その楽曲が登録動画内で歌われた回数を確認できます。
+- **歌唱履歴**：楽曲の履歴を開くと、歌われた動画やタイムスタンプを確認できます。履歴内のタイムスタンプから該当箇所へ移動できる場合は、その操作を利用してください。
+- **編集**：楽曲名やアーティスト情報を修正します。既存の楽曲情報を変更すると、関連する歌唱履歴の表示にも変更が反映されます。
 
----
+<h3 id="sec-3-2" class="text-lg font-semibold mt-6 mb-3">3.2 アーティスト一覧</h3>
 
-<h3 id="sec-2-4" class="text-lg font-semibold mt-6 mb-3 text-slate-200">2.4 動画プレイヤーとタイムスタンプ連動</h3>
+原曲アーティストの情報をまとめて管理する画面です。
 
-歌枠カードの **「再生」** ボタンまたはサムネイル画像をクリックすると、上部に埋め込み動画プレイヤーが展開されます。
+- 検索欄でアーティスト名を探します。
+- 並び替えやフィルターが表示されている場合は、目的に合わせて利用します。
+- 「編集」からアーティスト名などを修正できます。
+- アーティスト名を変更すると、そのアーティストに紐づく楽曲情報にも変更が反映されます。
 
-<img src="images/manual_player_section.png" alt="プレイヤーと自動追従機能" class="help-image">
+同じアーティストが表記違いで複数登録されている場合は、既存データとの関係を確認したうえで修正してください。
 
-- **自動ジャンプ再生**: 右側のタイムスタンプ一覧から曲名をクリックすると、動画の該当秒数へ直接ジャンプします。
-- **タイムスタンプ自動追従**: 動画再生中、現在の再生時間に合わせた楽曲が自動的にハイライト（パルス発光）されます。
-- **シアターモード (拡大)**: プレイヤー右上の \`シアターモード(拡大)\` ボタンを押すと、動画プレイヤーを大画面表示に変更できます。
+<h3 id="sec-3-3" class="text-lg font-semibold mt-6 mb-3">3.3 チャンネル一覧</h3>
 
----
+動画の配信元や、歌唱者として指定するチャンネル情報を管理します。
 
-<h2 id="sec-3" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60 flex items-center gap-2 text-slate-100">
-    <i class="fa-solid fa-database text-indigo-400"></i> 3. データ管理（マスターデータ管理）
-</h2>
+- **新しく登録**：新しいチャンネル情報を追加します。
+- **編集**：表示名、アカウントID／ハンドル名、アイコン画像URLなどの情報を修正します。
+- **検索・フィルター**：登録済みのチャンネルを探します。
 
-ナビゲーションバーの **「データ管理」** タブでは、歌枠登録時に自動蓄積された「楽曲」「アーティスト」「チャンネル」のマスターデータを横断的に閲覧・編集できます。
+チャンネル情報を変更すると、関連する動画や歌唱者の表示にも反映されます。別の人物・チャンネルを誤って同じ情報にまとめないよう、変更前に関連データを確認してください。
 
-<img src="images/manual_data_tab.png" alt="データ管理タブ" class="help-image">
+<h3 id="sec-3-4" class="text-lg font-semibold mt-6 mb-3">3.4 タグ管理</h3>
 
-<h3 id="sec-3-1" class="text-lg font-semibold mt-6 mb-3 text-slate-200">3.1 楽曲一覧サブタブ</h3>
-登録されている全楽曲のデータベースです。
+タグ管理では、動画や楽曲の分類に使うタグを確認・整理します。
 
-- **集計表示**: 各楽曲の「総歌唱回数」や、どの歌枠の何分何秒で歌われたかの全履歴一覧を確認できます。
-- **並び替え**: 楽曲名順 (五十音)、歌唱回数順 (多い順)、アーティスト名順、最新歌唱日順に切り替え可能。
-- **情報の編集**: 楽曲右側の \`編集\` ボタンから、表記揺れのある楽曲名やアーティスト名を一括修整できます（修正内容は該当するすべての歌枠データに即座に反映されます）。
+- 登録済みタグの一覧から、管理したいタグを探します。
+- 編集操作が表示されている場合は、タグ名などを修正します。
+- 動画や楽曲に付けたタグを整理すると、一覧のタグフィルターから目的のデータを探しやすくなります。
 
-<h3 id="sec-3-2" class="text-lg font-semibold mt-6 mb-3 text-slate-200">3.2 アーティスト一覧サブタブ</h3>
-原曲歌手・作詞作曲者ごとのデータベースです。
+タグ名を変更・整理する場合は、同じ意味のタグが重複していないか確認し、分類ルールをできるだけ統一してください。
 
-- **レパートリー集計**: そのアーティストの持ち歌が何曲登録されているか（レパートリー数）、および総歌唱回数を一目で把握できます。
-- **アーティスト名の変更**: \`編集\` ボタンからアーティスト名を変更すると、紐付いている全楽曲のデータが一括更新されます。
+<h2 id="sec-4" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60">4. バックアップ・復元・共有</h2>
 
-<h3 id="sec-3-3" class="text-lg font-semibold mt-6 mb-3 text-slate-200">3.3 チャンネル一覧サブタブ</h3>
-配信者および歌唱メンバーのマスター情報を管理します。
+「バックアップ / 復元」では、データのファイル保存、バックアップからの復元、共有URLの発行、GitHubへの保存・読み込みを行えます。
 
-- **新規登録**: \`新しいチャンネルを登録\` ボタンから新しい配信者を作成できます。
-- **プロフィールの編集**: アカウント表示名、ID / @ハンドル名、アイコン画像URLを設定・更新できます。アイコン画像を設定すると、各カードやタイムスタンプ上に丸型アバターアイコンが表示されます。
+<h3 id="sec-4-1" class="text-lg font-semibold mt-6 mb-3">4.1 .uwpファイルで保存・復元する</h3>
 
----
+#### バックアップを保存する
+1. 「バックアップを保存（.uwpファイル）」をクリックします。
+2. ダウンロードされた \`.uwp\` ファイルを、分かりやすい場所に保管します。
+3. データを更新した後も、定期的に新しいバックアップを作成してください。
 
-<h2 id="sec-4" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60 flex items-center gap-2 text-slate-100">
-    <i class="fa-solid fa-cloud-arrow-up text-indigo-400"></i> 4. バックアップ・復元・共有
-</h2>
+ファイル名は日時を含む形式（例：\`YYYYMMDD_HHMMSS_utawakudb.uwp\`）になります。
 
-「バックアップ / 復元」タブでは、大切なデータの保存や別デバイスへの移行、他者への共有が行えます。
+#### バックアップから復元する
+1. 「.uwpファイルからデータを復元」をクリックします。
+2. 復元したいバックアップファイルを選択します。
+3. 画面の確認メッセージを読み、処理を完了します。
+4. 復元後、動画一覧やデータ管理を開き、必要なデータが読み込まれていることを確認します。
 
-<img src="images/manual_backup_tab.png" alt="バックアップ・復元タブ" class="help-image">
+<div class="help-note"><b>注意：</b> 復元は現在のデータを置き換える場合があります。復元前に、現在のデータも別の .uwp ファイルとして保存しておくことをおすすめします。</div>
 
-<h3 id="sec-4-1" class="text-lg font-semibold mt-6 mb-3 text-slate-200">4.1 .uwpファイルによるバックアップと復元</h3>
+<h3 id="sec-4-2" class="text-lg font-semibold mt-6 mb-3">4.2 共有URLを発行する</h3>
 
-本ツールは独自のプロプライエタリ圧縮アーカイブ形式 **\`.uwp\`**（ZIP標準準拠）を採用しています。
+1. 「共有URLを発行・コピー」をクリックします。
+2. 共有用データの作成が完了すると、共有URLがクリップボードにコピーされます。
+3. URLを共有相手に送ります。受け取った側はURLを開き、表示される案内に従ってデータを読み込みます。
 
-- **エクスポート**: \`バックアップ (.uwp) をダウンロード\` をクリックすると、\`YYYYMMDD_HHMMSS_utawakudb.uwp\` というファイル名でローカルPCに保存されます。
-- **インポート（復元）**: \`.uwp ファイルを指定して復元\` ボタンから過去のバックアップファイルを選択します。
-- **旧バージョン自動互換変換**: v1 / v2 などの旧データ構造や互換ファイルを読み込んだ場合でも、最新のv3スキーマ構造へ自動的にデータ移行（マイグレーション）が行われます。
+URLを受け取った相手がデータを閲覧・読み込みできることを前提に共有してください。個人情報や公開したくない情報が含まれていないか確認してから利用してください。
 
----
+<h3 id="sec-4-3" class="text-lg font-semibold mt-6 mb-3">4.3 GitHub連携</h3>
 
-<h3 id="sec-4-2" class="text-lg font-semibold mt-6 mb-3 text-slate-200">4.2 Gistによる短縮URL共有</h3>
+GitHubのリポジトリに .uwp バックアップを保存し、後から読み込めます。
 
-ログイン不要で、第三者に自分の歌枠データベースを閲覧・読み込みさせることができます。
+#### 設定項目
+- **オーナー名**：保存先リポジトリの所有者名。
+- **リポジトリ名**：保存先のリポジトリ名。
+- **保存ファイル名**：リポジトリ内で使用するファイル名やパス。例：\`data/sonatheca.uwp\`。
+- **Personal Access Token (PAT)**：リポジトリの内容を読み書きできる権限を付けたトークン。
 
-1. **「共有URLを発行してコピー」** ボタンをクリックします。
-2. GitHub Gist APIを介してデータがオンライン上にアップロードされ、専用のデータ共有URLがクリップボードにコピーされます。
-3. 受信者はそのURLを開くだけで、同じデータベース状態を瞬時に再現・読込できます。
+#### 保存・読み込み
+1. 各項目を入力します。
+2. **GitHubへ保存**：現在のデータを指定したリポジトリ内の .uwp ファイルとして保存します。
+3. **GitHubから読み込み**：指定した場所のバックアップを読み込みます。
+4. 読み込み後、一覧を開いて内容を確認します。
 
----
+<div class="help-note"><b>セキュリティ上の注意：</b> PATはパスワードと同様に扱ってください。必要最小限の権限のみを付与し、他人と共有しないでください。アプリの表示どおりブラウザに保存される設定であっても、共有端末ではトークンを保存したままにしないでください。Publicリポジトリに保存する場合は、バックアップの内容が公開される可能性にも注意してください。</div>
 
-<h3 id="sec-4-3" class="text-lg font-semibold mt-6 mb-3 text-slate-200">4.3 GitHubクラウド保存・読み込み</h3>
+<h3 id="sec-4-4" class="text-lg font-semibold mt-6 mb-3">4.4 データの初期化</h3>
 
-GitHubアカウントの個人アクセストークン (PAT) を利用して、Private/Publicリポジトリに直接データを自動同期・クラウド保存できます。
+「すべてのデータを削除」を実行すると、登録したデータが削除され、元に戻せない場合があります。実行前に必ずバックアップを保存し、確認ダイアログの内容をよく読んでください。単に一部の情報を修正したい場合は、初期化ではなく各一覧の編集操作を利用してください。
 
-<img src="images/manual_github_settings.png" alt="GitHub連携設定" class="help-image">
+<h2 id="sec-5" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60">5. よくある質問（FAQ）</h2>
 
-#### 設定項目:
-- **オーナー名**: GitHubのユーザー名（例: \`octocat\`）
-- **リポジトリ名**: 保存先のリポジトリ（例: \`utawaku-data\`）
-- **保存ファイルパス**: リポジトリ内のパス（例: \`utawakudb.uwp\`）
-- **Personal Access Token (PAT)**: GitHubの設定画面から発行したトークンを入力します（権限: \`repo\` または \`Contents Read/Write\`）。
+#### Q1. 動画タイトルを取得できません。
+動画URLや動画IDが正しいか確認してください。動画の公開状態やYouTube側の応答状況によっては取得できない場合があります。その場合は、タイトルを手動で入力してください。
 
-#### 操作:
-- **GitHubへ保存**: 現在の全データをクラウド上のリポジトリに \`.uwp\` 形式で直接コミット保存します。
-- **GitHubから読込**: クラウド上の最新バックアップを取得してローカルデータを更新します。
+#### Q2. サムネイルが表示されません。
+動画URLが正しいか確認してください。独自の画像を使いたい場合は、動画の編集画面にカスタムサムネイルの入力欄がある場合、画像URLを設定してください。画像URLが有効で、ブラウザからアクセスできることも確認してください。
 
-<div class="help-note">
-    <i class="fa-solid fa-shield-halved text-blue-400 mr-1"></i> <b>セキュリティ注意:</b> 入力されたアクセストークンは外部サーバーへ送られることはなく、お使いのブラウザ内 (LocalStorage) のみに安全に保持されます。
-</div>
+#### Q3. 一括解析で一部の曲が登録されません。
+タイムスタンプと楽曲情報の区切りが認識されていない可能性があります。例のように時間・曲名・アーティスト名を読み分けやすい形式に整え、解析結果を確認してください。うまくいかない行は、1曲ずつ入力してください。
 
----
+#### Q4. 登録したはずの動画や楽曲が見つかりません。
+検索語、並び替え、チャンネル・楽曲・タグのフィルターを確認してください。フィルターを解除して再検索すると見つかる場合があります。
 
-<h3 id="sec-4-4" class="text-lg font-semibold mt-6 mb-3 text-slate-200">4.4 データの初期化</h3>
+#### Q5. ブラウザを変えたらデータがありません。
+データは別のブラウザや端末に自動的に共有されるとは限りません。以前の端末で保存した .uwp ファイルを復元するか、設定済みのGitHub連携から読み込んでください。
 
-登録データをすべて消去して初期状態に戻す場合は、\`データを完全に初期化する\` をクリックします。確認ダイアログが表示された後、安全にリセットされます。
+#### Q6. ブラウザのデータを消しても大丈夫ですか？
+保存場所のデータが削除されると、アプリ内の登録内容や設定が失われる可能性があります。ブラウザのサイトデータを削除する前に、必ず .uwp バックアップを作成してください。
 
----
+#### Q7. GitHubへの保存・読み込みに失敗します。
+オーナー名、リポジトリ名、保存ファイル名、PATの入力内容を確認してください。PATの有効期限や権限、リポジトリへのアクセス権も確認します。エラーが続く場合は、トークンを再発行する前に設定内容と権限を見直してください。
 
-<h2 id="sec-5" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60 flex items-center gap-2 text-slate-100">
-    <i class="fa-solid fa-circle-question text-indigo-400"></i> 5. よくある質問 (FAQ) & トラブルシューティング
-</h2>
+<h2 id="sec-6" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60">6. バージョン変更履歴</h2>
 
-#### Q1. 動画タイトルやサムネイルが自動取得できません。
-- **原因**: 該当動画が非公開・限定公開・削除されているか、YouTube APIの応答制限の可能性があります。
-- **対処法**: 手動でタイトルおよびカスタムサムネイルURLを入力してください。
-
-#### Q2. 概要欄テキストの一括解析で一部の曲が読み込めません。
-- **原因**: タイムスタンプのフォーマットが特殊な可能性があります。
-- **対処法**: \`01:23 曲名 / 歌手名\` や \`01:23:45 曲名 - 歌手名\` のように、「時間」「曲名」「歌手名」をスラッシュ \`/\` や ハイフン \`-\` で区切る形式にテキストを整形してから解析ボタンを押してください。
-
-#### Q3. ブラウザのキャッシュを消去するとデータは消えますか？
-- **回答**: はい。デフォルトデータはブラウザの LocalStorage に保存されているため、定期的に **「.uwp バックアップのダウンロード」** または **「GitHub保存」** を行うことを強く推奨します。
-
----
-
-<h2 id="sec-6" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60 flex items-center gap-2 text-slate-100">
-    <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> 6. バージョン変更履歴 (Changelog)
-</h2>
-
-歌枠データベースのリリースおよびアップデート履歴です。
+### v2.1.0（2026-10-11）
+- アーティスト名を入力時、複数人を入力できるように改善。
+- 動画・タイムスタンプへのタグ機能、タイムスタンプへのメモ機能を追加。
 
 ### v2.0.0 (2026-10-10)
 - UIの大幅アップデート
@@ -321,9 +302,5 @@ GitHubアカウントの個人アクセストークン (PAT) を利用して、P
 - **データベース管理**: 楽曲、原曲アーティスト、チャンネル（配信者・歌唱者）のマスターデータを横断的に閲覧・一括編集できるデータ管理タブを実装。
 - **バックアップ・共有**: 独自アーカイブ形式 \`.uwp\` によるローカルバックアップ・復元機能、および GitHub PAT・Gist API を利用したクラウドデータ同期・共有機能を実装。
 
----
-
-<div class="text-center text-xs text-gray-400 my-4">
-    歌枠データベース v1.0.1 — Designed for VTuber & Singing Stream Fans
-</div>
+<div class="text-center text-xs text-gray-400 my-4">SonA'Theca v2.1.0 — Singing Video Archive</div>
 `;
