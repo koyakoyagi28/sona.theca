@@ -2,11 +2,13 @@
  * SonA'Theca v2.1.0 ヘルプ＆取扱説明書データ
  * marked.js で表示する Markdown / HTML ソース
  */
+const version = "2.2.0"
+
 const config = `
 <div class="help-hero">
   <div class="help-hero-icon"><i class="fa-solid fa-book-open text-white"></i></div>
   <div>
-    <div class="help-hero-title">SonA'Theca v2.1.0 マニュアル</div>
+    <div class="help-hero-title">SonA'Theca v${version} マニュアル</div>
     <div class="help-hero-text">歌唱動画・楽曲・アーティスト・チャンネルをまとめて管理し、タイムスタンプから動画を再生するためのガイドです。</div>
   </div>
 </div>
@@ -283,6 +285,11 @@ GitHubのリポジトリに .uwp バックアップを保存し、後から読�
 
 <h2 id="sec-6" class="text-xl font-bold mt-8 mb-4 pt-4 border-t border-slate-700/60">6. バージョン変更履歴</h2>
 
+### v2.2.0（2026-10-14）
+- 動画一覧でのフィルタをクエリで指定できるように
+- 歌唱者追加時に新規登録をできるように改良
+- 動画一覧のフィルタにアーティスト名を追加
+
 ### v2.1.0（2026-10-11）
 - アーティスト名を入力時、複数人を入力できるように改善。
 - 動画・タイムスタンプへのタグ機能、タイムスタンプへのメモ機能を追加。
@@ -302,5 +309,5 @@ GitHubのリポジトリに .uwp バックアップを保存し、後から読�
 - **データベース管理**: 楽曲、原曲アーティスト、チャンネル（配信者・歌唱者）のマスターデータを横断的に閲覧・一括編集できるデータ管理タブを実装。
 - **バックアップ・共有**: 独自アーカイブ形式 \`.uwp\` によるローカルバックアップ・復元機能、および GitHub PAT・Gist API を利用したクラウドデータ同期・共有機能を実装。
 
-<div class="text-center text-xs text-gray-400 my-4">SonA'Theca v2.1.0 — Singing Video Archive</div>
+<div class="text-center text-xs text-gray-400 my-4">SonA'Theca v${version} — Singing Video Archive</div>
 `;

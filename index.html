@@ -967,7 +967,7 @@
       align-items: flex-end;
       justify-content: space-between;
       gap: 20px;
-      margin: 0 0 12px;
+      /* margin: 0 0 12px; */
       padding: 8px 0 12px;
       background: #0B1020;
       border-bottom: 1px solid #0B1020;
@@ -1028,7 +1028,7 @@
     }
 
     .stream-row:first-child {
-      border-top: 1px solid var(--ui-line);
+      /* border-top: 1px solid var(--ui-line); */
     }
 
     .stream-row:hover {
@@ -1376,8 +1376,19 @@
       color: #AAB8D2;
     }
 
+    .filter-select-wrap {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+    }
+
     .filter-select-panel {
-      margin-top: 8px;
+      position: absolute;
+      z-index: 120;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      margin-top: 0;
       padding: 8px;
       border: 1px solid var(--ui-line);
       border-radius: 12px;
@@ -1416,6 +1427,56 @@
 
     .filter-modal-search input:focus {
       border-color: #182238 !important;
+    }
+
+    /* フィルタモーダルの日付入力も既存の入力欄・アイコン操作に合わせる */
+    .stream-date-filter-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stream-date-filter-control > input[type="text"] {
+      flex: 1 1 auto;
+      min-width: 0;
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--ui-line);
+      border-radius: 8px;
+      background: #0B1020;
+      color: #F4F7FF;
+      font-size: 12px;
+      outline: none;
+    }
+    .stream-date-filter-control > input[type="text"]:focus {
+      border-color: #8B7CFF;
+    }
+    .stream-date-picker-button {
+      position: relative;
+      display: inline-flex;
+      flex: 0 0 40px;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--ui-line);
+      border-radius: 8px;
+      background: #111A2C;
+      color: var(--ui-muted);
+      cursor: pointer;
+    }
+    .stream-date-picker-button:hover,
+    .stream-date-picker-button:focus-within {
+      border-color: #8B7CFF;
+      color: #B2A9FF;
+    }
+    .stream-date-picker-button input[type="date"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
     }
 
     .filter-options {
@@ -5446,8 +5507,8 @@ button.bg-blue-600, button.bg-indigo-600 {
       <section class="stream-toolbar sticky top-0 z-30">
         <div class="search-shell">
           <i class="fa-solid fa-magnifying-glass search-shell-icon"></i>
-          <input type="text" id="streamSearchKeyword" oninput="scheduleRenderStreams()" aria-label="歌枠を検索"
-            placeholder="動画・楽曲名・アーティスト名・配信者を検索..." class="stream-search-input">
+          <input type="text" id="streamSearchKeyword" oninput="onStreamQueryInput()" aria-label="歌枠を検索"
+            placeholder="キーワード、@song:曲名、@artist:名前、#タグ、@date:YYYY-MM-DD..." class="stream-search-input">
           <button type="button" class="search-clear hidden" id="streamSearchClear" aria-label="検索をクリア"
             onclick="clearStreamSearch()">
             <i class="fa-solid fa-xmark"></i>
@@ -5793,11 +5854,16 @@ button.bg-blue-600, button.bg-indigo-600 {
 
     <template id="singerSelectModalTemplate">
       <div class="flex flex-col gap-3">
-        <div class="relative">
-          <input
-            class="w-full bg-base-dark border border-base rounded-lg pl-8 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-mono"
-            id="singerModalSearch" oninput="renderSingerModalList()" placeholder="歌唱者名で絞り込み..." type="text" />
-          <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-mono-muted text-xs"></i>
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1 min-w-0">
+            <input
+              class="w-full bg-base-dark border border-base rounded-lg pl-8 pr-3 py-2 text-xs text-white focus:outline-none focus:border-mono"
+              id="singerModalSearch" oninput="renderSingerModalList()" placeholder="歌唱者名で絞り込み..." type="text" />
+            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-mono-muted text-xs"></i>
+          </div>
+          <button type="button" onclick="openStreamerCreateFromSingerSelect()" class="add-stream-button shrink-0" style="height:36px;padding:0 10px;">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i><span>新規登録</span>
+          </button>
         </div>
         <div class="flex flex-col gap-1.5 max-h-[300px] overflow-y-auto no-scrollbar pr-1" id="singerModalList">
         </div>
@@ -6088,6 +6154,15 @@ button.bg-blue-600, button.bg-indigo-600 {
       </div>
     </template>
 
+    <template id="tagEditModalTemplate">
+      <div class="flex flex-col gap-3">
+        <input id="managedTagEditId" type="hidden" />
+        <label for="managedTagEditName" class="text-sm font-medium">タグ名</label>
+        <input id="managedTagEditName" type="text" class="w-full bg-base-dark border border-base rounded-lg p-3 text-white focus:outline-none focus:border-mono" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();saveManagedTagEdit(document.getElementById('managedTagEditId')?.value);}">
+        <p class="text-xs text-mono-muted">タグ名を変更すると、動画・タイムスタンプの紐づけにも反映されます。</p>
+      </div>
+    </template>
+
     <template id="confirmDeleteSongModalTemplate">
       <div class="modal-content-stack">
         <p class="text-sm text-mono-muted">この楽曲を動画の登録リストから削除してもよろしいですか？</p>
@@ -6113,6 +6188,7 @@ button.bg-blue-600, button.bg-indigo-600 {
 
     <template id="streamFilterModalTemplate">
       <div class="filter-modal-template-body">
+        <div class="filter-select-wrap">
         <button type="button" id="streamerFilterField" class="filter-select-field" aria-expanded="false"
           onclick="toggleStreamerFilterOptions()">
           <span class="filter-select-field-copy">
@@ -6130,8 +6206,10 @@ button.bg-blue-600, button.bg-indigo-600 {
           </div>
           <div id="streamerFilterOptions" class="filter-options"></div>
         </div>
+        </div>
+        <div class="filter-select-wrap" style="margin-top:16px">
         <button type="button" id="streamSongFilterField" class="filter-select-field" aria-expanded="false"
-          onclick="toggleStreamSongFilterOptions()" style="margin-top:16px">
+          onclick="toggleStreamSongFilterOptions()">
           <span class="filter-select-field-copy">
             <span class="filter-select-field-label">楽曲</span>
             <span class="filter-select-field-value" id="streamSongFilterFieldValue">すべての楽曲</span>
@@ -6147,6 +6225,60 @@ button.bg-blue-600, button.bg-indigo-600 {
           </div>
           <div id="streamSongFilterOptions" class="filter-options"></div>
         </div>
+        </div>
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="sm:col-span-2">
+            <!-- <span class="block text-xs font-semibold mb-1 text-mono-muted">アーティスト名</span> -->
+            <div class="filter-select-wrap">
+            <button type="button" id="streamArtistFilterField" class="filter-select-field" aria-expanded="false" onclick="toggleStreamArtistFilterOptions()">
+              <span class="filter-select-field-copy">
+                <span class="filter-select-field-label">アーティスト</span>
+                <span class="filter-select-field-value" id="streamArtistFilterFieldValue">すべてのアーティスト</span>
+              </span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <input type="hidden" id="streamArtistFilterInput" value="">
+            <div id="streamArtistFilterPanel" class="filter-select-panel hidden">
+              <div class="filter-modal-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="streamArtistFilterSearch" placeholder="アーティスト名を検索..." autocomplete="off" oninput="renderStreamArtistFilterOptions()">
+              </div>
+              <div id="streamArtistFilterOptions" class="filter-options"></div>
+            </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1 text-mono-muted" for="streamUntilFilterInput">この日付まで（@until）</label>
+            <div class="stream-date-filter-control">
+              <input type="text" id="streamUntilFilterInput" placeholder="例：2021 / 2021-8 / 2021-8-9" autocomplete="off" aria-label="この日付までの日付をカレンダーから選択">
+              <label class="stream-date-picker-button" title="この日付までの日付をカレンダーから選択">
+                <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+                <input type="date" aria-label="この日付までの日付をカレンダーから選択" onchange="appendStreamFilterDate('streamUntilFilterInput', this.value); this.value = '';">
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1 text-mono-muted" for="streamSinceFilterInput">この日付から（@since）</label>
+            <div class="stream-date-filter-control">
+              <input type="text" id="streamSinceFilterInput" placeholder="例：2021 / 2021-8 / 2021-8-9" autocomplete="off" aria-label="この日付からの日付をカレンダーから選択">
+              <label class="stream-date-picker-button" title="この日付からの日付をカレンダーから選択">
+                <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+                <input type="date" aria-label="この日付からの日付をカレンダーから選択" onchange="appendStreamFilterDate('streamSinceFilterInput', this.value); this.value = '';">
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1 text-mono-muted" for="streamDateFilterInput">特定の日付・期間（@date）</label>
+            <div class="stream-date-filter-control">
+              <input type="text" id="streamDateFilterInput" placeholder="例：2021 / 2021-8 / 2021-8-9" autocomplete="off" aria-label="特定の日付をカレンダーから選択">
+              <label class="stream-date-picker-button" title="特定の日付をカレンダーから選択">
+                <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+                <input type="date" aria-label="特定の日付をカレンダーから選択" onchange="appendStreamFilterDate('streamDateFilterInput', this.value); this.value = '';">
+              </label>
+            </div>
+          </div>
+        </div>
+        <p class="text-[10px] text-mono-muted mt-2">日付は年・月・日まで指定できます。複数指定はカンマ区切りです。</p>
         <div class="mt-4">
           <label class="block text-xs font-semibold mb-1 text-mono-muted" for="streamTagFilterInput">タグ検索</label>
           <input type="text" id="streamTagFilterInput" list="appTagSuggestions" class="w-full bg-base-dark border border-base rounded-lg p-2 text-white focus:outline-none focus:border-mono" placeholder="#お気に入り, #練習 など" autocomplete="off" oninput="window.streamTagFilterDraftValue = this.value; renderTagPicker('streamTagFilterInput', 'streamTagFilterPicker')" />
@@ -6163,6 +6295,7 @@ button.bg-blue-600, button.bg-indigo-600 {
 
     <template id="songArtistFilterModalTemplate">
       <div class="filter-modal-template-body">
+        <div class="filter-select-wrap">
         <button type="button" id="songArtistFilterField" class="filter-select-field" aria-expanded="false"
           onclick="toggleSongArtistFilterOptions()">
           <span class="filter-select-field-copy">
@@ -6179,6 +6312,7 @@ button.bg-blue-600, button.bg-indigo-600 {
               oninput="renderSongArtistFilterOptions()">
           </div>
           <div id="songArtistFilterOptions" class="filter-options"></div>
+        </div>
         </div>
       </div>
     </template>
@@ -6872,14 +7006,46 @@ button.bg-blue-600, button.bg-indigo-600 {
       const record = (appData.tags || []).find(item => item && typeof item === 'object' && item.id === tagId);
       if (!record) { showToast('編集するタグが見つかりません。'); return; }
       openAppModal('tagEditModal', {
-        title: 'タグの編集', icon: 'fa-pen', width: 'sm', height: 'sm',
-        content: `<div class="flex flex-col gap-3"><label for="managedTagEditName" class="text-sm font-medium">タグ名</label><input id="managedTagEditName" type="text" class="w-full bg-base-mid border border-base rounded-lg p-3 text-white focus:outline-none focus:border-mono" value="${escapeHtml(record.name || '')}" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();saveManagedTagEdit('${escapeHtml(tagId)}');}"><p class="text-xs text-mono-muted">タグ名を変更すると、動画・タイムスタンプの紐づけにも反映されます。</p></div>`,
+        tagId,
+        title: 'タグの編集',
         actions: [
+          {label: '削除', icon: 'fa-trash', variant: 'danger', onClick: () => deleteManagedTag(tagId), slot: 'start'},
           {label: 'キャンセル', variant: 'secondary', onClick: () => closeAppModal('tagEditModal')},
           {label: '保存', variant: 'primary', onClick: () => saveManagedTagEdit(tagId)}
         ]
       });
-      requestAnimationFrame(() => { const input = document.getElementById('managedTagEditName'); input?.focus({preventScroll: true}); input?.select(); });
+      const idInput = document.getElementById('managedTagEditId');
+      const nameInput = document.getElementById('managedTagEditName');
+      if (idInput) idInput.value = tagId;
+      if (nameInput) nameInput.value = record.name || '';
+      requestAnimationFrame(() => { nameInput?.focus({preventScroll: true}); nameInput?.select(); });
+    }
+
+    /** タグを削除し、動画・タイムスタンプとの紐づけも解除する。 */
+    async function deleteManagedTag(tagId) {
+      const record = (appData.tags || []).find(item => item && typeof item === 'object' && item.id === tagId);
+      if (!record) { showToast('削除するタグが見つかりません。'); return; }
+      let linkedCount = 0;
+      (appData.streams || []).forEach(stream => {
+        if ((stream.tags || []).includes(tagId)) linkedCount++;
+        (stream.songs || []).forEach(song => { if ((song.tags || []).includes(tagId)) linkedCount++; });
+      });
+      const confirmed = await showModal({
+        title: 'タグの削除',
+        message: `「${record.name}」を削除しますか？${linkedCount ? `\n動画・タイムスタンプ ${linkedCount} 件のタグ紐づけも解除されます。` : ''}この操作は取り消せません。`,
+        isConfirm: true
+      });
+      if (!confirmed) return;
+      appData.tags = (appData.tags || []).filter(item => !(item && typeof item === 'object' && item.id === tagId));
+      (appData.streams || []).forEach(stream => {
+        stream.tags = (stream.tags || []).filter(id => id !== tagId);
+        (stream.songs || []).forEach(song => { song.tags = (song.tags || []).filter(id => id !== tagId); });
+      });
+      saveData();
+      refreshTagSuggestions();
+      renderTagManagement();
+      closeAppModal('tagEditModal');
+      showToast('タグを削除しました。');
     }
 
     /** タグ名を保存する。紐づけはタグIDのため、名前の変更だけで反映される。 */
@@ -6900,12 +7066,23 @@ button.bg-blue-600, button.bg-indigo-600 {
       showToast('タグ名を更新しました。');
     }
 
+    /** 既存の検索条件を維持したまま、データ管理側から指定した条件をクエリへ追加する。 */
+    function appendStreamSearchQueryParts(queryParts) {
+      const searchInput = document.getElementById('streamSearchKeyword');
+      if (!searchInput) return;
+      const existing = String(searchInput.value || '').trim();
+      const additions = (queryParts || []).filter(Boolean);
+      searchInput.value = [existing, ...additions].filter(Boolean).join(' ').trim();
+    }
+
     /** 指定タグをフィルタに設定して動画一覧へ移動する。 */
     function showStreamsWithTag(tagId) {
       const record = (appData.tags || []).find(item => item && typeof item === 'object' && item.id === tagId);
       if (!record) { showToast('表示するタグが見つかりません。'); return; }
-      // タグ管理から遷移した場合も、フィルタ欄で表示される # 付きタグ名として保存する。
-      window.streamTagFilterValue = normalizeTags([record.name]).join(', ');
+      // 既存のタグ条件も維持し、新しく指定したタグを追加する。
+      const currentTags = normalizeTags(window.streamTagFilterValue || '');
+      window.streamTagFilterValue = normalizeTags([...currentTags, record.name]).join(', ');
+      appendStreamSearchQueryParts([`${STREAM_QUERY_DEFINITIONS.tag.token}${queryValue(String(record.name).replace(/^#+/, ''))}`]);
       switchTab('streamTab');
       const input = document.getElementById('streamTagFilterInput');
       if (input) input.value = window.streamTagFilterValue;
@@ -6914,24 +7091,29 @@ button.bg-blue-600, button.bg-indigo-600 {
       showToast(`${record.name} で動画を絞り込みました。`);
     }
 
-    /** タグ新規登録モーダルを開く。 */
+    /** タグ新規登録モーダルを開く。編集モーダルの定義・テンプレートを再利用する。 */
     function createManagedTag() {
-      openAppModal('tagCreateModal', {
+      openAppModal('tagEditModal', {
         title: 'タグの新規登録',
         icon: 'fa-tags',
-        width: 'sm',
-        height: 'sm',
-        content: `
-          <div class="flex flex-col gap-3">
-            <label for="managedTagName" class="text-sm font-medium">タグ名</label>
-            <input id="managedTagName" type="text" class="w-full bg-base-mid border border-base rounded-lg p-3 text-white focus:outline-none focus:border-mono" placeholder="#お気に入り" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();saveManagedTagFromModal();}">
-            <p class="text-xs text-mono-muted">「#」は省略できます。</p>
-          </div>`,
         actions: [
-          {label: 'キャンセル', variant: 'secondary', onClick: () => closeAppModal('tagCreateModal')},
+          {label: 'キャンセル', variant: 'secondary', onClick: () => closeAppModal('tagEditModal')},
           {label: '登録', variant: 'primary', onClick: saveManagedTagFromModal}
         ]
       });
+      const idInput = document.getElementById('managedTagEditId');
+      const nameInput = document.getElementById('managedTagEditName');
+      if (idInput) idInput.value = '';
+      if (nameInput) {
+        nameInput.id = 'managedTagName';
+        nameInput.value = '';
+        nameInput.placeholder = '#お気に入り';
+        nameInput.setAttribute('onkeydown', "if(event.key==='Enter'){event.preventDefault();saveManagedTagFromModal();}");
+      }
+      const label = document.querySelector('#tagEditModal label[for="managedTagEditName"]');
+      if (label) label.htmlFor = 'managedTagName';
+      const help = document.querySelector('#tagEditModal p.text-xs');
+      if (help) help.textContent = '「#」は省略できます。';
       requestAnimationFrame(() => document.getElementById('managedTagName')?.focus({preventScroll: true}));
     }
 
@@ -6956,7 +7138,7 @@ button.bg-blue-600, button.bg-indigo-600 {
       saveData();
       refreshTagSuggestions();
       renderTagManagement();
-      closeAppModal('tagCreateModal');
+      closeAppModal('tagEditModal');
       showToast(`${tag} を登録しました。`);
     }
 
@@ -7044,7 +7226,7 @@ button.bg-blue-600, button.bg-indigo-600 {
           String(now.getSeconds()).padStart(2, '0');
         const fileName = `${timeStr}_utawakudb.uwp`;
 
-        const blob = await zip.generateAsync({type: "blob"});
+        const blob = await zip.generateAsync({type: "blob", compression: "DEFLATE", compressionOptions: {level: 6}});
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = fileName;
@@ -7721,6 +7903,17 @@ button.bg-blue-600, button.bg-indigo-600 {
  * openStreamFilterModal に関する処理を行う。
  * @returns {*} 処理結果。
  */
+    /** カレンダーで選んだ日付をフィルタ入力欄へ追加する。 */
+    function appendStreamFilterDate(inputId, dateValue) {
+      const input = document.getElementById(inputId);
+      if (!input || !dateValue) return;
+      const existing = String(input.value || '').split(/[，,\n\r;；]+/).map(value => value.trim()).filter(Boolean);
+      const normalized = normalizeStreamQueryDate(dateValue);
+      if (normalized && !existing.includes(normalized)) existing.push(normalized);
+      input.value = existing.join(', ');
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
     function openStreamFilterModal() {
       // フィルタ状態を正規化して保持し、モーダルを開くたびに検索中タグを入力欄・選択済みチップへ反映する。
       const activeTagValue = window.streamTagFilterValue || '';
@@ -7728,6 +7921,41 @@ button.bg-blue-600, button.bg-indigo-600 {
       window.streamTagFilterDraftValue = window.streamTagFilterValue;
       window.streamTagFilterDraftMatchMode = window.streamTagMatchMode || 'or';
       openAppModal('streamFilterModal');
+      const currentQuery = parseStreamQuery(document.getElementById('streamSearchKeyword')?.value || '');
+      // クエリ指定の配信者・楽曲は、登録済みの項目と完全一致した場合だけモーダルに反映する。
+      const normalizeExactFilterValue = value => normalizeStr(String(value || '').trim());
+      const streamerDefinition = STREAM_QUERY_DEFINITIONS.streamer;
+      const songDefinition = STREAM_QUERY_DEFINITIONS.song;
+      // データ管理画面の「動画を検索」から設定されたIDを優先し、
+      // クエリからの復元はIDが未設定の場合に行う。
+      const activeStreamerId = document.getElementById('streamFilterStreamer')?.value || '';
+      const activeSongId = document.getElementById('streamFilterSong')?.value || '';
+      const matchedStreamer = (appData.streamers || []).find(item => item.id === activeStreamerId) || (appData.streamers || []).find(item =>
+        currentQuery[streamerDefinition.bucket].some(name => [item.name, item.account].some(value => normalizeExactFilterValue(name) === normalizeExactFilterValue(value)))
+      );
+      const matchedSong = (appData.masterSongs || []).find(item => item.id === activeSongId) || (appData.masterSongs || []).find(item =>
+        currentQuery[songDefinition.bucket].some(title => normalizeExactFilterValue(title) === normalizeExactFilterValue(item.title))
+      );
+      const streamerSelect = document.getElementById(streamerDefinition.modalSelect);
+      const songSelect = document.getElementById(songDefinition.modalSelect);
+      if (streamerSelect) streamerSelect.value = matchedStreamer?.id || '';
+      if (songSelect) songSelect.value = matchedSong?.id || '';
+      updateStreamerFilterField();
+      updateStreamSongFilterField();
+      const registeredTagNames = (appData.tags || []).map(item => typeof item === 'string' ? item : item?.name).filter(Boolean);
+      const matchedTags = currentQuery.tags.filter(queryTag => registeredTagNames.some(tag =>
+        normalizeExactFilterValue(String(tag).replace(/^#+/, '').replace(/\s+/g, '_')) === normalizeExactFilterValue(String(queryTag).replace(/^#+/, '').replace(/\s+/g, '_'))
+      ));
+      if (matchedTags.length) {
+        window.streamTagFilterValue = normalizeTags(matchedTags).join(', ');
+        window.streamTagFilterDraftValue = window.streamTagFilterValue;
+      }
+      // レジストリでモーダル入力欄が定義されている条件を一括反映する。
+      Object.values(STREAM_QUERY_DEFINITIONS).forEach(definition => {
+        if (!definition.modalInput || definition.bucket === 'tags') return;
+        const field = document.getElementById(definition.modalInput);
+        if (field) field.value = (currentQuery[definition.bucket] || []).join(', ');
+      });
       refreshTagSuggestions();
       const tagInput = document.getElementById('streamTagFilterInput');
       if (tagInput) {
@@ -7747,6 +7975,11 @@ button.bg-blue-600, button.bg-indigo-600 {
       closeStreamSongFilterOptions();
       updateStreamSongFilterField();
       renderStreamSongFilterOptions();
+      const artistSearch = document.getElementById('streamArtistFilterSearch');
+      if (artistSearch) artistSearch.value = '';
+      closeStreamArtistFilterOptions();
+      updateStreamArtistFilterField();
+      renderStreamArtistFilterOptions();
     }
 
     /**
@@ -7756,6 +7989,7 @@ button.bg-blue-600, button.bg-indigo-600 {
     function closeStreamFilterModal() {
       closeStreamerFilterOptions();
       closeStreamSongFilterOptions();
+      closeStreamArtistFilterOptions();
       closeAppModal('streamFilterModal');
     }
 
@@ -7907,6 +8141,87 @@ button.bg-blue-600, button.bg-indigo-600 {
  * closeStreamFilterModal に関する処理を行う。
  * @returns {*} 処理結果。
  */
+    function toggleStreamArtistFilterOptions() {
+      const panel = document.getElementById('streamArtistFilterPanel');
+      const field = document.getElementById('streamArtistFilterField');
+      if (!panel || !field) return;
+      const shouldOpen = panel.classList.contains('hidden');
+      if (shouldOpen) {
+        closeStreamerFilterOptions();
+        closeStreamSongFilterOptions();
+      }
+      panel.classList.toggle('hidden', !shouldOpen);
+      field.setAttribute('aria-expanded', String(shouldOpen));
+      if (shouldOpen) requestAnimationFrame(() => document.getElementById('streamArtistFilterSearch')?.focus());
+    }
+
+    function closeStreamArtistFilterOptions() {
+      const panel = document.getElementById('streamArtistFilterPanel');
+      const field = document.getElementById('streamArtistFilterField');
+      if (panel) panel.classList.add('hidden');
+      if (field) field.setAttribute('aria-expanded', 'false');
+    }
+
+    function updateStreamArtistFilterField() {
+      const input = document.getElementById('streamArtistFilterInput');
+      const valueEl = document.getElementById('streamArtistFilterFieldValue');
+      if (!input || !valueEl) return;
+      const name = String(input.value || '').trim();
+      valueEl.textContent = name || 'すべてのアーティスト';
+    }
+
+    function renderStreamArtistFilterOptions() {
+      const container = document.getElementById('streamArtistFilterOptions');
+      if (!container) return;
+      const search = normalizeStr(document.getElementById('streamArtistFilterSearch')?.value || '');
+      const input = document.getElementById('streamArtistFilterInput');
+      const selectedName = normalizeStr(String(input?.value || '').trim());
+      const artists = (appData.singers || []).filter(artist => artist && artist.name)
+        .slice().sort((a, b) => a.name.localeCompare(b.name, 'ja'))
+        .filter(artist => !search || normalizeStr(artist.name).includes(search));
+      container.innerHTML = '';
+      const clearOption = document.createElement('button');
+      clearOption.type = 'button';
+      clearOption.className = `filter-option ${selectedName ? '' : 'is-selected'}`;
+      clearOption.innerHTML = '<span class="filter-radio"></span><span class="filter-option-copy"><span class="filter-option-name">すべてのアーティスト</span><span class="filter-option-account">アーティストによる絞り込みを解除</span></span>';
+      clearOption.onclick = () => {
+        if (input) input.value = '';
+        updateStreamArtistFilterField();
+        renderStreamArtistFilterOptions();
+        closeStreamArtistFilterOptions();
+      };
+      container.appendChild(clearOption);
+      artists.forEach(artist => {
+        const isSelected = selectedName === normalizeStr(artist.name);
+        const option = document.createElement('button');
+        option.type = 'button';
+        option.className = `filter-option ${isSelected ? 'is-selected' : ''}`;
+        const mark = document.createElement('span');
+        mark.className = 'filter-radio';
+        mark.innerHTML = isSelected ? '<i class="fa-solid fa-check"></i>' : '';
+        const copy = document.createElement('span');
+        copy.className = 'filter-option-copy';
+        const name = document.createElement('span');
+        name.className = 'filter-option-name';
+        name.textContent = artist.name;
+        copy.appendChild(name);
+        option.append(mark, copy);
+        option.onclick = () => {
+          if (input) input.value = artist.name;
+          updateStreamArtistFilterField();
+          renderStreamArtistFilterOptions();
+          closeStreamArtistFilterOptions();
+        };
+        container.appendChild(option);
+      });
+      if (!artists.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-stream-state is-compact';
+        empty.innerHTML = '<i class="fa-solid fa-user-slash"></i><p>一致するアーティストがいません。</p>';
+        container.appendChild(empty);
+      }
+    }
+
     function closeStreamFilterModal() {
       const modal = document.getElementById('streamFilterModal');
       if (!modal) return;
@@ -7982,10 +8297,169 @@ button.bg-blue-600, button.bg-indigo-600 {
  * applyStreamFilter に関する処理を行う。
  * @returns {*} 処理結果。
  */
+    /**
+     * 動画一覧の検索クエリを解析する。
+     * 通常語は動画・曲・アーティスト・配信者の横断検索として扱う。
+     * @param {string} value 検索クエリ
+     */
+    function normalizeStreamQueryDate(value) {
+      let text = String(value || '').trim();
+      // 入力途中の末尾ハイフンも許容する。
+      // 2021- -> 年単位、2021-1- -> 月単位として扱う。
+      text = text.replace(/[/-]+$/, '');
+      const yearMatch = text.match(/^(\d{4})$/);
+      if (yearMatch) return yearMatch[1];
+      const monthMatch = text.match(/^(\d{4})[-/](\d{1,2})$/);
+      if (monthMatch) {
+        const month = Number(monthMatch[2]);
+        if (month < 1 || month > 12) return text;
+        return `${monthMatch[1]}-${String(month).padStart(2, '0')}`;
+      }
+      const match = text.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+      if (!match) return text;
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      const day = Number(match[3]);
+      const date = new Date(Date.UTC(year, month - 1, day));
+      if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return text;
+      return `${match[1]}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+
+    function streamDateMatchesGranularity(streamDate, queryDate) {
+      if (!/^\d{4}(?:-\d{2})?(?:-\d{2})?$/.test(queryDate)) return false;
+      if (queryDate.length === 4) return streamDate.slice(0, 4) === queryDate;
+      if (queryDate.length === 7) return streamDate.slice(0, 7) === queryDate;
+      return streamDate === queryDate;
+    }
+
+    /**
+     * 動画一覧クエリの仕様を一元管理するレジストリ。
+     * 新しい条件を追加するときは、ここに「キーワード・格納先・モーダル欄・判定方法」を定義する。
+     * modalInput が null の条件はクエリ専用フィルタとして扱える。
+     */
+    const STREAM_QUERY_DEFINITIONS = {
+      song: {
+        token: '@song:', bucket: 'song', modalInput: null, modalSelect: 'streamFilterSong',
+        description: '楽曲名（完全一致）',
+        matches: (value, context) => context.songTitles.some(title => normalizeStr(title) === normalizeStr(value))
+      },
+      artist: {
+        token: '@artist:', bucket: 'artist', modalInput: 'streamArtistFilterInput',
+        description: 'アーティスト名（部分一致）',
+        matches: (value, context) => context.artistNames.some(name => normalizeStr(name).includes(normalizeStr(value)))
+      },
+      streamer: {
+        token: '@streamer:', bucket: 'streamer', modalInput: null, modalSelect: 'streamFilterStreamer',
+        description: '配信者名・アカウント（完全一致）',
+        matches: (value, context) => [context.streamer?.name || '', context.streamer?.account || ''].some(item => normalizeStr(item) === normalizeStr(value))
+      },
+      until: {
+        token: '@until:', bucket: 'until', modalInput: 'streamUntilFilterInput',
+        description: '指定年月日まで',
+        normalize: normalizeStreamQueryDate,
+        matches: (value, context) => /^\d{4}(?:-\d{2})?(?:-\d{2})?$/.test(value) && context.streamDate.slice(0, value.length) <= value
+      },
+      since: {
+        token: '@since:', bucket: 'since', modalInput: 'streamSinceFilterInput',
+        description: '指定年月日から',
+        normalize: normalizeStreamQueryDate,
+        matches: (value, context) => /^\d{4}(?:-\d{2})?(?:-\d{2})?$/.test(value) && context.streamDate.slice(0, value.length) >= value
+      },
+      date: {
+        token: '@date:', bucket: 'date', modalInput: 'streamDateFilterInput',
+        description: '指定した年・月・日',
+        normalize: normalizeStreamQueryDate,
+        matches: (value, context) => streamDateMatchesGranularity(context.streamDate, value)
+      },
+      tag: {
+        token: '#', bucket: 'tags', modalInput: 'streamTagFilterInput',
+        description: 'タグ（部分一致）',
+        matches: (value, context) => context.tags.some(tag => normalizeStr(tag).includes(normalizeStr(String(value).replace(/^#+/, ''))))
+      }
+    };
+
+    /** クエリ仕様から空の解析結果を作る。 */
+    function createEmptyStreamQuery() {
+      return { keywords: [], ...Object.fromEntries(Object.values(STREAM_QUERY_DEFINITIONS).map(def => [def.bucket, []])) };
+    }
+
+    /**
+     * クエリ文字列をレジストリに従って解析する。
+     * 未知の @word: は通常キーワードとして残し、将来の拡張でも既存検索を壊さない。
+     */
+    function parseStreamQuery(value) {
+      const result = createEmptyStreamQuery();
+      const input = String(value || '');
+      const tokenPattern = /@([a-z]+):(?:(?:"([^"]*)")|(?:'([^']*)')|([^\s]+))|#(?:"([^"]*)"|'([^']*)'|([^\s#]+))|([^\s]+)/gi;
+      let match;
+      while ((match = tokenPattern.exec(input))) {
+        if (match[1]) {
+          const key = match[1].toLowerCase();
+          const definition = STREAM_QUERY_DEFINITIONS[key];
+          const rawValue = (match[2] ?? match[3] ?? match[4] ?? '').trim();
+          if (!rawValue) continue;
+          if (!definition) { result.keywords.push(match[0]); continue; }
+          const normalized = definition.normalize ? definition.normalize(rawValue) : rawValue;
+          result[definition.bucket].push(normalized);
+        } else if (match[5] !== undefined || match[6] !== undefined || match[7] !== undefined) {
+          const tag = (match[5] ?? match[6] ?? match[7] ?? '').trim();
+          if (tag) result.tags.push(tag.replace(/^#/, ''));
+        } else if (match[8]) {
+          result.keywords.push(match[8]);
+        }
+      }
+      return result;
+    }
+
+    function queryValue(value) {
+      const text = String(value || '').trim();
+      return /[\s"]/u.test(text) ? `"${text.replace(/"/g, '\\"')}"` : text;
+    }
+
+    /** モーダルの条件をクエリへ同期する。条件と入力欄の対応はレジストリを参照する。 */
+    function syncStreamQueryFromModal() {
+      const input = document.getElementById('streamSearchKeyword');
+      if (!input) return;
+      const parsed = parseStreamQuery(input.value);
+      const parts = [parsed.keywords.join(' ')];
+      const splitValues = value => String(value || '').split(/[,、，;；\n\r]+/).map(item => item.trim()).filter(Boolean);
+      const streamerId = document.getElementById('streamFilterStreamer')?.value || '';
+      const songId = document.getElementById('streamFilterSong')?.value || '';
+      const streamer = appData.streamers.find(item => item.id === streamerId);
+      const song = appData.masterSongs.find(item => item.id === songId);
+      const selectedTags = normalizeTags(window.streamTagFilterValue || '');
+
+      // UI入力欄を持つクエリ条件はレジストリ経由でまとめて書き出す。
+      Object.entries(STREAM_QUERY_DEFINITIONS).forEach(([key, definition]) => {
+        if (!definition.modalInput || ['tag', 'song', 'streamer'].includes(key)) return;
+        const values = splitValues(document.getElementById(definition.modalInput)?.value || '');
+        values.forEach(value => {
+          const normalized = definition.normalize ? definition.normalize(value) : value;
+          if (normalized) parts.push(`${definition.token}${queryValue(normalized)}`);
+        });
+      });
+
+      // 選択UIの項目は登録済みIDからクエリ値へ変換する。
+      if (song) {
+        parts.push(`${STREAM_QUERY_DEFINITIONS.song.token}${queryValue(song.title)}`);
+        getMasterSongArtistNames(song).forEach(name => parts.push(`${STREAM_QUERY_DEFINITIONS.artist.token}${queryValue(name)}`));
+      } else {
+        parsed.song.forEach(value => parts.push(`${STREAM_QUERY_DEFINITIONS.song.token}${queryValue(value)}`));
+      }
+      if (streamer) parts.push(`${STREAM_QUERY_DEFINITIONS.streamer.token}${queryValue(streamer.name)}`);
+      else parsed.streamer.forEach(value => parts.push(`${STREAM_QUERY_DEFINITIONS.streamer.token}${queryValue(value)}`));
+
+      (selectedTags.length ? selectedTags : parsed.tags).forEach(tag => {
+        parts.push(`${STREAM_QUERY_DEFINITIONS.tag.token}${queryValue(String(tag).replace(/^#+/, ''))}`);
+      });
+      input.value = parts.filter(Boolean).join(' ').trim();
+    }
+
     function applyStreamFilter() {
       const tagInput = document.getElementById('streamTagFilterInput');
       window.streamTagFilterValue = normalizeTags(tagInput ? tagInput.value : (window.streamTagFilterDraftValue || '')).join(', ');
       window.streamTagMatchMode = window.streamTagFilterDraftMatchMode || 'or';
+      syncStreamQueryFromModal();
       closeStreamFilterModal();
       renderStreams();
     }
@@ -8004,10 +8478,20 @@ button.bg-blue-600, button.bg-indigo-600 {
       if (tagInput) tagInput.value = '';
       document.querySelectorAll('input[name="streamTagMatchMode"]').forEach(input => { input.checked = input.value === 'or'; });
       renderTagPicker('streamTagFilterInput', 'streamTagFilterPicker');
+      const queryInput = document.getElementById('streamSearchKeyword');
+      if (queryInput) queryInput.value = '';
+      ['streamArtistFilterInput', 'streamUntilFilterInput', 'streamSinceFilterInput', 'streamDateFilterInput'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = '';
+      });
+      window.streamTagFilterValue = '';
+      window.streamTagMatchMode = 'or';
       updateStreamerFilterField();
       updateStreamSongFilterField();
+      updateStreamArtistFilterField();
       renderStreamFilterOptions();
       renderStreamSongFilterOptions();
+      renderStreamArtistFilterOptions();
       renderStreams();
     }
 
@@ -8015,10 +8499,33 @@ button.bg-blue-600, button.bg-indigo-600 {
  * clearStreamSearch に関する処理を行う。
  * @returns {*} 処理結果。
  */
+    function onStreamQueryInput() {
+      // クエリを直接編集した場合、モーダル側の古い条件が残って検索結果を狭めないようにする。
+      const streamerFilter = document.getElementById('streamFilterStreamer');
+      const songFilter = document.getElementById('streamFilterSong');
+      if (streamerFilter) streamerFilter.value = '';
+      if (songFilter) songFilter.value = '';
+      window.streamTagFilterValue = '';
+      window.streamTagFilterDraftValue = '';
+      window.streamTagMatchMode = 'or';
+      window.streamTagFilterDraftMatchMode = 'or';
+      scheduleRenderStreams();
+    }
+
     function clearStreamSearch() {
       const input = document.getElementById('streamSearchKeyword');
       if (!input) return;
       input.value = '';
+      const streamerFilter = document.getElementById('streamFilterStreamer');
+      const songFilter = document.getElementById('streamFilterSong');
+      if (streamerFilter) streamerFilter.value = '';
+      if (songFilter) songFilter.value = '';
+      window.streamTagFilterValue = '';
+      window.streamTagFilterDraftValue = '';
+      window.streamTagMatchMode = 'or';
+      window.streamTagFilterDraftMatchMode = 'or';
+      if (streamerFilter) updateStreamerFilterField();
+      if (songFilter) updateStreamSongFilterField();
       if (streamRenderFrame !== null) {
         cancelAnimationFrame(streamRenderFrame);
         streamRenderFrame = null;
@@ -8086,18 +8593,24 @@ button.bg-blue-600, button.bg-indigo-600 {
       // タグ入力欄はモーダル内にあり、閉じるとDOMから消えるため、保存した状態を優先して参照する。
       const selectedTags = normalizeTags(window.streamTagFilterValue || '');
       const tagMatchMode = window.streamTagMatchMode || 'or';
-      const keyword = normalizeStr(document.getElementById('streamSearchKeyword').value);
+      const rawQuery = document.getElementById('streamSearchKeyword').value;
+      const query = parseStreamQuery(rawQuery);
+      const keyword = normalizeStr(query.keywords.join(' '));
+      const queryTags = query.tags;
+      const querySongTerms = query.song.map(normalizeStr);
+      const queryArtistTerms = query.artist.map(normalizeStr);
+      const queryStreamerTerms = query.streamer.map(normalizeStr);
 
       const clearButton = document.getElementById('streamSearchClear');
       if (clearButton) clearButton.classList.toggle('hidden', !keyword);
 
       const streamFilterButton = document.getElementById('streamFilterButton');
       if (streamFilterButton) {
-        streamFilterButton.classList.toggle('has-active-filters', Boolean(selectedStreamerId || selectedSongId || selectedTags.length));
+        streamFilterButton.classList.toggle('has-active-filters', Boolean(selectedStreamerId || selectedSongId || selectedTags.length || queryTags.length || querySongTerms.length || queryArtistTerms.length || queryStreamerTerms.length || query.until.length || query.since.length || query.date.length));
       }
       const filterBadge = document.getElementById('streamFilterBadge');
       if (filterBadge) {
-        const activeFilters = Number(Boolean(selectedStreamerId)) + Number(Boolean(selectedSongId)) + Number(selectedTags.length > 0);
+        const activeFilters = Number(Boolean(selectedStreamerId || queryStreamerTerms.length)) + Number(Boolean(selectedSongId || querySongTerms.length)) + Number(selectedTags.length > 0 || queryTags.length > 0) + Number(queryArtistTerms.length > 0) + Number(query.until.length + query.since.length + query.date.length > 0);
         filterBadge.textContent = activeFilters ? String(activeFilters) : '';
         filterBadge.classList.toggle('hidden', !activeFilters);
       }
@@ -8112,9 +8625,31 @@ button.bg-blue-600, button.bg-indigo-600 {
           const matched = selectedTags.map(tag => tag.toLocaleLowerCase()).map(tag => tagSet.has(tag));
           if (tagMatchMode === 'and' ? !matched.every(Boolean) : !matched.some(Boolean)) return false;
         }
+        const rawStreamDate = String(stream.streamDate || stream.createdAt || '').slice(0, 10);
+        const streamDate = normalizeStreamQueryDate(rawStreamDate);
+        const streamer = getStreamerById(stream.streamerId);
+        const streamSongs = (stream.songs || []).map(item => appData.masterSongs.find(song => song.id === item.masterSongId)).filter(Boolean);
+        const queryContext = {
+          streamDate,
+          streamer,
+          songTitles: streamSongs.map(song => song.title || ''),
+          artistNames: streamSongs.flatMap(song => getMasterSongArtistNames(song)),
+          tags: [...normalizeTags(stream.tags), ...(stream.songs || []).flatMap(item => normalizeTags(item.tags))]
+        };
+        // 各条件の判定方法は STREAM_QUERY_DEFINITIONS に集約。
+        for (const definition of Object.values(STREAM_QUERY_DEFINITIONS)) {
+          const values = query[definition.bucket] || [];
+          if (!values.length) continue;
+          if (definition.bucket === 'date') {
+            if (!values.some(value => definition.matches(value, queryContext))) return false;
+          } else if (definition.bucket === 'tags') {
+            if (!values.every(value => definition.matches(value, queryContext))) return false;
+          } else if (values.some(value => !definition.matches(value, queryContext))) {
+            return false;
+          }
+        }
         if (!keyword) return true;
-
-        return (indexes.streamSearchText.get(stream.id) || '').includes(keyword);
+        return keyword.split(/\s+/).every(term => (indexes.streamSearchText.get(stream.id) || '').includes(term));
       });
 
       filtered.sort((a, b) => {
@@ -9176,8 +9711,12 @@ button.bg-blue-600, button.bg-indigo-600 {
       const searchInput = document.getElementById('streamSearchKeyword');
       if (!streamerFilter) return;
 
+      const streamer = (appData.streamers || []).find(item => item.id === streamerId);
+      if (!streamer) return;
       streamerFilter.value = streamerId;
-      if (searchInput) searchInput.value = '';
+      const queryParts = [`${STREAM_QUERY_DEFINITIONS.streamer.token}${queryValue(streamer.name)}`];
+      appendStreamSearchQueryParts(queryParts);
+      updateStreamerFilterField();
       switchTab('streamTab');
       renderStreams();
 
@@ -9194,10 +9733,14 @@ button.bg-blue-600, button.bg-indigo-600 {
       const songFilter = document.getElementById('streamFilterSong');
       const searchInput = document.getElementById('streamSearchKeyword');
       if (!songFilter) return;
+      const song = (appData.masterSongs || []).find(item => item.id === masterSongId);
+      if (!song) return;
       songFilter.value = masterSongId;
-      if (searchInput) searchInput.value = '';
-      const streamerFilter = document.getElementById('streamFilterStreamer');
-      if (streamerFilter) streamerFilter.value = '';
+      const queryParts = [`${STREAM_QUERY_DEFINITIONS.song.token}${queryValue(song.title)}`];
+      getMasterSongArtistNames(song).forEach(name => queryParts.push(`${STREAM_QUERY_DEFINITIONS.artist.token}${queryValue(name)}`));
+      appendStreamSearchQueryParts(queryParts);
+      updateStreamSongFilterField();
+      updateStreamerFilterField();
       switchTab('streamTab');
       renderStreams();
       const heading = document.querySelector('#streamTab .stream-list-heading');
@@ -9269,6 +9812,7 @@ button.bg-blue-600, button.bg-indigo-600 {
         return;
       }
 
+      let savedStreamerId = id;
       if (id) {
         const st = appData.streamers.find(s => s.id === id);
         if (st) {
@@ -9277,15 +9821,25 @@ button.bg-blue-600, button.bg-indigo-600 {
           st.icon = icon;
         }
       } else {
-        const newId = 'st-' + Math.random().toString(36).substring(2, 9);
-        appData.streamers.push({id: newId, name, account, icon});
+        savedStreamerId = 'st-' + Math.random().toString(36).substring(2, 9);
+        appData.streamers.push({id: savedStreamerId, name, account, icon});
       }
 
+      const shouldReturnToSingerSelect = returnToSingerSelectAfterStreamerCreate && !id;
+      returnToSingerSelectAfterStreamerCreate = false;
       saveData();
       closeStreamerEditModal();
       renderStreamerMasterList();
       renderStreams();
-      showToast('チャンネル情報を保存しました');
+      showToast(id ? 'チャンネル情報を保存しました' : 'チャンネルを登録しました');
+
+      if (shouldReturnToSingerSelect) {
+        modalSelectedSingerIds = [...new Set([...modalSelectedSingerIds, savedStreamerId])];
+        openAppModal('singerSelectModal');
+        const search = document.getElementById('singerModalSearch');
+        if (search) search.value = '';
+        renderSingerModalList();
+      }
     }
 
     /**
@@ -10119,6 +10673,20 @@ button.bg-blue-600, button.bg-indigo-600 {
  * openSingerSelectModalForAddModal に関する処理を行う。
  * @returns {*} 処理結果。
  */
+    let returnToSingerSelectAfterStreamerCreate = false;
+
+    /** 歌唱者選択画面からチャンネルを新規登録する。 */
+    function openStreamerCreateFromSingerSelect() {
+      returnToSingerSelectAfterStreamerCreate = true;
+      openAppModal('streamerEditModal', {title: 'チャンネルの新規登録', icon: 'fa-user-plus'});
+      document.getElementById('editStreamerId').value = '';
+      document.getElementById('deleteStreamerButton')?.classList.add('hidden');
+      document.getElementById('modalInputStreamerDisplayName').value = '';
+      document.getElementById('modalInputStreamerAccount').value = '';
+      document.getElementById('modalInputStreamerIcon').value = '';
+      updateModalAvatarPreview();
+    }
+
     function openSingerSelectModalForAddModal() {
       modalSelectedSingerIds = [...modalAddTempSingerIds];
       activeSingerSelectCallback = (selectedIds) => {
@@ -10353,7 +10921,7 @@ button.bg-blue-600, button.bg-indigo-600 {
         const zip = new JSZip();
         const jsonStr = JSON.stringify(appData, null, 2);
         zip.file("utawakudb_data.json", jsonStr);
-        const blob = await zip.generateAsync({type: "blob"});
+        const blob = await zip.generateAsync({type: "blob", compression: "DEFLATE", compressionOptions: {level: 6}});
 
         const base64Content = await blobToBase64(blob);
 
@@ -10547,6 +11115,14 @@ button.bg-blue-600, button.bg-indigo-600 {
         title: '機能ガイド・使い方', icon: 'fa-circle-question', width: 'lg', height: 'lg', template: 'helpModalTemplate',
         actions: [{label: '閉じる', variant: 'primary', onClick: closeHelpModal}]
       },
+      tagEditModal: {
+        title: 'タグの編集', icon: 'fa-pen-to-square', width: 'sm', height: 'sm', template: 'tagEditModalTemplate', footerLayout: 'between',
+        actions: [
+          {label: '削除', icon: 'fa-trash', variant: 'danger', onClick: () => deleteManagedTag(document.getElementById('managedTagEditId')?.value), slot: 'start'},
+          {label: 'キャンセル', variant: 'secondary', onClick: () => closeAppModal('tagEditModal')},
+          {label: '保存', variant: 'primary', onClick: () => saveManagedTagEdit(document.getElementById('managedTagEditId')?.value)}
+        ]
+      },
       streamFilterModal: {
         title: '動画を絞り込む', icon: 'fa-filter', width: 'md', height: 'lg', template: 'streamFilterModalTemplate', footerLayout: 'between',
         actions: [
@@ -10572,7 +11148,8 @@ button.bg-blue-600, button.bg-indigo-600 {
  * @returns {*} 処理結果。
  */
     function openAppModal(modalId, options = {}) {
-      const definition = APP_MODAL_DEFINITIONS[modalId] || {};
+      const baseDefinition = APP_MODAL_DEFINITIONS[modalId];
+      const definition = baseDefinition || {};
       const config = {...definition, ...options};
       const existing = document.getElementById(modalId);
       existing?.remove();
@@ -10741,7 +11318,7 @@ button.bg-blue-600, button.bg-indigo-600 {
 
         const zip = new JSZip();
         zip.file("utawakudb_data.json", JSON.stringify(appData, null, 2));
-        const blob = await zip.generateAsync({type: "blob"});
+        const blob = await zip.generateAsync({type: "blob", compression: "DEFLATE", compressionOptions: {level: 6}});
         const base64Data = await blobToBase64(blob);
 
         showToast("共有URLを発行中...");
